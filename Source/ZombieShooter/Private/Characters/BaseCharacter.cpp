@@ -1,7 +1,7 @@
 //  Created by Artyom Volkov during the UE4 course
 
 
-#include "BaseCharacter.h"
+#include "Characters/BaseCharacter.h"
 #include "Components/ShooterDamageControllerComponent.h"
 
 ABaseCharacter::ABaseCharacter()

@@ -7,6 +7,8 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+class UShooterDamageControllerComponent;
+
 UCLASS()
 class ZOMBIESHOOTER_API ABaseCharacter : public ACharacter
 {
@@ -22,4 +24,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
+	UShooterDamageControllerComponent* DamageControllerComponent = nullptr;
 };

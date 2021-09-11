@@ -2,10 +2,13 @@
 
 
 #include "BaseCharacter.h"
+#include "Components/ShooterDamageControllerComponent.h"
 
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	DamageControllerComponent = CreateDefaultSubobject<UShooterDamageControllerComponent>("DamageController");
 }
 
 void ABaseCharacter::BeginPlay()

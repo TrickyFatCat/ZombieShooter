@@ -61,7 +61,7 @@ protected:
 		ClampMin="0"))
 	float ArmorModifier = 0.25;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="DamageController", meta=(AllowPrivateAccess="true"))
 	FResourceData ArmorData;
 
 	UPROPERTY()

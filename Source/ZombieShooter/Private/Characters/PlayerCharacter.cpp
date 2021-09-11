@@ -8,6 +8,10 @@ APlayerCharacter::APlayerCharacter()
 {
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
 	PlayerCamera->SetupAttachment(GetRootComponent());
+
+	PlayerArms = CreateDefaultSubobject<USkeletalMeshComponent>("PlayerArms");
+	PlayerArms->SetupAttachment(PlayerCamera);
+	PlayerArms->CastShadow = false;
 }
 
 void APlayerCharacter::BeginPlay()

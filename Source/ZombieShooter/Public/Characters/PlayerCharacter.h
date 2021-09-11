@@ -31,6 +31,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UCameraComponent* PlayerCamera = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
+	USkeletalMeshComponent* PlayerArms = nullptr;
 	// Movement
 public:
 protected:

@@ -3,12 +3,14 @@
 
 #include "Characters/BaseCharacter.h"
 #include "Components/ShooterDamageControllerComponent.h"
+#include "Components/WeaponComponent.h"
 
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	DamageControllerComponent = CreateDefaultSubobject<UShooterDamageControllerComponent>("DamageController");
+	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 }
 
 void ABaseCharacter::BeginPlay()

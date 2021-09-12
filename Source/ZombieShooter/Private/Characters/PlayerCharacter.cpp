@@ -36,6 +36,16 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// Aiming
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookRight", this, &APlayerCharacter::AddControllerYawInput);
+
+	// Weapon
+	PlayerInputComponent->BindAction("EquipNextWeapon",
+	                                 IE_Pressed,
+	                                 WeaponComponent,
+	                                 &UWeaponComponent::EquipNextWeapon);
+	PlayerInputComponent->BindAction("EquipPreviousWeapon",
+	                                 IE_Pressed,
+	                                 WeaponComponent,
+	                                 &UWeaponComponent::EquipPreviousWeapon);
 }
 
 void APlayerCharacter::MoveForward(const float AxisValue)

@@ -27,6 +27,8 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	USkeletalMeshComponent* GetPlayerArms() const { return PlayerArms; }
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UCameraComponent* PlayerCamera = nullptr;

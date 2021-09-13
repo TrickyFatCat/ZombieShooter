@@ -42,7 +42,7 @@ void UWeaponComponent::SpawnWeapons()
 
 		if (!Weapon) continue;
 
-		// Add delegate for auto reload
+		Weapon->OnWeaponClipEmpty.AddUObject(this, &UWeaponComponent::OnEmptyClip);
 		Weapon->SetOwner(GetOwner());
 		Weapons.Add(Weapon);
 		FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
@@ -96,6 +96,19 @@ void UWeaponComponent::Reload()
 	CurrentWeapon->StopShooting();
 	bIsReloading = true;
 	// Play reload animation
+	// Delete me
+	CurrentWeapon->Reload();
+	bIsReloading = false;
+}
+
+void UWeaponComponent::OnEmptyClip(AWeaponBase* TargetWeapon)
+{
+	if (!TargetWeapon) return;
+
+	if (CurrentWeapon == TargetWeapon)
+	{
+		Reload();
+	}
 }
 
 void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
@@ -110,4 +123,9 @@ void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
 
 	CurrentWeapon = Weapons[WeaponIndex];
 	CurrentWeapon->SetActorHiddenInGame(false);
+}
+
+void UWeaponComponent::GetCurrentWeaponAmmo(FWeaponAmmoData& AmmoData) const
+{
+	AmmoData = CurrentWeapon->GetAmmoData();
 }

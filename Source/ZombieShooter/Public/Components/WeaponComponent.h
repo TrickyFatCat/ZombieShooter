@@ -33,10 +33,10 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapons", meta=(AllowPrivateAccess="true"))
 	TArray<TSubclassOf<AWeaponBase>> WeaponClasses;
-	
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Weapons", meta=(AllowPrivateAccess="true"))
 	TArray<AWeaponBase*> Weapons;
-	
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintGetter=GetCurrentWeapon)
 	AWeaponBase* CurrentWeapon = nullptr;
 
@@ -52,6 +52,7 @@ public:
 	void StartShooting();
 	void StopShooting();
 	void Reload();
+	void OnEmptyClip(AWeaponBase* TargetWeapon);
 protected:
 	void EquipWeapon(const int32 WeaponIndex);
 
@@ -59,15 +60,17 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	bool CanShoot() const { return CurrentWeapon->CanShoot() && !bIsReloading && !bIsEquipping; }
-	
+
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	bool GetIsReloading() const { return bIsReloading; }
 
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	bool GetIsEquipping() const { return bIsEquipping; }
 
+	UFUNCTION(BlueprintCallable, Category="Weapon")
+	void GetCurrentWeaponAmmo(FWeaponAmmoData& AmmoData) const;
+
 protected:
-	
 private:
 	UPROPERTY(BlueprintGetter=GetIsReloading, Category="Weapon")
 	bool bIsReloading = false;

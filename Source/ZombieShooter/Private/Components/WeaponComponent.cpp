@@ -57,6 +57,7 @@ void UWeaponComponent::EquipNextWeapon()
 
 	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
 	bIsEquipping = true;
+	// Delete this
 	EquipWeapon(CurrentWeaponIndex);
 	bIsEquipping = false;
 	// Play equip animation
@@ -68,6 +69,7 @@ void UWeaponComponent::EquipPreviousWeapon()
 
 	CurrentWeaponIndex = CurrentWeaponIndex == 0 ? Weapons.Num() - 1 : CurrentWeaponIndex - 1;
 	bIsEquipping = true;
+	// Delete this
 	EquipWeapon(CurrentWeaponIndex);
 	bIsEquipping = false;
 	// Play equip animation
@@ -75,14 +77,25 @@ void UWeaponComponent::EquipPreviousWeapon()
 
 void UWeaponComponent::StartShooting()
 {
+	if (!CanShoot()) return;
+
+	CurrentWeapon->StartShooting();
 }
 
 void UWeaponComponent::StopShooting()
 {
+	if (!CurrentWeapon) return;
+
+	CurrentWeapon->StopShooting();
 }
 
 void UWeaponComponent::Reload()
 {
+	if (!CurrentWeapon && bIsEquipping && bIsReloading && !CurrentWeapon->CanReload()) return;
+	
+	CurrentWeapon->StopShooting();
+	bIsReloading = true;
+	// Play reload animation
 }
 
 void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
@@ -91,7 +104,7 @@ void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
 
 	if (CurrentWeapon)
 	{
-		// CurrentWeapon->StopShooting();
+		CurrentWeapon->StopShooting();
 		CurrentWeapon->SetActorHiddenInGame(true);
 	}
 

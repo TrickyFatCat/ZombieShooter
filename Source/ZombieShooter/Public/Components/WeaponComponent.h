@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Weapons/WeaponBase.h"
 #include "Weapons/WeaponCoreTypes.h"
 #include "WeaponComponent.generated.h"
 
@@ -56,7 +57,7 @@ protected:
 	// Weapon parameters
 public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
-	bool CanFire() const { return !bIsReloading && !bIsEquipping; }
+	bool CanShoot() const { return CurrentWeapon->CanShoot() && !bIsReloading && !bIsEquipping; }
 	
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	bool GetIsReloading() const { return bIsReloading; }

@@ -19,6 +19,8 @@ void AWeaponBase::BeginPlay()
 	Super::BeginPlay();
 
 	TimeBetweenShots = WeaponData.RateOfFire <= 0.f ? 1.f : 1.f / WeaponData.RateOfFire;
+	AmmoData.ClipAmmoCurrent = AmmoData.ClipAmmoMax;
+	AmmoData.StorageAmmoCurrent = AmmoData.StorageAmmoMax;
 }
 
 void AWeaponBase::Tick(float DeltaTime)
@@ -64,6 +66,8 @@ void AWeaponBase::MakeShot()
 		return;
 	}
 	UE_LOG(LogTemp, Error, TEXT("Pew"));
+
+	DecreaseClipAmmoCurrent(WeaponData.ShotCost);
 }
 
 void AWeaponBase::IncreaseCurrentStorageAmmo(const int32 Amount)
@@ -88,6 +92,11 @@ void AWeaponBase::DecreaseClipAmmoCurrent(const int32 Amount)
 
 	AmmoData.ClipAmmoCurrent -= Amount;
 	AmmoData.ClipAmmoCurrent = FMath::Max(AmmoData.ClipAmmoCurrent, 0);
+
+	if (AmmoData.ClipAmmoCurrent <= 0 && AmmoData.StorageAmmoCurrent > 0)
+	{
+		OnWeaponClipEmpty.Broadcast(this);
+	}
 }
 
 void AWeaponBase::DecreaseStorageAmmoCurrent(const int32 Amount)

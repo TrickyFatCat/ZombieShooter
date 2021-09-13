@@ -42,7 +42,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetWeaponDamageData, Category="Weapon", meta=(AllowPrivateAccess="true"))
 	FWeaponData WeaponData;
 
-	int32 TimeBetweenShots = 1.f;
+	float TimeBetweenShots = 1.f;
 
 	// Shooting
 protected:
@@ -59,6 +59,8 @@ private:
 
 	// Ammo
 public:
+	FOnWeaponClipEmptySignature OnWeaponClipEmpty;
+	
 	bool CanShoot() const { return AmmoData.ClipAmmoCurrent > 0; }
 	
 	bool CanReload() const { return AmmoData.StorageAmmoCurrent > 0 && AmmoData.ClipAmmoCurrent < AmmoData.ClipAmmoMax; }

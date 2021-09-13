@@ -36,7 +36,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
 	USceneComponent* WeaponRoot = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
 	USkeletalMeshComponent* WeaponMesh = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetWeaponDamageData, Category="Weapon", meta=(AllowPrivateAccess="true"))

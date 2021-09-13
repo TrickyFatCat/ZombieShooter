@@ -34,12 +34,13 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapons", meta=(AllowPrivateAccess="true"))
 	TArray<TSubclassOf<AWeaponBase>> WeaponClasses;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapons", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Weapons", meta=(AllowPrivateAccess="true"))
 	TArray<AWeaponBase*> Weapons;
 	
-	UPROPERTY(BlueprintGetter=GetCurrentWeapon)
+	UPROPERTY(VisibleInstanceOnly, BlueprintGetter=GetCurrentWeapon)
 	AWeaponBase* CurrentWeapon = nullptr;
 
+	UPROPERTY(VisibleInstanceOnly)
 	int32 CurrentWeaponIndex = 0;
 
 	void SpawnWeapons();

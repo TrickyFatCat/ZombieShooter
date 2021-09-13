@@ -7,6 +7,8 @@
 class AWeaponBase;
 class AProjectileBase;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponClipEmptySignature, AWeaponBase*)
+
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
 {

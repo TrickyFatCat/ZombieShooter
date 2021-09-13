@@ -24,10 +24,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category="Weapon")
-	EWeaponType GetWeaponType() const { return WeaponTypeData.WeaponType; }
+	EWeaponType GetWeaponType() const { return WeaponData.WeaponType; }
 
 	UFUNCTION(BlueprintCallable, Category="Weapon")
-	FName GetWeaponSocketName() const { return WeaponTypeData.WeaponSocketName; }
+	FName GetWeaponSocketName() const { return WeaponData.WeaponSocketName; }
+
+	UFUNCTION(BlueprintGetter, Category="Weapon")
+	FWeaponData GetWeaponDamageData() const { return WeaponData; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
@@ -36,6 +39,41 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
 	USkeletalMeshComponent* WeaponMesh = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess="true"))
-	FWeaponTypeData WeaponTypeData{EWeaponType::Pistol, "WeaponPoint"};
+	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetWeaponDamageData, Category="Weapon", meta=(AllowPrivateAccess="true"))
+	FWeaponData WeaponData;
+
+	int32 TimeBetweenShots = 1.f;
+
+	// Shooting
+protected:
+	FTimerHandle ShootingTimerHandle; 
+
+	// Control
+public:
+	void StartShooting();
+	void StopShooting();
+	void Reload();
+
+private:
+	void MakeShot();
+
+	// Ammo
+public:
+	bool CanShoot() const { return AmmoData.ClipAmmoCurrent > 0; }
+	
+	bool CanReload() const { return AmmoData.StorageAmmoCurrent > 0 && AmmoData.ClipAmmoCurrent < AmmoData.ClipAmmoMax; }
+
+	UFUNCTION(BlueprintGetter, Category="Ammo")
+	FWeaponAmmoData GetAmmoData() const { return AmmoData; }
+	
+	void IncreaseCurrentStorageAmmo(const int32 Amount);
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetAmmoData, Category="Ammo")
+	FWeaponAmmoData AmmoData;
+	
+	void IncreaseClipAmmoCurrent(const int32 Amount);
+	
+	void DecreaseClipAmmoCurrent(const int32 Amount);
+	
+	void DecreaseStorageAmmoCurrent(const int32 Amount);
 };

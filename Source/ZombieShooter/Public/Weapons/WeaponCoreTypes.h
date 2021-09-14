@@ -60,7 +60,10 @@ struct FWeaponData
 	float Spread = 5.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0"))
-	int32 ShotCost = 1; 
+	int32 ShotCost = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0"))
+	float ReloadTime = 1.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	EBulletType BulletType = EBulletType::HitScan;

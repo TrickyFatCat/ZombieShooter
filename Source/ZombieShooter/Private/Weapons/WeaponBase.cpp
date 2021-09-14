@@ -55,7 +55,14 @@ bool AWeaponBase::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
 	if (!GetViewPoint(ViewLocation, ViewRotation)) return false;
 
 	TraceStart = ViewLocation;
-	const FVector TraceDirection = ViewRotation.Vector();
+	FVector TraceDirection = ViewRotation.Vector(); 
+	
+	if (WeaponData.Spread > 0.f)
+	{
+		const float SpreadAngleRad = FMath::DegreesToRadians(WeaponData.Spread / 2);
+		TraceDirection = FMath::VRandCone(TraceDirection, SpreadAngleRad);
+	}
+	
 	TraceEnd = TraceStart + TraceDirection * WeaponData.HitScanDistance;
 	return true;
 }
@@ -133,9 +140,8 @@ void AWeaponBase::MakeShot()
 			// Play impact fx
 		}
 	}
-
-
-	OnWeaponShot();
+	
+	OnWeaponShot(HitResult, TraceStart, TraceEnd);
 	WeaponMesh->PlayAnimation(ShootAnimation, false);
 	DecreaseClipAmmoCurrent(WeaponData.ShotCost);
 }

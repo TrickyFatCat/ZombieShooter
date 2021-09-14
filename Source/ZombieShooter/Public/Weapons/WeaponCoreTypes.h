@@ -53,7 +53,7 @@ struct FWeaponData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	float RateOfFire = 1.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0"))
 	float Spread = 5.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0"))

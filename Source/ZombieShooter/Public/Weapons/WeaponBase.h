@@ -55,7 +55,7 @@ protected:
 	UAnimationAsset* ShootAnimation = nullptr;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Weapon")
-	void OnWeaponShot();
+	void OnWeaponShot(const FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
 
 	bool GetViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
 

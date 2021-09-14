@@ -9,6 +9,14 @@
 #include "WeaponComponent.generated.h"
 
 class AWeaponBase;
+class UTimelineComponent;
+
+UENUM()
+enum class EWeaponPullCommand : uint8
+{
+	Equip,
+	Reload
+};
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -31,10 +39,10 @@ public:
 	AWeaponBase* GetCurrentWeapon() const { return CurrentWeapon; }
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapons", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess="true"))
 	TArray<TSubclassOf<AWeaponBase>> WeaponClasses;
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Weapons", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess="true"))
 	TArray<AWeaponBase*> Weapons;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintGetter=GetCurrentWeapon)
@@ -52,10 +60,40 @@ public:
 	void StartShooting();
 	void StopShooting();
 	void Reload();
-	void OnEmptyClip(AWeaponBase* TargetWeapon);
+
 protected:
 	void EquipWeapon(const int32 WeaponIndex);
+	void OnEmptyClip(AWeaponBase* TargetWeapon);
 
+	// Pull animation
+private:
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation", meta=(AllowPrivateAccess="true"))
+	UCurveFloat* PullAnimationCurve = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category="Components")
+	UTimelineComponent* PullAnimationTimeline = nullptr;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
+	float PullProgress = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true", ClampMin="0"))
+	float EquipDuration = 0.25f;
+
+	EWeaponPullCommand PullCommand = EWeaponPullCommand::Equip;
+
+	UFUNCTION()
+	void SetPullProgress(const float Value)
+	{
+		PullProgress = Value;
+		UE_LOG(LogTemp, Warning, TEXT("%f"), Value);
+	}
+
+	UFUNCTION()
+	void OnPullFinished();
+
+	void StartEquipAnimation();
+	
 	// Weapon parameters
 public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")

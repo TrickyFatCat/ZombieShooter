@@ -26,8 +26,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	EWeaponType GetWeaponType() const { return WeaponData.WeaponType; }
 
-	UFUNCTION(BlueprintCallable, Category="Weapon")
-	FName GetWeaponSocketName() const { return WeaponData.WeaponSocketName; }
+	UFUNCTION(BlueprintPure, Category="Weapon")
+	FName GetWeaponSocketName() const { return WeaponSocketName; }
 
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	FWeaponData GetWeaponData() const { return WeaponData; }
@@ -51,11 +51,21 @@ private:
 protected:
 	FTimerHandle ShootingTimerHandle;
 
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	UPROPERTY(EditDefaultsOnly, Category="Weapon|Visuals")
 	UAnimationAsset* ShootAnimation = nullptr;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Weapon")
 	void OnWeaponShot();
+
+	bool GetViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
+
+	bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
+
+	void GetHitScanData(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd) const;
+
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetWeaponSocketName, Category="Weapon|Visuals", meta=(AllowPrivateAccess="true"))
+	FName WeaponSocketName = FName("WeaponSocket");
 
 	// Control
 public:

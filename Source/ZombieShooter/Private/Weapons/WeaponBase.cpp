@@ -1,7 +1,7 @@
 // Created by Artyom Volkov during the UE4 course
 
-
 #include "Weapons/WeaponBase.h"
+#include "GameFramework/Character.h"
 
 AWeaponBase::AWeaponBase()
 {
@@ -27,7 +27,52 @@ void AWeaponBase::BeginPlay()
 void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
 
+bool AWeaponBase::GetViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
+{
+	ACharacter* Character = Cast<ACharacter>(GetOwner());
+
+	if (!Character) return false;
+
+	if (Character->IsPlayerControlled())
+	{
+		const APlayerController* Controller = Character->GetController<APlayerController>();
+
+		if (!Controller) return false;
+
+		Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+	}
+
+	return true;
+}
+
+bool AWeaponBase::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
+{
+	FVector ViewLocation = FVector::ZeroVector;
+	FRotator ViewRotation = FRotator::ZeroRotator;
+
+	if (!GetViewPoint(ViewLocation, ViewRotation)) return false;
+
+	TraceStart = ViewLocation;
+	const FVector TraceDirection = ViewRotation.Vector();
+	TraceEnd = TraceStart + TraceDirection * WeaponData.HitScanDistance;
+	return true;
+}
+
+void AWeaponBase::GetHitScanData(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd) const
+{
+	if (!GetWorld()) return;
+
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(GetOwner());
+	CollisionQueryParams.bReturnPhysicalMaterial = true;
+
+	GetWorld()->LineTraceSingleByChannel(HitResult,
+	                                     TraceStart,
+	                                     TraceEnd,
+	                                     ECollisionChannel::ECC_Visibility,
+	                                     CollisionQueryParams);
 }
 
 void AWeaponBase::StartShooting()
@@ -67,7 +112,28 @@ void AWeaponBase::MakeShot()
 		StopShooting();
 		return;
 	}
-	UE_LOG(LogTemp, Error, TEXT("Pew"));
+
+	FVector TraceStart, TraceEnd;
+
+	if (!GetTraceData(TraceStart, TraceEnd))
+	{
+		StopShooting();
+		return;
+	}
+
+	FHitResult HitResult;
+	GetHitScanData(HitResult, TraceStart, TraceEnd);
+
+	if (WeaponData.BulletType == EBulletType::HitScan)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Pew"));
+		if (HitResult.bBlockingHit)
+		{
+			// Deal damage;
+			// Play impact fx
+		}
+	}
+
 
 	OnWeaponShot();
 	WeaponMesh->PlayAnimation(ShootAnimation, false);
@@ -110,4 +176,3 @@ void AWeaponBase::DecreaseStorageAmmoCurrent(const int32 Amount)
 	AmmoData.StorageAmmoCurrent -= Amount;
 	AmmoData.StorageAmmoCurrent = FMath::Max(AmmoData.StorageAmmoCurrent, 0);
 }
-

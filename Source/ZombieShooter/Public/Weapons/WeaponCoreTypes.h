@@ -46,9 +46,6 @@ struct FWeaponData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
 	EWeaponType WeaponType = EWeaponType::Pistol;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
-	FName WeaponSocketName = NAME_None;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	int32 Damage = 10.f;
@@ -70,7 +67,10 @@ struct FWeaponData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	EBulletType BulletType = EBulletType::HitScan;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(EditCondition="BulletType==EBulletType::HitScan"))
+	float HitScanDistance = 10000.f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(EditCondition="BulletType==EBulletType::Projectile"))
 	TSubclassOf<AProjectileBase> ProjectileClass = nullptr;
 };

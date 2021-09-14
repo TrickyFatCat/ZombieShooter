@@ -55,11 +55,14 @@ protected:
 	UAnimationAsset* ShootAnimation = nullptr;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Weapon")
-	void OnWeaponShot(const FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
+	void OnWeaponShot();
+	
+	UFUNCTION(BlueprintImplementableEvent, Category="Weapon")
+	void OnBulletShot(const FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
 
 	bool GetViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
 
-	bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
+	bool GetTraceData(FVector& TraceStart, FVector& TraceEnd, const bool bCalculateSpread = true) const;
 
 	void GetHitScanData(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd) const;
 

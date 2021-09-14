@@ -47,7 +47,7 @@ bool AWeaponBase::GetViewPoint(FVector& ViewLocation, FRotator& ViewRotation) co
 	return true;
 }
 
-bool AWeaponBase::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
+bool AWeaponBase::GetTraceData(FVector& TraceStart, FVector& TraceEnd, const bool bCalculateSpread) const
 {
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
@@ -55,14 +55,14 @@ bool AWeaponBase::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
 	if (!GetViewPoint(ViewLocation, ViewRotation)) return false;
 
 	TraceStart = ViewLocation;
-	FVector TraceDirection = ViewRotation.Vector(); 
-	
-	if (WeaponData.Spread > 0.f)
+	FVector TraceDirection = ViewRotation.Vector();
+
+	if (WeaponData.Spread > 0.f && bCalculateSpread)
 	{
 		const float SpreadAngleRad = FMath::DegreesToRadians(WeaponData.Spread / 2);
 		TraceDirection = FMath::VRandCone(TraceDirection, SpreadAngleRad);
 	}
-	
+
 	TraceEnd = TraceStart + TraceDirection * WeaponData.HitScanDistance;
 	return true;
 }
@@ -121,27 +121,32 @@ void AWeaponBase::MakeShot()
 	}
 
 	FVector TraceStart, TraceEnd;
-
-	if (!GetTraceData(TraceStart, TraceEnd))
-	{
-		StopShooting();
-		return;
-	}
-
 	FHitResult HitResult;
-	GetHitScanData(HitResult, TraceStart, TraceEnd);
 
-	if (WeaponData.BulletType == EBulletType::HitScan)
+	for (int32 i = 1; i <= WeaponData.BulletsInShot; ++i)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Pew"));
-		if (HitResult.bBlockingHit)
+		if (!GetTraceData(TraceStart, TraceEnd, i != 1))
 		{
-			// Deal damage;
-			// Play impact fx
+			StopShooting();
+			return;
 		}
+
+		GetHitScanData(HitResult, TraceStart, TraceEnd);
+
+		if (WeaponData.BulletType == EBulletType::HitScan)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Pew %d"), i);
+			if (HitResult.bBlockingHit)
+			{
+				// Deal damage;
+				// Play impact fx
+			}
+		}
+
+		OnBulletShot(HitResult, TraceStart, HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd);
 	}
-	
-	OnWeaponShot(HitResult, TraceStart, TraceEnd);
+
+	OnWeaponShot();
 	WeaponMesh->PlayAnimation(ShootAnimation, false);
 	DecreaseClipAmmoCurrent(WeaponData.ShotCost);
 }

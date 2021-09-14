@@ -40,4 +40,21 @@ public:
 protected:
 	void MoveForward(const float AxisValue);
 	void MoveRight(const float AxisValue);
+
+	// WeaponSway
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
+	float SwayPower = 2.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
+	float SwaySpeed = 100.f;
+
+	UPROPERTY(VisibleInstanceOnly)
+	FRotator InitialRotation = FRotator::ZeroRotator;
+	
+	void SetHorizontalSway(const float AxisValue);
+
+	void SetVerticalSway(const float AxisValue);
+
+	void ProcessSwayRotation(const float DeltaTime) const;
 };

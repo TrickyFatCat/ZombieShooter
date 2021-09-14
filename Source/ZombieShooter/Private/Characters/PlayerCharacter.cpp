@@ -18,11 +18,15 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitialRotation = PlayerArms->GetRelativeRotation();
 }
 
 void APlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	ProcessSwayRotation(DeltaSeconds);
 
 	// const FString Separator = TEXT("\n=====================\n");
 	const FString PlayerDataHeader = TEXT("==== PLAYER DATA ====");
@@ -30,23 +34,35 @@ void APlayerCharacter::Tick(float DeltaSeconds)
 	FWeaponAmmoData AmmoData;
 	WeaponComponent->GetCurrentWeaponAmmo(AmmoData);
 
-	const FString StorageAmmoText = FString::Printf(TEXT("Clip Ammo: %04d/%04d"), AmmoData.StorageAmmoCurrent, AmmoData.StorageAmmoMax);
+	const FString StorageAmmoText = FString::Printf(
+		TEXT("Clip Ammo: %04d/%04d"),
+		AmmoData.StorageAmmoCurrent,
+		AmmoData.StorageAmmoMax);
 	GEngine->AddOnScreenDebugMessage(6, 0.f, FColor::Orange, StorageAmmoText, true, FVector2D(1, 1));
-	
-	const FString ClipAmmoText = FString::Printf(TEXT("Clip Ammo: %04d/%04d"), AmmoData.ClipAmmoCurrent, AmmoData.ClipAmmoMax);
+
+	const FString ClipAmmoText = FString::Printf(
+		TEXT("Clip Ammo: %04d/%04d"),
+		AmmoData.ClipAmmoCurrent,
+		AmmoData.ClipAmmoMax);
 	GEngine->AddOnScreenDebugMessage(5, 0.f, FColor::Yellow, ClipAmmoText, true, FVector2D(1, 1));
-	
-	const FString WeaponText = FString::Printf(TEXT("Current weapon %s"), *WeaponComponent->GetCurrentWeapon()->GetHumanReadableName());
+
+	const FString WeaponText = FString::Printf(TEXT("Current weapon %s"),
+	                                           *WeaponComponent->GetCurrentWeapon()->GetHumanReadableName());
 	GEngine->AddOnScreenDebugMessage(4, 0.f, FColor::Red, WeaponText, true, FVector2D(1, 1));
-	
+
 	GEngine->AddOnScreenDebugMessage(3, 0.f, FColor::Silver, WeaponDataHeader, true, FVector2D(1, 1));
-	
+
 	// GEngine->AddOnScreenDebugMessage(3, 0.f, FColor::White, Separator, true, FVector2D(1, 1));
 
-	const FString HealthText = FString::Printf(TEXT("Health: %4.2f/%4.2f"), DamageControllerComponent->GetHealth(), DamageControllerComponent->GetMaxHealth());
+	const FString HealthText = FString::Printf(
+		TEXT("Health: %4.2f/%4.2f"),
+		DamageControllerComponent->GetHealth(),
+		DamageControllerComponent->GetMaxHealth());
 	GEngine->AddOnScreenDebugMessage(2, 0.f, FColor::Emerald, HealthText, true, FVector2D(1, 1));
-	
-	const FString ArmorText = FString::Printf(TEXT("Armor: %4.2f/%4.2f"), DamageControllerComponent->GetArmor(), DamageControllerComponent->GetMaxArmor());
+
+	const FString ArmorText = FString::Printf(TEXT("Armor: %4.2f/%4.2f"),
+	                                          DamageControllerComponent->GetArmor(),
+	                                          DamageControllerComponent->GetMaxArmor());
 	GEngine->AddOnScreenDebugMessage(1, 0.f, FColor::Cyan, ArmorText, true, FVector2D(1, 1));
 
 	GEngine->AddOnScreenDebugMessage(0, 0.f, FColor::Silver, PlayerDataHeader, true, FVector2D(1, 1));
@@ -64,6 +80,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// Aiming
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookRight", this, &APlayerCharacter::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::SetVerticalSway);
+	PlayerInputComponent->BindAxis("LookRight", this, &APlayerCharacter::SetHorizontalSway);
 
 	// Weapon
 	PlayerInputComponent->BindAction("EquipNextWeapon",
@@ -87,4 +105,30 @@ void APlayerCharacter::MoveForward(const float AxisValue)
 void APlayerCharacter::MoveRight(const float AxisValue)
 {
 	AddMovementInput(GetActorRightVector(), AxisValue);
+}
+
+void APlayerCharacter::SetHorizontalSway(const float AxisValue)
+{
+	FRotator FinalRotation = PlayerArms->GetRelativeRotation();
+	FinalRotation.Yaw = FinalRotation.Yaw - AxisValue * SwayPower;
+	PlayerArms->SetRelativeRotation(FinalRotation);
+}
+
+void APlayerCharacter::SetVerticalSway(const float AxisValue)
+{
+	FRotator FinalRotation = PlayerArms->GetRelativeRotation();
+	FinalRotation.Roll = FinalRotation.Roll - AxisValue * SwayPower;
+	PlayerArms->SetRelativeRotation(FinalRotation);
+}
+
+void APlayerCharacter::ProcessSwayRotation(const float DeltaTime) const
+{
+	const FRotator TargetRotation = FRotator(PlayerArms->GetRelativeRotation().Pitch,
+	                                         InitialRotation.Yaw,
+	                                         InitialRotation.Roll);
+	const FRotator FinalRotation = FMath::RInterpTo(PlayerArms->GetRelativeRotation(),
+	                                                TargetRotation,
+	                                                DeltaTime,
+	                                                SwaySpeed);
+	PlayerArms->SetRelativeRotation(FinalRotation);
 }

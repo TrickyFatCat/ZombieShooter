@@ -30,7 +30,7 @@ public:
 	FName GetWeaponSocketName() const { return WeaponData.WeaponSocketName; }
 
 	UFUNCTION(BlueprintGetter, Category="Weapon")
-	FWeaponData GetWeaponDamageData() const { return WeaponData; }
+	FWeaponData GetWeaponData() const { return WeaponData; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
@@ -39,14 +39,20 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
 	USkeletalMeshComponent* WeaponMesh = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetWeaponDamageData, Category="Weapon", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly,
+		BlueprintGetter=GetWeaponData,
+		Category="Weapon",
+		meta=(AllowPrivateAccess="true"))
 	FWeaponData WeaponData;
 
 	float TimeBetweenShots = 1.f;
 
 	// Shooting
 protected:
-	FTimerHandle ShootingTimerHandle; 
+	FTimerHandle ShootingTimerHandle;
+
+	UPROPERTY(EditDefaultsOnly, Category="Animation")
+	UAnimationAsset* ShootAnimation = nullptr;
 
 	// Control
 public:

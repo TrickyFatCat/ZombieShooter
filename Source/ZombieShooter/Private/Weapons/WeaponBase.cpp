@@ -19,6 +19,7 @@ void AWeaponBase::BeginPlay()
 	Super::BeginPlay();
 
 	TimeBetweenShots = WeaponData.RateOfFire <= 0.f ? 1.f : 1.f / WeaponData.RateOfFire;
+	WeaponMesh->SetPlayRate(1.f / TimeBetweenShots);
 	AmmoData.ClipAmmoCurrent = AmmoData.ClipAmmoMax;
 	AmmoData.StorageAmmoCurrent = AmmoData.StorageAmmoMax;
 }
@@ -38,6 +39,7 @@ void AWeaponBase::StartShooting()
 void AWeaponBase::StopShooting()
 {
 	GetWorldTimerManager().ClearTimer(ShootingTimerHandle);
+	WeaponMesh->Stop();
 }
 
 void AWeaponBase::Reload()
@@ -67,6 +69,7 @@ void AWeaponBase::MakeShot()
 	}
 	UE_LOG(LogTemp, Error, TEXT("Pew"));
 
+	WeaponMesh->PlayAnimation(ShootAnimation, false);
 	DecreaseClipAmmoCurrent(WeaponData.ShotCost);
 }
 

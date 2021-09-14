@@ -38,6 +38,9 @@ public:
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	AWeaponBase* GetCurrentWeapon() const { return CurrentWeapon; }
 
+	UFUNCTION(BlueprintPure, Category="Weapon")
+	void GetCurrentWeaponData(FWeaponData& WeaponData) const;
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess="true"))
 	TArray<TSubclassOf<AWeaponBase>> WeaponClasses;
@@ -56,17 +59,29 @@ private:
 	// Weapon control
 public:
 	void EquipNextWeapon();
+	
 	void EquipPreviousWeapon();
+	
 	void StartShooting();
+	
 	void StopShooting();
+	
 	void Reload();
+	
+	UFUNCTION(BlueprintPure, Category="Weapon")
+	bool GetIsShooting() const { return CanShoot() && bIsShooting; }
 
 protected:
 	void EquipWeapon(const int32 WeaponIndex);
+	
 	void OnEmptyClip(AWeaponBase* TargetWeapon);
+	
+	bool bIsShooting;
 
 	// Pull animation
-private:
+public:
+	UFUNCTION(BlueprintPure, Category="Animation")
+	float GetPullProgress() const { return PullProgress; }
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation", meta=(AllowPrivateAccess="true"))
 	UCurveFloat* PullAnimationCurve = nullptr;

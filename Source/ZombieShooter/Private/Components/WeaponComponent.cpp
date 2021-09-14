@@ -42,6 +42,11 @@ void UWeaponComponent::TickComponent(float DeltaTime,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
+void UWeaponComponent::GetCurrentWeaponData(FWeaponData& WeaponData) const
+{
+	WeaponData = CurrentWeapon->GetWeaponData();
+}
+
 void UWeaponComponent::SpawnWeapons()
 {
 	if (!GetWorld() || !GetOwner()) return;
@@ -88,6 +93,7 @@ void UWeaponComponent::StartShooting()
 	if (!CanShoot()) return;
 
 	CurrentWeapon->StartShooting();
+	bIsShooting = true;
 }
 
 void UWeaponComponent::StopShooting()
@@ -95,6 +101,7 @@ void UWeaponComponent::StopShooting()
 	if (!CurrentWeapon) return;
 
 	CurrentWeapon->StopShooting();
+	bIsShooting = false;
 }
 
 void UWeaponComponent::Reload()

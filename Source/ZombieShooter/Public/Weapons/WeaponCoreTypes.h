@@ -64,6 +64,9 @@ struct FWeaponData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0"))
 	float ReloadTime = 1.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0", ClampMax="1"))
+	float RecoilPower = 0.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	EBulletType BulletType = EBulletType::HitScan;

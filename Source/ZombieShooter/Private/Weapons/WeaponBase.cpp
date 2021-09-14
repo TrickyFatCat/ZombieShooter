@@ -69,6 +69,7 @@ void AWeaponBase::MakeShot()
 	}
 	UE_LOG(LogTemp, Error, TEXT("Pew"));
 
+	OnWeaponShot();
 	WeaponMesh->PlayAnimation(ShootAnimation, false);
 	DecreaseClipAmmoCurrent(WeaponData.ShotCost);
 }

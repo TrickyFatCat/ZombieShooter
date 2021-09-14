@@ -51,8 +51,11 @@ private:
 protected:
 	FTimerHandle ShootingTimerHandle;
 
-	UPROPERTY(EditDefaultsOnly, Category="Animation")
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	UAnimationAsset* ShootAnimation = nullptr;
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Weapon")
+	void OnWeaponShot();
 
 	// Control
 public:
@@ -71,12 +74,12 @@ public:
 	
 	bool CanReload() const { return AmmoData.StorageAmmoCurrent > 0 && AmmoData.ClipAmmoCurrent < AmmoData.ClipAmmoMax; }
 
-	UFUNCTION(BlueprintGetter, Category="Ammo")
+	UFUNCTION(BlueprintGetter, Category="Weapon")
 	FWeaponAmmoData GetAmmoData() const { return AmmoData; }
 	
 	void IncreaseCurrentStorageAmmo(const int32 Amount);
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetAmmoData, Category="Ammo")
+	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetAmmoData, Category="Weapon")
 	FWeaponAmmoData AmmoData;
 	
 	void IncreaseClipAmmoCurrent(const int32 Amount);

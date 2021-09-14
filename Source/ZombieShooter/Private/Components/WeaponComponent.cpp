@@ -161,6 +161,11 @@ void UWeaponComponent::OnPullFinished()
 		}
 
 		bIsReloading = false;
+
+		if (bIsShooting)
+		{
+			StartShooting();
+		}
 		break;
 
 	case EWeaponPullCommand::Equip:

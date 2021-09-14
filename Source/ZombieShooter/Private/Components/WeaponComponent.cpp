@@ -22,6 +22,8 @@ void UWeaponComponent::BeginPlay()
 	SpawnWeapons();
 	EquipWeapon(CurrentWeaponIndex);
 
+	PullAnimationTimeline->SetPlayRate(1.f / (PullDuration * 0.5f));
+
 	if (PullAnimationCurve)
 	{
 		FOnTimelineFloat AnimationProgress;
@@ -119,7 +121,6 @@ void UWeaponComponent::Reload()
 		return;
 	}
 
-	PullAnimationTimeline->SetTimelineLength(CurrentWeapon->GetWeaponData().ReloadTime * 0.5);
 	PullAnimationTimeline->PlayFromStart();
 }
 
@@ -148,6 +149,12 @@ void UWeaponComponent::OnEmptyClip(AWeaponBase* TargetWeapon)
 	}
 }
 
+void UWeaponComponent::OnReloadFinished() const
+{
+	CurrentWeapon->Reload();
+	PullAnimationTimeline->ReverseFromEnd();
+}
+
 void UWeaponComponent::OnPullFinished()
 {
 	switch (PullCommand)
@@ -155,8 +162,11 @@ void UWeaponComponent::OnPullFinished()
 	case EWeaponPullCommand::Reload:
 		if (PullProgress >= 1.f)
 		{
-			CurrentWeapon->Reload();
-			PullAnimationTimeline->ReverseFromEnd();
+			GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle,
+			                                       this,
+			                                       &UWeaponComponent::OnReloadFinished,
+			                                       CurrentWeapon->GetWeaponData().ReloadTime,
+			                                       false);
 			return;
 		}
 
@@ -186,14 +196,13 @@ void UWeaponComponent::StartEquipAnimation()
 	bIsEquipping = true;
 	PullCommand = EWeaponPullCommand::Equip;
 
-	if (EquipDuration <= 0.f)
+	if (PullDuration <= 0.f)
 	{
 		EquipWeapon(CurrentWeaponIndex);
 		bIsEquipping = false;
 		return;
 	}
 
-	PullAnimationTimeline->SetPlayRate(1.f / (EquipDuration * 0.5f));
 	PullAnimationTimeline->PlayFromStart();
 }
 

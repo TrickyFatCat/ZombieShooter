@@ -59,29 +59,34 @@ private:
 	// Weapon control
 public:
 	void EquipNextWeapon();
-	
+
 	void EquipPreviousWeapon();
-	
+
 	void StartShooting();
-	
+
 	void StopShooting();
-	
+
 	void Reload();
-	
+
 	UFUNCTION(BlueprintPure, Category="Weapon")
 	bool GetIsShooting() const { return CanShoot() && bIsShooting; }
 
 protected:
-	void EquipWeapon(const int32 WeaponIndex);
-	
-	void OnEmptyClip(AWeaponBase* TargetWeapon);
-	
 	bool bIsShooting;
+
+	FTimerHandle ReloadTimerHandle;
+
+	void EquipWeapon(const int32 WeaponIndex);
+
+	void OnEmptyClip(AWeaponBase* TargetWeapon);
+
+	void OnReloadFinished() const;
 
 	// Pull animation
 public:
 	UFUNCTION(BlueprintPure, Category="Animation")
 	float GetPullProgress() const { return PullProgress; }
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation", meta=(AllowPrivateAccess="true"))
 	UCurveFloat* PullAnimationCurve = nullptr;
@@ -93,22 +98,18 @@ private:
 	float PullProgress = 0.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true", ClampMin="0"))
-	float EquipDuration = 0.25f;
+	float PullDuration = 0.25f;
 
 	EWeaponPullCommand PullCommand = EWeaponPullCommand::Equip;
 
 	UFUNCTION()
-	void SetPullProgress(const float Value)
-	{
-		PullProgress = Value;
-		UE_LOG(LogTemp, Warning, TEXT("%f"), Value);
-	}
+	void SetPullProgress(const float Value) { PullProgress = Value; }
 
 	UFUNCTION()
 	void OnPullFinished();
 
 	void StartEquipAnimation();
-	
+
 	// Weapon parameters
 public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")

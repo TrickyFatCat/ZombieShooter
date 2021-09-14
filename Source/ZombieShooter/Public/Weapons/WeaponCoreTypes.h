@@ -46,14 +46,14 @@ struct FWeaponData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
 	EWeaponType WeaponType = EWeaponType::Pistol;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	int32 Damage = 10.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	float RateOfFire = 1.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0", ClampMax="180"))
 	float Spread = 5.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0"))
@@ -61,17 +61,26 @@ struct FWeaponData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0"))
 	float ReloadTime = 1.f;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0", ClampMax="1"))
 	float RecoilPower = 0.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	EBulletType BulletType = EBulletType::HitScan;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(EditCondition="BulletType==EBulletType::HitScan"))
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="1", ClampMax="20"))
+	int32 BulletsInShot = 1;
+
+	UPROPERTY(EditAnywhere,
+		BlueprintReadOnly,
+		Category="Weapon",
+		meta=(EditCondition="BulletType==EBulletType::HitScan"))
 	float HitScanDistance = 10000.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(EditCondition="BulletType==EBulletType::Projectile"))
+
+	UPROPERTY(EditAnywhere,
+		BlueprintReadOnly,
+		Category="Weapon",
+		meta=(EditCondition="BulletType==EBulletType::Projectile"))
 	TSubclassOf<AProjectileBase> ProjectileClass = nullptr;
 };
 

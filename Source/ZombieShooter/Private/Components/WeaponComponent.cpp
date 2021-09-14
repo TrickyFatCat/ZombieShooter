@@ -106,7 +106,7 @@ void UWeaponComponent::StopShooting()
 
 void UWeaponComponent::Reload()
 {
-	if (!CurrentWeapon && bIsEquipping && bIsReloading && !CurrentWeapon->CanReload()) return;
+	if (!CurrentWeapon || bIsEquipping || bIsReloading || !CurrentWeapon->CanReload()) return;
 
 	CurrentWeapon->StopShooting();
 	bIsReloading = true;

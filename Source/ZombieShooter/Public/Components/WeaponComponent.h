@@ -71,6 +71,8 @@ public:
 
 	void Reload();
 
+	void UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass);
+
 	UFUNCTION(BlueprintPure, Category="Weapon")
 	bool GetIsShooting() const { return CanShoot() && bIsShooting; }
 

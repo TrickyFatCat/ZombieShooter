@@ -105,7 +105,7 @@ void UWeaponComponent::EquipPreviousWeapon()
 	while (!Weapons[CurrentWeaponIndex].bIsAvailable);
 
 	if (PreviousWeaponIndex == CurrentWeaponIndex) return;
-	
+
 	StartEquipAnimation();
 }
 
@@ -141,6 +141,17 @@ void UWeaponComponent::Reload()
 	}
 
 	PullAnimationTimeline->PlayFromStart();
+}
+
+void UWeaponComponent::UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass)
+{
+	for (auto &Data : Weapons)
+	{
+		if (!Data.Weapon->IsA(WeaponClass)) continue;
+
+		Data.bIsAvailable = true;
+		return;
+	}
 }
 
 

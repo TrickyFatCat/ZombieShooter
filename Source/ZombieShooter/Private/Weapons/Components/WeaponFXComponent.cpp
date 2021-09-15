@@ -3,6 +3,7 @@
 
 #include "Weapons/Components/WeaponFXComponent.h"
 
+#include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Sound/SoundCue.h"
@@ -49,7 +50,16 @@ void UWeaponFXComponent::PlayImpactFX(const FHitResult& HitResult)
 	                                         HitResult.ImpactPoint,
 	                                         HitResult.ImpactNormal.Rotation());
 
-	// Spawn decal
+	UGameplayStatics::PlaySoundAtLocation(World, ImpactData.Sound, HitResult.ImpactPoint);
 
-	UGameplayStatics::PlaySoundAtLocation(World, ImpactData.Sound, GetOwner()->GetActorLocation());
+	UDecalComponent* Decal = UGameplayStatics::SpawnDecalAtLocation(World,
+	                                                                ImpactData.DecalData.Material,
+	                                                                ImpactData.DecalData.Size,
+	                                                                HitResult.ImpactPoint,
+	                                                                HitResult.ImpactNormal.Rotation());
+
+	if (Decal)
+	{
+		Decal->SetFadeOut(ImpactData.DecalData.LifeTime, ImpactData.DecalData.FadeOutDuration);
+	}
 }

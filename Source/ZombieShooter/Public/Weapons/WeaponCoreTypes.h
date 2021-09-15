@@ -6,6 +6,8 @@
 
 class AWeaponBase;
 class AProjectileBase;
+class UNiagaraSystem;
+class USoundCue;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponClipEmptySignature, AWeaponBase*)
 
@@ -109,4 +111,37 @@ struct FWeaponAmmoData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Ammo")
 	int32 StorageAmmoMax = 300;
+};
+
+USTRUCT(BlueprintType)
+struct FHitScanDecalData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Decal")
+	UMaterialInterface* Material;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Decal")
+	FVector Size = FVector(16.f);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Decal")
+	float LifeTime = 5.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Decal")
+	float FadeOutDuration = 0.5f;
+};
+
+USTRUCT(BlueprintType)
+struct FHitScanImpactData
+{
+	GENERATED_USTRUCT_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="VFX")
+	UNiagaraSystem* NiagaraEffect = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="SFX")
+	USoundCue* Sound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="VFX")
+	FHitScanDecalData DecalData;
 };

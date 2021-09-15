@@ -55,12 +55,12 @@ private:
 protected:
 	FTimerHandle ShootingTimerHandle;
 
-	UPROPERTY(EditDefaultsOnly, Category="Weapon|Visuals")
+	UPROPERTY(EditDefaultsOnly, Category="Weapon|Effects")
 	UAnimationAsset* ShootAnimation = nullptr;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Weapon")
 	void OnWeaponShot();
-	
+
 	UFUNCTION(BlueprintImplementableEvent, Category="Weapon")
 	void OnBulletShot(const FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
 
@@ -86,22 +86,25 @@ private:
 	// Ammo
 public:
 	FOnWeaponClipEmptySignature OnWeaponClipEmpty;
-	
+
 	bool CanShoot() const { return AmmoData.ClipAmmoCurrent > 0; }
-	
-	bool CanReload() const { return AmmoData.StorageAmmoCurrent > 0 && AmmoData.ClipAmmoCurrent < AmmoData.ClipAmmoMax; }
+
+	bool CanReload() const
+	{
+		return AmmoData.StorageAmmoCurrent > 0 && AmmoData.ClipAmmoCurrent < AmmoData.ClipAmmoMax;
+	}
 
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	FWeaponAmmoData GetAmmoData() const { return AmmoData; }
-	
+
 	void IncreaseCurrentStorageAmmo(const int32 Amount);
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetAmmoData, Category="Weapon")
 	FWeaponAmmoData AmmoData;
-	
+
 	void IncreaseClipAmmoCurrent(const int32 Amount);
-	
+
 	void DecreaseClipAmmoCurrent(const int32 Amount);
-	
+
 	void DecreaseStorageAmmoCurrent(const int32 Amount);
 };

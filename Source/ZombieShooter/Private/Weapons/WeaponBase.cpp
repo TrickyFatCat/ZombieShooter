@@ -128,7 +128,7 @@ void AWeaponBase::MakeShot()
 
 	for (int32 i = 1; i <= WeaponData.BulletsInShot; ++i)
 	{
-		if (!GetTraceData(TraceStart, TraceEnd, i != 1))
+		if (!GetTraceData(TraceStart, TraceEnd, i != 1 || WeaponData.BulletsInShot == 1))
 		{
 			StopShooting();
 			return;

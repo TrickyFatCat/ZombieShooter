@@ -8,6 +8,7 @@
 #include "WeaponBase.generated.h"
 
 class USkeletalMeshComponent;
+class UWeaponFXComponent;
 
 UCLASS()
 class ZOMBIESHOOTER_API AWeaponBase : public AActor
@@ -38,6 +39,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
 	USkeletalMeshComponent* WeaponMesh = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
+	UWeaponFXComponent* WeaponFXComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly,
 		BlueprintGetter=GetWeaponData,

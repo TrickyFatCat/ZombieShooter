@@ -2,6 +2,7 @@
 
 #include "Weapons/WeaponBase.h"
 #include "GameFramework/Character.h"
+#include "Weapons/Components/WeaponFXComponent.h"
 
 AWeaponBase::AWeaponBase()
 {
@@ -12,6 +13,8 @@ AWeaponBase::AWeaponBase()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	WeaponMesh->SetupAttachment(GetRootComponent());
+
+	WeaponFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("WeaponFXComponent");
 }
 
 void AWeaponBase::BeginPlay()
@@ -139,7 +142,7 @@ void AWeaponBase::MakeShot()
 			if (HitResult.bBlockingHit)
 			{
 				// Deal damage;
-				// Play impact fx
+				WeaponFXComponent->PlayImpactFX(HitResult);
 			}
 		}
 

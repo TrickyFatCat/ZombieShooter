@@ -20,6 +20,7 @@ void UWeaponComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnWeapons();
+	Weapons[0].bIsAvailable = true;
 	EquipWeapon(CurrentWeaponIndex);
 
 	PullAnimationTimeline->SetPlayRate(1.f / (PullDuration * 0.5f));
@@ -65,7 +66,7 @@ void UWeaponComponent::SpawnWeapons()
 
 		Weapon->OnWeaponClipEmpty.AddUObject(this, &UWeaponComponent::OnEmptyClip);
 		Weapon->SetOwner(GetOwner());
-		Weapons.Add(Weapon);
+		Weapons.Add(FWeaponInventoryData{Weapon, false});
 		FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 		Weapon->AttachToComponent(PlayerCharacter->GetPlayerArms(),
 		                          AttachmentTransformRules,
@@ -78,7 +79,16 @@ void UWeaponComponent::EquipNextWeapon()
 {
 	if (bIsEquipping || bIsReloading) return;
 
-	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
+	PreviousWeaponIndex = CurrentWeaponIndex;
+
+	do
+	{
+		CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
+	}
+	while (!Weapons[CurrentWeaponIndex].bIsAvailable);
+
+	if (PreviousWeaponIndex == CurrentWeaponIndex) return;
+
 	StartEquipAnimation();
 }
 
@@ -86,7 +96,16 @@ void UWeaponComponent::EquipPreviousWeapon()
 {
 	if (bIsEquipping || bIsReloading) return;
 
-	CurrentWeaponIndex = CurrentWeaponIndex == 0 ? Weapons.Num() - 1 : CurrentWeaponIndex - 1;
+	PreviousWeaponIndex = CurrentWeaponIndex;
+
+	do
+	{
+		CurrentWeaponIndex = CurrentWeaponIndex == 0 ? Weapons.Num() - 1 : CurrentWeaponIndex - 1;
+	}
+	while (!Weapons[CurrentWeaponIndex].bIsAvailable);
+
+	if (PreviousWeaponIndex == CurrentWeaponIndex) return;
+	
 	StartEquipAnimation();
 }
 
@@ -135,7 +154,7 @@ void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
 		CurrentWeapon->SetActorHiddenInGame(true);
 	}
 
-	CurrentWeapon = Weapons[WeaponIndex];
+	CurrentWeapon = Weapons[WeaponIndex].Weapon;
 	CurrentWeapon->SetActorHiddenInGame(false);
 }
 

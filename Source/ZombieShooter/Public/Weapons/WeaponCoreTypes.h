@@ -29,15 +29,15 @@ enum class EBulletType : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FWeaponSpawnData
+struct FWeaponInventoryData
 {
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, Category="Weapon")
-	TSubclassOf<AWeaponBase> WeaponClass = nullptr;
+	AWeaponBase* Weapon = nullptr;
 
 	UPROPERTY(EditAnywhere, Category="Weapon")
-	UTexture2D* WeaponIcon = nullptr;
+	bool bIsAvailable = false;
 };
 
 USTRUCT(BlueprintType)

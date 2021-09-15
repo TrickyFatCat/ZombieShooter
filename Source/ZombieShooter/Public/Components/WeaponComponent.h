@@ -46,13 +46,16 @@ private:
 	TArray<TSubclassOf<AWeaponBase>> WeaponClasses;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess="true"))
-	TArray<AWeaponBase*> Weapons;
+	TArray<FWeaponInventoryData> Weapons;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintGetter=GetCurrentWeapon)
 	AWeaponBase* CurrentWeapon = nullptr;
 
 	UPROPERTY(VisibleInstanceOnly)
 	int32 CurrentWeaponIndex = 0;
+
+	UPROPERTY(VisibleInstanceOnly)
+	int32 PreviousWeaponIndex = 0;
 
 	void SpawnWeapons();
 

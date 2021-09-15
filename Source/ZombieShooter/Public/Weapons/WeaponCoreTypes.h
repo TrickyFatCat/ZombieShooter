@@ -6,7 +6,6 @@
 
 class AWeaponBase;
 class AProjectileBase;
-class UNiagaraSystem;
 class USoundCue;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponClipEmptySignature, AWeaponBase*)
@@ -137,7 +136,7 @@ struct FHitScanImpactData
 	GENERATED_USTRUCT_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="VFX")
-	UNiagaraSystem* NiagaraEffect = nullptr;
+	UParticleSystem* ImpactEffect = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="SFX")
 	USoundCue* Sound;

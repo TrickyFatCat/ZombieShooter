@@ -90,15 +90,27 @@ void AWeaponBase::GetHitScanData(FHitResult& HitResult, const FVector& TraceStar
 	                                     CollisionQueryParams);
 }
 
+void AWeaponBase::EnableShooting()
+{
+	bCanShoot = true;
+}
+
 void AWeaponBase::StartShooting()
 {
+	if (!bCanShoot) return;
+	
 	MakeShot();
 	GetWorldTimerManager().SetTimer(ShootingTimerHandle, this, &AWeaponBase::MakeShot, TimeBetweenShots, true);
 }
 
 void AWeaponBase::StopShooting()
 {
+	if (!GetWorldTimerManager().IsTimerActive(ShootingTimerHandle)) return;
+
+	bCanShoot = false;
+	const float RemainingTime = GetWorldTimerManager().GetTimerRemaining(ShootingTimerHandle);
 	GetWorldTimerManager().ClearTimer(ShootingTimerHandle);
+	GetWorldTimerManager().SetTimer(ShootingCooldownHandle, this, &AWeaponBase::EnableShooting, RemainingTime, false);
 }
 
 void AWeaponBase::Reload()

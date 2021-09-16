@@ -56,9 +56,10 @@ private:
 
 	// Shooting
 public:
-	
 protected:
 	FTimerHandle ShootingTimerHandle;
+
+	FTimerHandle ShootingCooldownHandle;
 
 	UPROPERTY(EditDefaultsOnly, Category="Weapon|Effects")
 	UAnimationAsset* ShootAnimation = nullptr;
@@ -76,8 +77,16 @@ protected:
 	void GetHitScanData(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd) const;
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetWeaponSocketName, Category="Weapon|Visuals", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly,
+		BlueprintGetter=GetWeaponSocketName,
+		Category="Weapon|Visuals",
+		meta=(AllowPrivateAccess="true"))
 	FName WeaponSocketName = FName("WeaponSocket");
+
+	bool bCanShoot = true;
+
+	UFUNCTION()
+	void EnableShooting();
 
 	// Control
 public:
@@ -92,7 +101,7 @@ private:
 public:
 	FOnWeaponClipEmptySignature OnWeaponClipEmpty;
 
-	bool CanShoot() const { return AmmoData.ClipAmmoCurrent > 0; }
+	bool CanShoot() const { return AmmoData.ClipAmmoCurrent > 0 && bCanShoot; }
 
 	bool CanReload() const
 	{

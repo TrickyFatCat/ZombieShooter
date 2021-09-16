@@ -47,7 +47,7 @@ void UWeaponComponent::TickComponent(float DeltaTime,
 
 void UWeaponComponent::GetCurrentWeaponData(FWeaponData& WeaponData) const
 {
-	WeaponData = CurrentWeapon->GetWeaponData();
+	CurrentWeapon->GetWeaponData(WeaponData);
 }
 
 void UWeaponComponent::SpawnWeapons()
@@ -72,6 +72,7 @@ void UWeaponComponent::SpawnWeapons()
 		                          AttachmentTransformRules,
 		                          Weapon->GetWeaponSocketName());
 		Weapon->SetActorHiddenInGame(true);
+		Weapon->OnMakeShot.AddUObject(this, &UWeaponComponent::BroadCastOnWeaponShot);
 	}
 }
 
@@ -134,8 +135,10 @@ void UWeaponComponent::Reload()
 	CurrentWeapon->StopShooting();
 	bIsReloading = true;
 	PullCommand = EWeaponPullCommand::Reload;
+	FWeaponData WeaponData;
+	CurrentWeapon->GetWeaponData(WeaponData);
 
-	if (CurrentWeapon->GetWeaponData().ReloadTime <= 0.f)
+	if (WeaponData.ReloadTime <= 0.f)
 	{
 		CurrentWeapon->Reload();
 		bIsReloading = false;
@@ -148,7 +151,7 @@ void UWeaponComponent::Reload()
 bool UWeaponComponent::UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass)
 {
 	bool Result = false;
-	
+
 	for (int32 i = 0; i < Weapons.Num(); ++i)
 	{
 		FWeaponInventoryData& InventoryData = Weapons[i];
@@ -159,28 +162,33 @@ bool UWeaponComponent::UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass)
 			Result = false;
 			break;
 		};
-		
+
 		InventoryData.bIsAvailable = true;
-		PreviousWeaponIndex = CurrentWeaponIndex;
-		CurrentWeaponIndex = i;
-		StartEquipAnimation();
+
+		if (!bIsReloading && !bIsEquipping)
+		{
+			PreviousWeaponIndex = CurrentWeaponIndex;
+			CurrentWeaponIndex = i;
+			StartEquipAnimation();
+		}
+		
 		Result = true;
 		break;
 	}
-	
+
 	return Result;
 }
 
 bool UWeaponComponent::RestoreStorageAmmo(TSubclassOf<AWeaponBase> WeaponClass, const int32 Amount)
 {
 	bool Result = false;
-	
+
 	if (Amount <= 0) return Result;
-	
+
 	for (int32 i = 0; i < Weapons.Num(); ++i)
 	{
 		const FWeaponInventoryData& InventoryData = Weapons[i];
-		
+
 		if (!InventoryData.Weapon->IsA(WeaponClass)) continue;
 
 		if (InventoryData.Weapon->StorageIsFull())
@@ -188,7 +196,7 @@ bool UWeaponComponent::RestoreStorageAmmo(TSubclassOf<AWeaponBase> WeaponClass, 
 			Result = false;
 			break;
 		}
-		
+
 		InventoryData.Weapon->IncreaseCurrentStorageAmmo(Amount);
 		Result = true;
 		break;
@@ -228,8 +236,16 @@ void UWeaponComponent::OnReloadFinished() const
 	PullAnimationTimeline->ReverseFromEnd();
 }
 
+void UWeaponComponent::BroadCastOnWeaponShot()
+{
+	OnWeaponShot.Broadcast();
+}
+
 void UWeaponComponent::OnPullFinished()
 {
+	FWeaponData WeaponData;
+	CurrentWeapon->GetWeaponData(WeaponData);
+	
 	switch (PullCommand)
 	{
 	case EWeaponPullCommand::Reload:
@@ -238,7 +254,7 @@ void UWeaponComponent::OnPullFinished()
 			GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle,
 			                                       this,
 			                                       &UWeaponComponent::OnReloadFinished,
-			                                       CurrentWeapon->GetWeaponData().ReloadTime,
+			                                       WeaponData.ReloadTime,
 			                                       false);
 			return;
 		}

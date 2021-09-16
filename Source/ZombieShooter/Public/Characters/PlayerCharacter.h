@@ -57,4 +57,8 @@ private:
 	void SetVerticalSway(const float AxisValue);
 
 	void ProcessSwayRotation(const float DeltaTime) const;
+
+	// Camera recoil
+	UFUNCTION()
+	void AddCameraRecoil();
 };

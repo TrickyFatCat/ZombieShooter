@@ -10,6 +10,8 @@ class USoundCue;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponClipEmptySignature, AWeaponBase*)
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponShotSignature);
+
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
 {
@@ -41,6 +43,24 @@ struct FWeaponInventoryData
 };
 
 USTRUCT(BlueprintType)
+struct FRecoilData
+{
+	GENERATED_USTRUCT_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
+	float MeshRecoilYPower = 5.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
+	float MeshRecoilRollPower = 5.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0", ClampMax="1"))
+	float CameraRecoilPitchPower = 0.15f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0", ClampMax="1"))
+	float CameraRecoilYawPower = 0.15f;
+};
+
+USTRUCT(BlueprintType)
 struct FWeaponData
 {
 	GENERATED_USTRUCT_BODY()
@@ -63,24 +83,24 @@ struct FWeaponData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0"))
 	float ReloadTime = 1.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="0", ClampMax="1"))
-	float RecoilPower = 0.5f;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
+	FRecoilData Recoil;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Bullets")
 	EBulletType BulletType = EBulletType::HitScan;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(ClampMin="1", ClampMax="20"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Bullets", meta=(ClampMin="1", ClampMax="20"))
 	int32 BulletsInShot = 1;
 
 	UPROPERTY(EditAnywhere,
 		BlueprintReadOnly,
-		Category="Weapon",
+		Category="Bullets",
 		meta=(EditCondition="BulletType==EBulletType::HitScan"))
 	float HitScanDistance = 10000.f;
 
 	UPROPERTY(EditAnywhere,
 		BlueprintReadOnly,
-		Category="Weapon",
+		Category="Bullets",
 		meta=(EditCondition="BulletType==EBulletType::Projectile"))
 	TSubclassOf<AProjectileBase> ProjectileClass = nullptr;
 };

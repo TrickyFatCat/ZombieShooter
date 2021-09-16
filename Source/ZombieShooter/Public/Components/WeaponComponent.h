@@ -61,6 +61,9 @@ private:
 
 	// Weapon control
 public:
+	UPROPERTY(BlueprintAssignable, Category="Weapon")
+	FOnWeaponShotSignature OnWeaponShot;
+	
 	void EquipNextWeapon();
 
 	void EquipPreviousWeapon();
@@ -88,6 +91,9 @@ protected:
 	void OnEmptyClip(AWeaponBase* TargetWeapon);
 
 	void OnReloadFinished() const;
+
+private:
+	void BroadCastOnWeaponShot();
 
 	// Pull animation
 public:

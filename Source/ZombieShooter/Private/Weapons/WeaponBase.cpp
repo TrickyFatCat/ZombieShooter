@@ -32,6 +32,11 @@ void AWeaponBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AWeaponBase::GetWeaponData(FWeaponData& Data) const
+{
+	Data = this->WeaponData;
+}
+
 bool AWeaponBase::GetViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
 {
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
@@ -150,6 +155,7 @@ void AWeaponBase::MakeShot()
 	}
 
 	OnWeaponShot();
+	OnMakeShot.Broadcast();
 	WeaponMesh->PlayAnimation(ShootAnimation, false);
 	DecreaseClipAmmoCurrent(WeaponData.ShotCost);
 }

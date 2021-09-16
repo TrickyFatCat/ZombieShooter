@@ -2,6 +2,7 @@
 
 
 #include "Characters/PlayerCharacter.h"
+
 #include "Camera/CameraComponent.h"
 #include "Components/ShooterDamageControllerComponent.h"
 
@@ -20,6 +21,7 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	InitialRotation = PlayerArms->GetRelativeRotation();
+	WeaponComponent->OnWeaponShot.AddDynamic(this, &APlayerCharacter::AddCameraRecoil);
 }
 
 void APlayerCharacter::Tick(float DeltaSeconds)
@@ -131,4 +133,18 @@ void APlayerCharacter::ProcessSwayRotation(const float DeltaTime) const
 	                                                DeltaTime,
 	                                                SwaySpeed);
 	PlayerArms->SetRelativeRotation(FinalRotation);
+}
+
+void APlayerCharacter::AddCameraRecoil()
+{
+	AWeaponBase* CurrentWeapon = WeaponComponent->GetCurrentWeapon();
+
+	if (!CurrentWeapon) return;
+
+	FWeaponData WeaponData;
+	CurrentWeapon->GetWeaponData(WeaponData);
+
+	AddControllerPitchInput(WeaponData.Recoil.CameraRecoilPitchPower * -1.f);
+	AddControllerYawInput(FMath::FRandRange(WeaponData.Recoil.CameraRecoilYawPower * -1,
+	                                        WeaponData.Recoil.CameraRecoilYawPower));
 }

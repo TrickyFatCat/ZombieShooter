@@ -10,6 +10,8 @@
 class USkeletalMeshComponent;
 class UWeaponFXComponent;
 
+DECLARE_MULTICAST_DELEGATE(FOnMakeShotSignature)
+
 UCLASS()
 class ZOMBIESHOOTER_API AWeaponBase : public AActor
 {
@@ -30,8 +32,10 @@ public:
 	UFUNCTION(BlueprintPure, Category="Weapon")
 	FName GetWeaponSocketName() const { return WeaponSocketName; }
 
-	UFUNCTION(BlueprintGetter, Category="Weapon")
-	FWeaponData GetWeaponData() const { return WeaponData; }
+	UFUNCTION(BlueprintPure, Category="Weapon")
+	void GetWeaponData(FWeaponData& Data) const;
+
+	FOnMakeShotSignature OnMakeShot;
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
@@ -44,7 +48,6 @@ private:
 	UWeaponFXComponent* WeaponFXComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly,
-		BlueprintGetter=GetWeaponData,
 		Category="Weapon",
 		meta=(AllowPrivateAccess="true"))
 	FWeaponData WeaponData;
@@ -52,6 +55,8 @@ private:
 	float TimeBetweenShots = 1.f;
 
 	// Shooting
+public:
+	
 protected:
 	FTimerHandle ShootingTimerHandle;
 

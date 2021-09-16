@@ -91,9 +91,6 @@ struct FWeaponAmmoData
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Ammo")
-	EWeaponType AmmoType = EWeaponType::Pistol;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Ammo")
 	bool bIsClipInfinite = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Ammo")

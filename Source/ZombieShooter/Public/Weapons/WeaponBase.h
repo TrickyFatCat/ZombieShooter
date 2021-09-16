@@ -94,6 +94,8 @@ public:
 		return AmmoData.StorageAmmoCurrent > 0 && AmmoData.ClipAmmoCurrent < AmmoData.ClipAmmoMax;
 	}
 
+	bool StorageIsFull() const { return AmmoData.StorageAmmoCurrent >= AmmoData.StorageAmmoMax; }
+
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	FWeaponAmmoData GetAmmoData() const { return AmmoData; }
 

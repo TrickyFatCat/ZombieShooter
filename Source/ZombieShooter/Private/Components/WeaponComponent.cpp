@@ -89,6 +89,7 @@ void UWeaponComponent::EquipNextWeapon()
 
 	if (PreviousWeaponIndex == CurrentWeaponIndex) return;
 
+	CurrentWeapon->StopShooting();
 	StartEquipAnimation();
 }
 
@@ -106,6 +107,7 @@ void UWeaponComponent::EquipPreviousWeapon()
 
 	if (PreviousWeaponIndex == CurrentWeaponIndex) return;
 
+	CurrentWeapon->StopShooting();
 	StartEquipAnimation();
 }
 
@@ -258,6 +260,11 @@ void UWeaponComponent::OnPullFinished()
 		}
 
 		bIsEquipping = false;
+
+		if (bIsShooting)
+		{
+			StartShooting();
+		}
 		break;
 	}
 }

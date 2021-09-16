@@ -53,10 +53,10 @@ struct FRecoilData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
 	float MeshRecoilRollPower = 5.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0", ClampMax="1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
 	float CameraRecoilPitchPower = 0.15f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0", ClampMax="1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
 	float CameraRecoilYawPower = 0.15f;
 };
 

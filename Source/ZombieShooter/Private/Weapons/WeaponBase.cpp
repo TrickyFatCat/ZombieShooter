@@ -99,7 +99,6 @@ void AWeaponBase::StartShooting()
 void AWeaponBase::StopShooting()
 {
 	GetWorldTimerManager().ClearTimer(ShootingTimerHandle);
-	WeaponMesh->Stop();
 }
 
 void AWeaponBase::Reload()

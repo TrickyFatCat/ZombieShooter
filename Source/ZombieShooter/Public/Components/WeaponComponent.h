@@ -73,6 +73,8 @@ public:
 
 	void UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass);
 
+	bool RestoreStorageAmmo(TSubclassOf<AWeaponBase> WeaponClass, const int32 Amount);
+
 	UFUNCTION(BlueprintPure, Category="Weapon")
 	bool GetIsShooting() const { return CanShoot() && bIsShooting; }
 

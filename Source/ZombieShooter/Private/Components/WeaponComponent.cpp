@@ -150,8 +150,25 @@ void UWeaponComponent::UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass)
 		if (!Data.Weapon->IsA(WeaponClass)) continue;
 
 		Data.bIsAvailable = true;
-		return;
+		break;
 	}
+}
+
+bool UWeaponComponent::RestoreStorageAmmo(TSubclassOf<AWeaponBase> WeaponClass, const int32 Amount)
+{
+	if (Amount <= 0) return false;
+	
+	for (const auto &Data : Weapons)
+	{
+		if (!Data.Weapon->IsA(WeaponClass)) continue;
+
+		if (Data.Weapon->StorageIsFull()) return false;
+		
+		Data.Weapon->IncreaseCurrentStorageAmmo(Amount);
+		break;
+	}
+
+	return true;
 }
 
 

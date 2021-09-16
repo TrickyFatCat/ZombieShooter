@@ -143,32 +143,56 @@ void UWeaponComponent::Reload()
 	PullAnimationTimeline->PlayFromStart();
 }
 
-void UWeaponComponent::UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass)
+bool UWeaponComponent::UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass)
 {
-	for (auto &Data : Weapons)
+	bool Result = false;
+	
+	for (int32 i = 0; i < Weapons.Num(); ++i)
 	{
-		if (!Data.Weapon->IsA(WeaponClass)) continue;
+		FWeaponInventoryData& InventoryData = Weapons[i];
+		if (!InventoryData.Weapon->IsA(WeaponClass)) continue;
 
-		Data.bIsAvailable = true;
+		if (InventoryData.bIsAvailable)
+		{
+			Result = false;
+			break;
+		};
+		
+		InventoryData.bIsAvailable = true;
+		PreviousWeaponIndex = CurrentWeaponIndex;
+		CurrentWeaponIndex = i;
+		StartEquipAnimation();
+		Result = true;
 		break;
 	}
+	
+	return Result;
 }
 
 bool UWeaponComponent::RestoreStorageAmmo(TSubclassOf<AWeaponBase> WeaponClass, const int32 Amount)
 {
-	if (Amount <= 0) return false;
+	bool Result = false;
 	
-	for (const auto &Data : Weapons)
+	if (Amount <= 0) return Result;
+	
+	for (int32 i = 0; i < Weapons.Num(); ++i)
 	{
-		if (!Data.Weapon->IsA(WeaponClass)) continue;
-
-		if (Data.Weapon->StorageIsFull()) return false;
+		const FWeaponInventoryData& InventoryData = Weapons[i];
 		
-		Data.Weapon->IncreaseCurrentStorageAmmo(Amount);
+		if (!InventoryData.Weapon->IsA(WeaponClass)) continue;
+
+		if (InventoryData.Weapon->StorageIsFull())
+		{
+			Result = false;
+			break;
+		}
+		
+		InventoryData.Weapon->IncreaseCurrentStorageAmmo(Amount);
+		Result = true;
 		break;
 	}
 
-	return true;
+	return Result;
 }
 
 

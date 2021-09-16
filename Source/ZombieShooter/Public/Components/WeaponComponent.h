@@ -71,7 +71,7 @@ public:
 
 	void Reload();
 
-	void UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass);
+	bool UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass);
 
 	bool RestoreStorageAmmo(TSubclassOf<AWeaponBase> WeaponClass, const int32 Amount);
 

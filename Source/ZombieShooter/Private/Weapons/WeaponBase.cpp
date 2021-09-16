@@ -97,8 +97,8 @@ void AWeaponBase::EnableShooting()
 
 void AWeaponBase::StartShooting()
 {
-	if (!bCanShoot) return;
-	
+	if (!CanShoot()) return;
+
 	MakeShot();
 	GetWorldTimerManager().SetTimer(ShootingTimerHandle, this, &AWeaponBase::MakeShot, TimeBetweenShots, true);
 }
@@ -107,9 +107,11 @@ void AWeaponBase::StopShooting()
 {
 	if (!GetWorldTimerManager().IsTimerActive(ShootingTimerHandle)) return;
 
-	bCanShoot = false;
 	const float RemainingTime = GetWorldTimerManager().GetTimerRemaining(ShootingTimerHandle);
 	GetWorldTimerManager().ClearTimer(ShootingTimerHandle);
+	
+	if (!CanShoot()) return;
+	bCanShoot = false;
 	GetWorldTimerManager().SetTimer(ShootingCooldownHandle, this, &AWeaponBase::EnableShooting, RemainingTime, false);
 }
 

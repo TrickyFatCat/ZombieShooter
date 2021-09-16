@@ -4,13 +4,14 @@
 #include "Pickups/WeaponPickup.h"
 #include "Components/WeaponComponent.h"
 
-void AWeaponPickup::ActivatePickup_Implementation(AActor* TargetActor)
+bool AWeaponPickup::ActivatePickup_Implementation(AActor* TargetActor)
 {
-	if (!IsValid(TargetActor)) return;
+	if (!IsValid(TargetActor)) return false;
 
 	UWeaponComponent* WeaponComponent =	TargetActor->FindComponentByClass<UWeaponComponent>();
 
-	if (!WeaponComponent) return;
+	if (!WeaponComponent) return false;
 
 	WeaponComponent->UnlockWeapon(WeaponClass);
+	return true;
 }

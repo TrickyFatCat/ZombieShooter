@@ -95,6 +95,8 @@ protected:
 private:
 	void BroadCastOnWeaponShot();
 
+	void CheckIsNearWall();
+
 	// Pull animation
 public:
 	UFUNCTION(BlueprintPure, Category="Animation")
@@ -126,13 +128,16 @@ private:
 	// Weapon parameters
 public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
-	bool CanShoot() const { return CurrentWeapon->CanShoot() && !bIsReloading && !bIsEquipping; }
+	bool CanShoot() const { return CurrentWeapon->CanShoot() && !bIsReloading && !bIsEquipping && !bIsNearWall; }
 
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	bool GetIsReloading() const { return bIsReloading; }
 
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	bool GetIsEquipping() const { return bIsEquipping; }
+
+	UFUNCTION(BlueprintGetter, Category="Weapon")
+	bool GetIsNearWall() const {return bIsNearWall; }
 
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void GetCurrentWeaponAmmo(FWeaponAmmoData& AmmoData) const;
@@ -144,4 +149,7 @@ private:
 
 	UPROPERTY(BlueprintGetter=GetIsEquipping, Category="Weapon")
 	bool bIsEquipping = false;
+
+	UPROPERTY(BlueprintGetter=GetIsNearWall, Category="Weapon")
+	bool bIsNearWall = false;
 };

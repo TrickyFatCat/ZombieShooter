@@ -6,6 +6,7 @@
 #include "Characters/PlayerCharacter.h"
 #include "Components/TimelineComponent.h"
 #include "Weapons/WeaponBase.h"
+#include "Core/ProjectUtils.h"
 
 UWeaponComponent::UWeaponComponent()
 {
@@ -43,6 +44,8 @@ void UWeaponComponent::TickComponent(float DeltaTime,
                                      FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	CheckIsNearWall();
 }
 
 void UWeaponComponent::GetCurrentWeaponData(FWeaponData& WeaponData) const
@@ -171,7 +174,7 @@ bool UWeaponComponent::UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass)
 			CurrentWeaponIndex = i;
 			StartEquipAnimation();
 		}
-		
+
 		Result = true;
 		break;
 	}
@@ -241,11 +244,44 @@ void UWeaponComponent::BroadCastOnWeaponShot()
 	OnWeaponShot.Broadcast();
 }
 
+void UWeaponComponent::CheckIsNearWall()
+{
+	FVector ViewLocation = FVector::ZeroVector;
+	FRotator ViewRotation = FRotator::ZeroRotator;
+
+	if (!FProjectUtils::GetPlayerViewPoint(GetOwner(), ViewLocation, ViewRotation)) return;
+
+	FVector TraceStart = ViewLocation;
+	FVector TraceDirection = ViewRotation.Vector();
+	FVector TraceEnd = TraceStart + TraceDirection * 125.f;
+
+	if (!GetWorld()) return;
+
+	FCollisionObjectQueryParams CollisionObjectQueryParams;
+	CollisionObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(GetOwner());
+	FHitResult HitResult;
+
+	GetWorld()->LineTraceSingleByObjectType(HitResult,
+	                                        TraceStart,
+	                                        TraceEnd,
+	                                        CollisionObjectQueryParams,
+	                                        CollisionQueryParams);
+
+	bIsNearWall = HitResult.bBlockingHit;
+
+	if (bIsShooting && bIsNearWall)
+	{
+		StopShooting();
+	}
+}
+
 void UWeaponComponent::OnPullFinished()
 {
 	FWeaponData WeaponData;
 	CurrentWeapon->GetWeaponData(WeaponData);
-	
+
 	switch (PullCommand)
 	{
 	case EWeaponPullCommand::Reload:

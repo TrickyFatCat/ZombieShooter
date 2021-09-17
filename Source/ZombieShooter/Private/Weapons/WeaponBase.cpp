@@ -133,7 +133,7 @@ void AWeaponBase::MakeShot()
 		if (!GetTraceData(TraceStart, TraceEnd, i != 1 || WeaponData.BulletsInShot == 1))
 		{
 			StopShooting();
-			return;
+			continue;
 		}
 
 		GetHitScanData(HitResult, TraceStart, TraceEnd);

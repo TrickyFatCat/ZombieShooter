@@ -79,7 +79,10 @@ private:
 		BlueprintGetter=GetWeaponSocketName,
 		Category="Weapon|Visuals",
 		meta=(AllowPrivateAccess="true"))
-	FName WeaponSocketName = FName("WeaponSocket");
+	FName WeaponSocketName = FName("WeaponPoint");
+
+	UPROPERTY(EditDefaultsOnly, Category="Weapon|Visuals")
+	FName MuzzleSocketName = FName("AmmoMesh");
 
 	bool bCanShoot = true;
 

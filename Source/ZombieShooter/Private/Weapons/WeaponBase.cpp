@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "Weapons/Components/WeaponFXComponent.h"
 #include "Core/ProjectUtils.h"
+#include "Weapons/ProjectileBase.h"
 
 AWeaponBase::AWeaponBase()
 {
@@ -44,7 +45,7 @@ bool AWeaponBase::GetTraceData(FVector& TraceStart, FVector& TraceEnd, const boo
 	FRotator ViewRotation = FRotator::ZeroRotator;
 
 	if (!FProjectUtils::GetPlayerViewPoint(GetOwner(), ViewLocation, ViewRotation)) return false;
-	
+
 	TraceStart = ViewLocation;
 	FVector TraceDirection = ViewRotation.Vector();
 
@@ -92,7 +93,7 @@ void AWeaponBase::StopShooting()
 
 	const float RemainingTime = GetWorldTimerManager().GetTimerRemaining(ShootingTimerHandle);
 	GetWorldTimerManager().ClearTimer(ShootingTimerHandle);
-	
+
 	if (!CanShoot()) return;
 	bCanShoot = false;
 	GetWorldTimerManager().SetTimer(ShootingCooldownHandle, this, &AWeaponBase::EnableShooting, RemainingTime, false);
@@ -144,6 +145,23 @@ void AWeaponBase::MakeShot()
 			{
 				// Deal damage;
 				WeaponFXComponent->PlayImpactFX(HitResult);
+			}
+		}
+		else
+		{
+			const FVector MuzzleLocation = WeaponMesh->GetSocketLocation(MuzzleSocketName);
+			const FVector EndPoint = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
+			const FVector Direction = (EndPoint - MuzzleLocation).GetSafeNormal();
+			const FTransform SpawnTransform(FRotator::ZeroRotator, MuzzleLocation);
+			AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(
+				WeaponData.ProjectileClass,
+				SpawnTransform);
+
+			if (Projectile)
+			{
+				Projectile->SetDirectionAndDamage(Direction, WeaponData.Damage);
+				Projectile->SetOwner(GetOwner());
+				Projectile->FinishSpawning(SpawnTransform);
 			}
 		}
 

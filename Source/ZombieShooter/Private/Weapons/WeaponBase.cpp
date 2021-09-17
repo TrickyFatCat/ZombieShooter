@@ -3,6 +3,7 @@
 #include "Weapons/WeaponBase.h"
 #include "GameFramework/Character.h"
 #include "Weapons/Components/WeaponFXComponent.h"
+#include "Core/ProjectUtils.h"
 
 AWeaponBase::AWeaponBase()
 {
@@ -37,31 +38,13 @@ void AWeaponBase::GetWeaponData(FWeaponData& Data) const
 	Data = this->WeaponData;
 }
 
-bool AWeaponBase::GetViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
-{
-	ACharacter* Character = Cast<ACharacter>(GetOwner());
-
-	if (!Character) return false;
-
-	if (Character->IsPlayerControlled())
-	{
-		const APlayerController* Controller = Character->GetController<APlayerController>();
-
-		if (!Controller) return false;
-
-		Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
-	}
-
-	return true;
-}
-
 bool AWeaponBase::GetTraceData(FVector& TraceStart, FVector& TraceEnd, const bool bCalculateSpread) const
 {
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
 
-	if (!GetViewPoint(ViewLocation, ViewRotation)) return false;
-
+	if (!FProjectUtils::GetPlayerViewPoint(GetOwner(), ViewLocation, ViewRotation)) return false;
+	
 	TraceStart = ViewLocation;
 	FVector TraceDirection = ViewRotation.Vector();
 

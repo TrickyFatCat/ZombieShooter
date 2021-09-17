@@ -21,8 +21,10 @@ AProjectileBase::AProjectileBase()
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 	ProjectileMovement->InitialSpeed = 2000.f;
 	ProjectileMovement->ProjectileGravityScale = 0.f;
+	ProjectileMovement->bRotationFollowsVelocity = true;
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>("ProjectileMesh");
+	ProjectileMesh->SetupAttachment(GetRootComponent());
 
 	ProjectileFX = CreateDefaultSubobject<UWeaponFXComponent>("ProjectileFX");
 }
@@ -32,7 +34,7 @@ void AProjectileBase::BeginPlay()
 	Super::BeginPlay();
 
 	ProjectileMovement->Velocity = ShotDirection * ProjectileMovement->InitialSpeed;
-	ProjectileCollision->IgnoreActorWhenMoving(GetOwner(), ProjectileData.bIsExplosive && ProjectileData.bDamageOwner);
+	ProjectileCollision->IgnoreActorWhenMoving(GetOwner(), true);
 	ProjectileCollision->OnComponentHit.AddDynamic(this, &AProjectileBase::OnProjectileHit);
 	SetInstigator(Cast<APawn>(GetOwner()));
 	SetLifeSpan(DefaultLifeSpan);
@@ -41,7 +43,21 @@ void AProjectileBase::BeginPlay()
 	{
 		IgnoredActors.Add(GetOwner());
 	}
+}
 
+void AProjectileBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	if (EndPlayReason != EEndPlayReason::Destroyed) return;
+	
+	if (GetLifeSpan() <= 0.f && ProjectileData.bIsExplosive)
+	{
+		DealRadialDamage();
+		FHitResult HitResult;
+		HitResult.ImpactPoint = GetActorLocation();
+		ProjectileFX->PlayImpactFX(HitResult);
+	}
 }
 
 void AProjectileBase::Tick(float DeltaTime)
@@ -77,15 +93,7 @@ void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent,
 
 	if (ProjectileData.bIsExplosive)
 	{
-		UGameplayStatics::ApplyRadialDamage(World,
-		                                    ProjectileData.Damage,
-		                                    GetActorLocation(),
-		                                    ProjectileData.ExplosionRadius,
-		                                    UDamageType::StaticClass(),
-		                                    IgnoredActors,
-		                                    this,
-		                                    GetInstigatorController(),
-		                                    ProjectileData.bDealFullDamage);
+		DealRadialDamage();
 	}
 	else
 	{
@@ -100,4 +108,21 @@ void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent,
 
 	ProjectileFX->PlayImpactFX(Hit);
 	Destroy();
+}
+
+void AProjectileBase::DealRadialDamage()
+{
+	if (!GetWorld()) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("KABOOM"));
+
+	UGameplayStatics::ApplyRadialDamage(GetWorld(),
+	                                    ProjectileData.Damage,
+	                                    GetActorLocation(),
+	                                    ProjectileData.ExplosionRadius,
+	                                    UDamageType::StaticClass(),
+	                                    IgnoredActors,
+	                                    this,
+	                                    GetInstigatorController(),
+	                                    ProjectileData.bDealFullDamage);
 }

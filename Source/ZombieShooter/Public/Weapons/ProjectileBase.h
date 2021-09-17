@@ -4,19 +4,61 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Weapons/WeaponCoreTypes.h"
 #include "ProjectileBase.generated.h"
+
+class USphereComponent;
+class UProjectileMovementComponent;
+class UStaticMeshComponent;
+class UWeaponFXComponent;
 
 UCLASS()
 class ZOMBIESHOOTER_API AProjectileBase : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	AProjectileBase();
 
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintPure, Category="Projectile")
+	void GetProjectileData(FProjectileData& Data) const;
+
+	void SetDirectionAndDamage(const FVector& Direction, const int32 Damage);
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
+	USphereComponent* ProjectileCollision = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
+	UProjectileMovementComponent* ProjectileMovement = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
+	UStaticMeshComponent* ProjectileMesh = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
+	UWeaponFXComponent* ProjectileFX = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category="Projectile")
+	FProjectileData ProjectileData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Projectile", meta=(AllowPrivateAccess="true"))
+	float DefaultLifeSpan = 5.f;
+
+	FVector ShotDirection = FVector::ZeroVector;
+
+	UPROPERTY();
+	TArray<AActor*> IgnoredActors;
+
+	UFUNCTION()
+	void OnProjectileHit(UPrimitiveComponent* HitComponent,
+	                     AActor* OtherActor,
+	                     UPrimitiveComponent* OtherComp,
+	                     FVector NormalImpulse,
+	                     const FHitResult& Hit);
 };

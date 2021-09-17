@@ -161,3 +161,24 @@ struct FHitScanImpactData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="VFX")
 	FHitScanDecalData DecalData;
 };
+
+USTRUCT(BlueprintType)
+struct FProjectileData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(ClampMin="0"))
+	int32 Damage = 10.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile")
+	bool bIsExplosive = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive", ClampMin="0"));
+	float ExplosionRadius = 500.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive"));
+	bool bDealFullDamage = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive"));
+	bool bDamageOwner = false;
+};

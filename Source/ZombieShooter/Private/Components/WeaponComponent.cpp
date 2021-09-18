@@ -87,7 +87,7 @@ void UWeaponComponent::SpawnWeapons()
 		                          AttachmentTransformRules,
 		                          Weapon->GetWeaponSocketName());
 		Weapon->SetActorHiddenInGame(true);
-		Weapon->OnMakeShot.AddUObject(this, &UWeaponComponent::BroadCastOnWeaponShot);
+		Weapon->OnMakeShot.AddUObject(this, &UWeaponComponent::OnWeaponMakeShot);
 	}
 }
 
@@ -233,10 +233,7 @@ void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
 	CurrentWeapon = Weapons[WeaponIndex].Weapon;
 	CurrentWeapon->SetActorHiddenInGame(false);
 
-	const float RecoilTime = CurrentWeapon->GetTimeBetweenShots() > RecoilDuration
-		                         ? RecoilDuration
-		                         : CurrentWeapon->GetTimeBetweenShots();
-	RecoilTimeline->SetPlayRate(1.f / (RecoilTime * 0.5f));
+	RecoilTimeline->SetPlayRate(1.f / (FMath::Min(RecoilDuration, CurrentWeapon->GetTimeBetweenShots()) * 0.5f));
 }
 
 void UWeaponComponent::OnEmptyClip(AWeaponBase* TargetWeapon)
@@ -255,7 +252,7 @@ void UWeaponComponent::OnReloadFinished() const
 	PullAnimationTimeline->ReverseFromEnd();
 }
 
-void UWeaponComponent::BroadCastOnWeaponShot()
+void UWeaponComponent::OnWeaponMakeShot()
 {
 	RecoilTimeline->PlayFromStart();
 	OnWeaponShot.Broadcast();

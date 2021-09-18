@@ -93,7 +93,7 @@ protected:
 	void OnReloadFinished() const;
 
 private:
-	void BroadCastOnWeaponShot();
+	void OnWeaponMakeShot();
 
 	void CheckIsNearWall();
 

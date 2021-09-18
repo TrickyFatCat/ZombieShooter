@@ -35,6 +35,8 @@ public:
 	UFUNCTION(BlueprintPure, Category="Weapon")
 	void GetWeaponData(FWeaponData& Data) const;
 
+	float GetTimeBetweenShots() const { return TimeBetweenShots; }
+
 	FOnMakeShotSignature OnMakeShot;
 
 private:
@@ -110,6 +112,8 @@ public:
 	}
 
 	bool StorageIsFull() const { return AmmoData.StorageAmmoCurrent >= AmmoData.StorageAmmoMax; }
+
+	bool IsClipEmpty() const { return AmmoData.ClipAmmoCurrent <= 0 && AmmoData.StorageAmmoCurrent > 0; }
 
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	FWeaponAmmoData GetAmmoData() const { return AmmoData; }

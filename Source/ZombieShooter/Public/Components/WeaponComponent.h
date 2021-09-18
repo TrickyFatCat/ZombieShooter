@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Components/TimelineComponent.h"
 #include "Weapons/WeaponBase.h"
 #include "Weapons/WeaponCoreTypes.h"
 #include "WeaponComponent.generated.h"
 
 class AWeaponBase;
-class UTimelineComponent;
 
 UENUM()
 enum class EWeaponPullCommand : uint8
@@ -63,7 +63,7 @@ private:
 public:
 	UPROPERTY(BlueprintAssignable, Category="Weapon")
 	FOnWeaponShotSignature OnWeaponShot;
-	
+
 	void EquipNextWeapon();
 
 	void EquipPreviousWeapon();
@@ -97,22 +97,49 @@ private:
 
 	void CheckIsNearWall();
 
+	// Recoil animation
+public:
+	UFUNCTION(BlueprintGetter, Category="Weapon|Animation")
+	float GetRecoilProgress() const { return RecoilProgress; }
+
+	UFUNCTION(BlueprintPure, Category="Weapon|Animation")
+	bool GetIsRecoiling() const { return RecoilTimeline->IsPlaying(); }
+
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation|Recoil", meta=(AllowPrivateAccess="true"))
+	UCurveFloat* RecoilAnimationCurve = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category="Components")
+	UTimelineComponent* RecoilTimeline = nullptr;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintGetter=GetRecoilProgress, Category="Animation|Recoil", meta=(AllowPrivateAccess="true"))
+	float RecoilProgress = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation|Recoil", meta=(AllowPrivateAccess="true", ClampMin="0"))
+	float RecoilDuration = 0.05f;
+
+	UFUNCTION()
+	void SetRecoilProgress(const float Value);
+
+	UFUNCTION()
+	void OnRecoilFinished();
+
 	// Pull animation
 public:
-	UFUNCTION(BlueprintPure, Category="Animation")
+	UFUNCTION(BlueprintPure, Category="Weapon|Animation")
 	float GetPullProgress() const { return PullProgress; }
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation|Pull", meta=(AllowPrivateAccess="true"))
 	UCurveFloat* PullAnimationCurve = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	UTimelineComponent* PullAnimationTimeline = nullptr;
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Animation|Pull", meta=(AllowPrivateAccess="true"))
 	float PullProgress = 0.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true", ClampMin="0"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation|Pull", meta=(AllowPrivateAccess="true", ClampMin="0"))
 	float PullDuration = 0.25f;
 
 	EWeaponPullCommand PullCommand = EWeaponPullCommand::Equip;
@@ -137,7 +164,7 @@ public:
 	bool GetIsEquipping() const { return bIsEquipping; }
 
 	UFUNCTION(BlueprintGetter, Category="Weapon")
-	bool GetIsNearWall() const {return bIsNearWall; }
+	bool GetIsNearWall() const { return bIsNearWall; }
 
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void GetCurrentWeaponAmmo(FWeaponAmmoData& AmmoData) const;

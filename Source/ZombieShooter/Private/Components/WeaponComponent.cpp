@@ -13,6 +13,7 @@ UWeaponComponent::UWeaponComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	PullAnimationTimeline = CreateDefaultSubobject<UTimelineComponent>("PullAnimationTimeline");
+	RecoilTimeline = CreateDefaultSubobject<UTimelineComponent>("RecoilAnimationTimeline");
 }
 
 
@@ -35,6 +36,17 @@ void UWeaponComponent::BeginPlay()
 		FOnTimelineEvent AnimationFinished;
 		AnimationFinished.BindUFunction(this, FName("OnPullFinished"));
 		PullAnimationTimeline->SetTimelineFinishedFunc(AnimationFinished);
+	}
+
+	if (RecoilAnimationCurve)
+	{
+		FOnTimelineFloat AnimationProgress;
+		AnimationProgress.BindUFunction(this, FName("SetRecoilProgress"));
+		RecoilTimeline->AddInterpFloat(RecoilAnimationCurve, AnimationProgress);
+
+		FOnTimelineEvent AnimationFinished;
+		AnimationFinished.BindUFunction(this, FName("OnRecoilFinished"));
+		RecoilTimeline->SetTimelineFinishedFunc(AnimationFinished);
 	}
 }
 
@@ -168,7 +180,7 @@ bool UWeaponComponent::UnlockWeapon(TSubclassOf<AWeaponBase> WeaponClass)
 
 		InventoryData.bIsAvailable = true;
 
-		if (!bIsReloading && !bIsEquipping)
+		if (!bIsReloading && !bIsEquipping && !RecoilTimeline->IsPlaying())
 		{
 			PreviousWeaponIndex = CurrentWeaponIndex;
 			CurrentWeaponIndex = i;
@@ -208,7 +220,6 @@ bool UWeaponComponent::RestoreStorageAmmo(TSubclassOf<AWeaponBase> WeaponClass, 
 	return Result;
 }
 
-
 void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
 {
 	if (!GetOwner() || WeaponIndex >= Weapons.Num() || Weapons.Num() == 0) return;
@@ -221,13 +232,18 @@ void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
 
 	CurrentWeapon = Weapons[WeaponIndex].Weapon;
 	CurrentWeapon->SetActorHiddenInGame(false);
+
+	const float RecoilTime = CurrentWeapon->GetTimeBetweenShots() > RecoilDuration
+		                         ? RecoilDuration
+		                         : CurrentWeapon->GetTimeBetweenShots();
+	RecoilTimeline->SetPlayRate(1.f / (RecoilTime * 0.5f));
 }
 
 void UWeaponComponent::OnEmptyClip(AWeaponBase* TargetWeapon)
 {
 	if (!TargetWeapon) return;
 
-	if (CurrentWeapon == TargetWeapon)
+	if (CurrentWeapon == TargetWeapon && !RecoilTimeline->IsPlaying())
 	{
 		Reload();
 	}
@@ -241,6 +257,7 @@ void UWeaponComponent::OnReloadFinished() const
 
 void UWeaponComponent::BroadCastOnWeaponShot()
 {
+	RecoilTimeline->PlayFromStart();
 	OnWeaponShot.Broadcast();
 }
 
@@ -275,6 +292,37 @@ void UWeaponComponent::CheckIsNearWall()
 	{
 		StopShooting();
 	}
+}
+
+void UWeaponComponent::SetRecoilProgress(const float Value)
+{
+	RecoilProgress = Value;
+
+	if (RecoilTimeline->IsReversing()) return;
+
+	APlayerCharacter* Character = Cast<APlayerCharacter>(GetOwner());
+
+	if (!Character) return;
+
+	FWeaponData WeaponData;
+	CurrentWeapon->GetWeaponData(WeaponData);
+	Character->AddCameraRecoil(WeaponData.Recoil.CameraRecoilPitchPower * Value,
+	                           WeaponData.Recoil.CameraRecoilYawPower * Value);
+}
+
+void UWeaponComponent::OnRecoilFinished()
+{
+	if (RecoilProgress <= 0.f)
+	{
+		if (CurrentWeapon->IsClipEmpty())
+		{
+			Reload();
+		}
+
+		return;
+	}
+
+	RecoilTimeline->ReverseFromEnd();
 }
 
 void UWeaponComponent::OnPullFinished()

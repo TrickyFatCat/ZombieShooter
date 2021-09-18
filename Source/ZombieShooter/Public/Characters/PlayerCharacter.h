@@ -59,6 +59,7 @@ private:
 	void ProcessSwayRotation(const float DeltaTime) const;
 
 	// Camera recoil
+public:
 	UFUNCTION()
-	void AddCameraRecoil();
+	void AddCameraRecoil(const float RecoilPitch, const float RecoilYaw);
 };

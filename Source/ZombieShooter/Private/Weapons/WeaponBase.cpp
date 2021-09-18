@@ -140,7 +140,6 @@ void AWeaponBase::MakeShot()
 
 		if (WeaponData.BulletType == EBulletType::HitScan)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Pew %d"), i);
 			if (HitResult.bBlockingHit)
 			{
 				// Deal damage;

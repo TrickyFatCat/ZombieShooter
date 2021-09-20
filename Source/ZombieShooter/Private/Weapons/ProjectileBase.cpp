@@ -2,6 +2,8 @@
 
 
 #include "Weapons/ProjectileBase.h"
+
+#include "Characters/PlayerCharacter.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -42,6 +44,11 @@ void AProjectileBase::BeginPlay()
 	if (ProjectileData.bIsExplosive && !ProjectileData.bDamageOwner)
 	{
 		IgnoredActors.Add(GetOwner());
+	}
+
+	if (ProjectileData.bIsBouncing)
+	{
+		ProjectileMovement->bShouldBounce = ProjectileData.bIsBouncing;
 	}
 }
 
@@ -91,6 +98,10 @@ void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent,
 	UWorld* World = GetWorld();
 
 	if (!World) return;
+
+	if (ProjectileData.bIsBouncing
+		&& !OtherActor->IsA(APawn::StaticClass())
+		&& !OtherActor->IsA(APlayerCharacter::StaticClass())) return;
 
 	ProjectileMovement->StopMovementImmediately();
 

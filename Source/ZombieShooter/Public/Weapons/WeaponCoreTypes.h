@@ -170,11 +170,14 @@ struct FProjectileData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Projectile")
+	UPROPERTY(BlueprintReadOnly, Category="Projectile")
 	TSubclassOf<UDamageType> DamageType = nullptr;
 	
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Projectile", meta=(ClampMin="0"))
+	UPROPERTY(BlueprintReadOnly, Category="Projectile", meta=(ClampMin="0"))
 	int32 Damage = 10.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile")
+	bool bIsBouncing = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile")
 	bool bIsExplosive = true;

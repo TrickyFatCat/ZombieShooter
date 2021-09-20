@@ -10,6 +10,7 @@
 #include "WeaponComponent.generated.h"
 
 class AWeaponBase;
+class UCameraComponent;
 
 UENUM()
 enum class EWeaponPullCommand : uint8
@@ -79,7 +80,7 @@ public:
 	bool RestoreStorageAmmo(TSubclassOf<AWeaponBase> WeaponClass, const int32 Amount);
 
 	UFUNCTION(BlueprintPure, Category="Weapon")
-	bool GetIsShooting() const { return CanShoot() && bIsShooting; }
+	bool GetIsShooting() const { return CanShoot() && !AdsTransitionTimeline->IsPlaying() && bIsShooting; }
 
 protected:
 	bool bIsShooting;
@@ -109,13 +110,19 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation|Recoil", meta=(AllowPrivateAccess="true"))
 	UCurveFloat* RecoilAnimationCurve = nullptr;
 
-	UPROPERTY(VisibleAnywhere, Category="Components")
+	UPROPERTY()
 	UTimelineComponent* RecoilTimeline = nullptr;
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintGetter=GetRecoilProgress, Category="Animation|Recoil", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleInstanceOnly,
+		BlueprintGetter=GetRecoilProgress,
+		Category="Animation|Recoil",
+		meta=(AllowPrivateAccess="true"))
 	float RecoilProgress = 0.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation|Recoil", meta=(AllowPrivateAccess="true", ClampMin="0"))
+	UPROPERTY(EditDefaultsOnly,
+		BlueprintReadOnly,
+		Category="Animation|Recoil",
+		meta=(AllowPrivateAccess="true", ClampMin="0"))
 	float RecoilDuration = 0.05f;
 
 	UFUNCTION()
@@ -133,13 +140,16 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation|Pull", meta=(AllowPrivateAccess="true"))
 	UCurveFloat* PullAnimationCurve = nullptr;
 
-	UPROPERTY(VisibleAnywhere, Category="Components")
+	UPROPERTY()
 	UTimelineComponent* PullAnimationTimeline = nullptr;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Animation|Pull", meta=(AllowPrivateAccess="true"))
 	float PullProgress = 0.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation|Pull", meta=(AllowPrivateAccess="true", ClampMin="0"))
+	UPROPERTY(EditDefaultsOnly,
+		BlueprintReadOnly,
+		Category="Animation|Pull",
+		meta=(AllowPrivateAccess="true", ClampMin="0"))
 	float PullDuration = 0.25f;
 
 	EWeaponPullCommand PullCommand = EWeaponPullCommand::Equip;
@@ -155,7 +165,7 @@ private:
 	// Weapon parameters
 public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
-	bool CanShoot() const { return CurrentWeapon->CanShoot() && !bIsReloading && !bIsEquipping && !bIsNearWall; }
+	bool CanShoot() const { return CurrentWeapon->CanShoot() && !bIsReloading && !bIsEquipping && !bIsNearWall && !AdsTransitionTimeline->IsPlaying(); }
 
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	bool GetIsReloading() const { return bIsReloading; }
@@ -179,4 +189,45 @@ private:
 
 	UPROPERTY(BlueprintGetter=GetIsNearWall, Category="Weapon")
 	bool bIsNearWall = false;
+
+	// ADS
+public:
+	UFUNCTION()
+	void EnterAds();
+
+	UFUNCTION()
+	void ExitAds();
+
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))
+	UCurveFloat* AdsTransitionCurve = nullptr;
+
+	UPROPERTY()
+	UTimelineComponent* AdsTransitionTimeline = nullptr;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))
+	float AdsTransitionProgress = 0.f;
+
+	UPROPERTY(EditDefaultsOnly,
+		BlueprintReadOnly,
+		Category="Animation|ADS",
+		meta=(AllowPrivateAccess="true", ClampMin="0"))
+	float AdsTransitionDuration = 0.25f;
+
+	bool bIsAdsAvailable = false;
+
+	float DefaultFOV = 90.f;
+
+	float TargetFOV = 20.f;
+
+	bool bIsInAds = false;
+
+	UPROPERTY()
+	UCameraComponent* TargetCamera = nullptr;
+	
+	UFUNCTION()
+	void SetAdsTransitionProgress(const float Value);
+
+	UFUNCTION()
+	void OnAdsTransitionFinished();
 };

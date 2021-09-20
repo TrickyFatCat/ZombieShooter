@@ -46,16 +46,16 @@ USTRUCT(BlueprintType)
 struct FRecoilData
 {
 	GENERATED_USTRUCT_BODY()
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
 	float MeshRecoilYPower = 5.f;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
 	float MeshRecoilRollPower = 5.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
 	float CameraRecoilPitchPower = 0.15f;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
 	float CameraRecoilYawPower = 0.15f;
 };
@@ -88,7 +88,7 @@ struct FWeaponData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	FRecoilData Recoil;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Bullets")
 	EBulletType BulletType = EBulletType::HitScan;
 
@@ -106,6 +106,15 @@ struct FWeaponData
 		Category="Bullets",
 		meta=(EditCondition="BulletType==EBulletType::Projectile"))
 	TSubclassOf<AProjectileBase> ProjectileClass = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ADS")
+	bool bHasAds = false;
+
+	UPROPERTY(EditAnywhere,
+		BlueprintReadOnly,
+		Category="ADS",
+		meta=(EditCondition="bHasAds", ClampMin="0", ClampMax="180"))
+	float TargetFOV = 50.f;
 };
 
 USTRUCT(BlueprintType)
@@ -142,10 +151,10 @@ struct FHitScanDecalData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Decal")
 	FVector Size = FVector(16.f);
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Decal")
 	float LifeTime = 5.f;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Decal")
 	float FadeOutDuration = 0.5f;
 };
@@ -154,7 +163,7 @@ USTRUCT(BlueprintType)
 struct FHitScanImpactData
 {
 	GENERATED_USTRUCT_BODY()
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="VFX")
 	UParticleSystem* ImpactEffect = nullptr;
 
@@ -172,7 +181,7 @@ struct FProjectileData
 
 	UPROPERTY(BlueprintReadOnly, Category="Projectile")
 	TSubclassOf<UDamageType> DamageType = nullptr;
-	
+
 	UPROPERTY(BlueprintReadOnly, Category="Projectile", meta=(ClampMin="0"))
 	int32 Damage = 10.f;
 
@@ -187,7 +196,7 @@ struct FProjectileData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive"));
 	bool bDealFullDamage = true;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive"));
 	bool bDamageOwner = false;
 };

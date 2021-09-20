@@ -83,6 +83,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("LookRight", this, &APlayerCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::SetVerticalSway);
 	PlayerInputComponent->BindAxis("LookRight", this, &APlayerCharacter::SetHorizontalSway);
+	PlayerInputComponent->BindAction("ADS", IE_Pressed, WeaponComponent, &UWeaponComponent::EnterAds);
+	PlayerInputComponent->BindAction("ADS", IE_Released, WeaponComponent, &UWeaponComponent::ExitAds);
 
 	// Weapon
 	PlayerInputComponent->BindAction("EquipNextWeapon",

@@ -3,6 +3,7 @@
 
 #include "Components/WeaponComponent.h"
 
+#include "Camera/CameraComponent.h"
 #include "Characters/PlayerCharacter.h"
 #include "Components/TimelineComponent.h"
 #include "Weapons/WeaponBase.h"
@@ -14,6 +15,7 @@ UWeaponComponent::UWeaponComponent()
 
 	PullAnimationTimeline = CreateDefaultSubobject<UTimelineComponent>("PullAnimationTimeline");
 	RecoilTimeline = CreateDefaultSubobject<UTimelineComponent>("RecoilAnimationTimeline");
+	AdsTransitionTimeline = CreateDefaultSubobject<UTimelineComponent>("AdsTransitionTimeline");
 }
 
 
@@ -26,6 +28,7 @@ void UWeaponComponent::BeginPlay()
 	EquipWeapon(CurrentWeaponIndex);
 
 	PullAnimationTimeline->SetPlayRate(1.f / (PullDuration * 0.5f));
+	AdsTransitionTimeline->SetPlayRate(1.f / (AdsTransitionDuration * 0.5f));
 
 	if (PullAnimationCurve)
 	{
@@ -48,6 +51,20 @@ void UWeaponComponent::BeginPlay()
 		AnimationFinished.BindUFunction(this, FName("OnRecoilFinished"));
 		RecoilTimeline->SetTimelineFinishedFunc(AnimationFinished);
 	}
+
+	if (AdsTransitionCurve)
+	{
+		FOnTimelineFloat AnimationProgress;
+		AnimationProgress.BindUFunction(this, FName("SetAdsTransitionProgress"));
+		AdsTransitionTimeline->AddInterpFloat(AdsTransitionCurve, AnimationProgress);
+
+		FOnTimelineEvent AnimationFinished;
+		AnimationFinished.BindUFunction(this, FName("OnAdsTransitionFinished"));
+		AdsTransitionTimeline->SetTimelineFinishedFunc(AnimationFinished);
+	}
+	
+	TargetCamera = GetOwner()->FindComponentByClass<UCameraComponent>();
+	DefaultFOV = TargetCamera->FieldOfView;
 }
 
 
@@ -93,7 +110,7 @@ void UWeaponComponent::SpawnWeapons()
 
 void UWeaponComponent::EquipNextWeapon()
 {
-	if (bIsEquipping || bIsReloading) return;
+	if (bIsEquipping || bIsReloading || bIsInAds) return;
 
 	PreviousWeaponIndex = CurrentWeaponIndex;
 
@@ -111,7 +128,7 @@ void UWeaponComponent::EquipNextWeapon()
 
 void UWeaponComponent::EquipPreviousWeapon()
 {
-	if (bIsEquipping || bIsReloading) return;
+	if (bIsEquipping || bIsReloading || bIsInAds) return;
 
 	PreviousWeaponIndex = CurrentWeaponIndex;
 
@@ -145,7 +162,12 @@ void UWeaponComponent::StopShooting()
 
 void UWeaponComponent::Reload()
 {
-	if (!CurrentWeapon || bIsEquipping || bIsReloading || !CurrentWeapon->CanReload()) return;
+	if (!CurrentWeapon || bIsEquipping || bIsReloading || AdsTransitionTimeline->IsPlaying() || !CurrentWeapon->CanReload()) return;
+
+	if (bIsInAds)
+	{
+		ExitAds();
+	}
 
 	CurrentWeapon->StopShooting();
 	bIsReloading = true;
@@ -232,8 +254,13 @@ void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
 
 	CurrentWeapon = Weapons[WeaponIndex].Weapon;
 	CurrentWeapon->SetActorHiddenInGame(false);
-
 	RecoilTimeline->SetPlayRate(1.f / (FMath::Min(RecoilDuration, CurrentWeapon->GetTimeBetweenShots()) * 0.5f));
+	
+	FWeaponData WeaponData;
+	CurrentWeapon->GetWeaponData(WeaponData);
+	TargetFOV = WeaponData.TargetFOV;
+	bIsAdsAvailable = WeaponData.bHasAds;
+	
 }
 
 void UWeaponComponent::OnEmptyClip(AWeaponBase* TargetWeapon)
@@ -384,4 +411,47 @@ void UWeaponComponent::StartEquipAnimation()
 void UWeaponComponent::GetCurrentWeaponAmmo(FWeaponAmmoData& AmmoData) const
 {
 	AmmoData = CurrentWeapon->GetAmmoData();
+}
+
+void UWeaponComponent::EnterAds()
+{
+	if (!bIsAdsAvailable || !TargetCamera || bIsEquipping || bIsReloading) return;
+
+	bIsInAds = true;
+	
+	if (AdsTransitionTimeline->IsPlaying())
+	{
+		AdsTransitionTimeline->Reverse();
+	}
+	else
+	{
+		AdsTransitionTimeline->PlayFromStart();
+	}
+}
+
+void UWeaponComponent::ExitAds()
+{
+	if (!bIsAdsAvailable || !TargetCamera || bIsEquipping || bIsReloading || !bIsInAds) return;
+	
+	if (AdsTransitionTimeline->IsPlaying())
+	{
+		AdsTransitionTimeline->Reverse();
+	}
+	else
+	{
+		AdsTransitionTimeline->ReverseFromEnd();
+	}
+}
+
+void UWeaponComponent::SetAdsTransitionProgress(const float Value)
+{
+	AdsTransitionProgress = Value;
+	TargetCamera->FieldOfView = FMath::Lerp(DefaultFOV, TargetFOV, Value);
+}
+
+void UWeaponComponent::OnAdsTransitionFinished()
+{
+	if (AdsTransitionProgress >= 1.f) return;
+	
+	bIsInAds = false;
 }

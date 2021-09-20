@@ -65,8 +65,11 @@ struct FWeaponData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	EWeaponType WeaponType = EWeaponType::Pistol;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
+	TSubclassOf<UDamageType> DamageType = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	int32 Damage = 10.f;
@@ -113,7 +116,7 @@ struct FWeaponAmmoData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Ammo")
 	bool bIsClipInfinite = false;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Ammo")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Ammo")
 	int32 ClipAmmoCurrent = 100;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Ammo")
@@ -122,7 +125,7 @@ struct FWeaponAmmoData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Ammo")
 	bool bIsStorageInfinite = false;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Ammo")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Ammo")
 	int32 StorageAmmoCurrent = 300;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Ammo")
@@ -167,7 +170,10 @@ struct FProjectileData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(ClampMin="0"))
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Projectile")
+	TSubclassOf<UDamageType> DamageType = nullptr;
+	
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Projectile", meta=(ClampMin="0"))
 	int32 Damage = 10.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile")

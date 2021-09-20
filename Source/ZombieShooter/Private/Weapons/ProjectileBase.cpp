@@ -8,6 +8,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Components//SceneComponent.h"
 #include "Weapons/Components/WeaponFXComponent.h"
 
 AProjectileBase::AProjectileBase()
@@ -29,6 +31,10 @@ AProjectileBase::AProjectileBase()
 	ProjectileMesh->SetupAttachment(GetRootComponent());
 
 	ProjectileFX = CreateDefaultSubobject<UWeaponFXComponent>("ProjectileFX");
+
+	TrailParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>("TrailParticleComponent");
+	TrailParticleComponent->SetupAttachment(ProjectileMesh);
+	TrailParticleComponent->bAutoDestroy = true;
 }
 
 void AProjectileBase::BeginPlay()
@@ -101,10 +107,12 @@ void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent,
 
 	if (ProjectileData.bIsBouncing
 		&& !OtherActor->IsA(APawn::StaticClass())
-		&& !OtherActor->IsA(APlayerCharacter::StaticClass())) return;
+		&& !OtherActor->IsA(APlayerCharacter::StaticClass()))
+		return;
 
 	ProjectileMovement->StopMovementImmediately();
-
+	TrailParticleComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	
 	if (ProjectileData.bIsExplosive)
 	{
 		DealRadialDamage();
@@ -141,5 +149,5 @@ void AProjectileBase::DealRadialDamage()
 	                                    IgnoredActors,
 	                                    this,
 	                                    GetInstigatorController(),
-	                                   ProjectileData.bDealFullDamage);
+	                                    ProjectileData.bDealFullDamage);
 }

@@ -45,6 +45,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
 	UWeaponFXComponent* ProjectileFX = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
+	UParticleSystemComponent* TrailParticleComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category="Projectile")
 	FProjectileData ProjectileData;

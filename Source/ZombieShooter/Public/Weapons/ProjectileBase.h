@@ -31,7 +31,7 @@ public:
 	UFUNCTION(BlueprintPure, Category="Projectile")
 	void GetProjectileData(FProjectileData& Data) const;
 
-	void SetDirectionAndDamage(const FVector& Direction, const int32 Damage);
+	void SetDirectionAndDamage(const FVector& Direction, const TSubclassOf<UDamageType> DamageType, const int32 Damage);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
@@ -65,4 +65,6 @@ private:
 	                     const FHitResult& Hit);
 
 	void DealRadialDamage();
+
+	TSubclassOf<UDamageType> GetDamageType() const;
 };

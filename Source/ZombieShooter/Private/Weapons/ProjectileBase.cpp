@@ -50,7 +50,7 @@ void AProjectileBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 
 	if (EndPlayReason != EEndPlayReason::Destroyed) return;
-	
+
 	if (GetLifeSpan() <= 0.f && ProjectileData.bIsExplosive)
 	{
 		DealRadialDamage();
@@ -70,12 +70,15 @@ void AProjectileBase::GetProjectileData(FProjectileData& Data) const
 	Data = ProjectileData;
 }
 
-void AProjectileBase::SetDirectionAndDamage(const FVector& Direction, const int32 Damage)
+void AProjectileBase::SetDirectionAndDamage(const FVector& Direction,
+                                            const TSubclassOf<UDamageType> DamageType,
+                                            const int32 Damage)
 {
 	ShotDirection = Direction;
 
 	if (Damage <= 0) return;
 
+	ProjectileData.DamageType = DamageType;
 	ProjectileData.Damage = Damage;
 }
 
@@ -103,26 +106,29 @@ void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent,
 		                                   Hit,
 		                                   GetInstigatorController(),
 		                                   this,
-		                                   UDamageType::StaticClass());
+		                                   GetDamageType());
 	}
 
 	ProjectileFX->PlayImpactFX(Hit);
 	Destroy();
 }
 
+TSubclassOf<UDamageType> AProjectileBase::GetDamageType() const
+{
+	return !ProjectileData.DamageType ? UDamageType::StaticClass() : ProjectileData.DamageType;
+}
+
 void AProjectileBase::DealRadialDamage()
 {
 	if (!GetWorld()) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("KABOOM"));
 
 	UGameplayStatics::ApplyRadialDamage(GetWorld(),
 	                                    ProjectileData.Damage,
 	                                    GetActorLocation(),
 	                                    ProjectileData.ExplosionRadius,
-	                                    UDamageType::StaticClass(),
+	                                    GetDamageType(),
 	                                    IgnoredActors,
 	                                    this,
 	                                    GetInstigatorController(),
-	                                    ProjectileData.bDealFullDamage);
+	                                   ProjectileData.bDealFullDamage);
 }

@@ -62,6 +62,12 @@ protected:
 	UFUNCTION()
 	void OnExitAds();
 
+	UFUNCTION()
+	void EnterCrouch();
+
+	UFUNCTION()
+	void ExitCrouch();
+
 	// WeaponSway
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))

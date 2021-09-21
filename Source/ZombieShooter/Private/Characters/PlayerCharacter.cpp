@@ -87,6 +87,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &APlayerCharacter::EnterCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &APlayerCharacter::ExitCrouch);
 
 	// Aiming
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::AddControllerPitchInput);
@@ -132,6 +134,16 @@ void APlayerCharacter::OnExitAds()
 	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxSpeed;
 	GetController<APlayerController>()->InputYawScale = DefaultInputYawScale;
 	GetController<APlayerController>()->InputPitchScale = DefaultInputPitchScale;
+}
+
+void APlayerCharacter::EnterCrouch()
+{
+	Crouch();
+}
+
+void APlayerCharacter::ExitCrouch()
+{
+	UnCrouch();
 }
 
 void APlayerCharacter::SetHorizontalSway(const float AxisValue)

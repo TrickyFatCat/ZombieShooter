@@ -9,7 +9,6 @@
 #include "BaseCharacter.generated.h"
 
 class UShooterDamageControllerComponent;
-class UWeaponComponent;
 class AWeaponBase;
 
 UCLASS()
@@ -23,11 +22,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
 	UShooterDamageControllerComponent* DamageControllerComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")

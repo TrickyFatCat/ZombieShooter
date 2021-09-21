@@ -7,6 +7,7 @@
 #include "PlayerCharacter.generated.h"
 
 class UCameraComponent;
+class UWeaponComponent;
 
 /**
  * 
@@ -29,12 +30,16 @@ public:
 
 	USkeletalMeshComponent* GetPlayerArms() const { return PlayerArms; }
 
+	UFUNCTION(BlueprintPure, Category="Player")
+	float GetAdsTransitionProgress() const { return WeaponComponent->GetAdsTransitionProgress(); }
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UCameraComponent* PlayerCamera = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	USkeletalMeshComponent* PlayerArms = nullptr;
+	
 	// Movement
 public:
 protected:

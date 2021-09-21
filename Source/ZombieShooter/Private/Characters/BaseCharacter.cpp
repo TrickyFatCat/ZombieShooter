@@ -10,7 +10,6 @@ ABaseCharacter::ABaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	DamageControllerComponent = CreateDefaultSubobject<UShooterDamageControllerComponent>("DamageController");
-	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 }
 
 void ABaseCharacter::BeginPlay()

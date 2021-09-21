@@ -14,6 +14,8 @@ APlayerCharacter::APlayerCharacter()
 	PlayerArms = CreateDefaultSubobject<USkeletalMeshComponent>("PlayerArms");
 	PlayerArms->SetupAttachment(PlayerCamera);
 	PlayerArms->CastShadow = false;
+	
+	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 }
 
 void APlayerCharacter::BeginPlay()

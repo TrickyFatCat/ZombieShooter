@@ -199,6 +199,9 @@ public:
 	UFUNCTION()
 	void ExitAds();
 
+	UFUNCTION(BlueprintGetter, Category="Animation|ADS")
+	float GetAdsTransitionProgress() const { return AdsTransitionProgress; }
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))
 	UCurveFloat* AdsTransitionCurve = nullptr;
@@ -206,7 +209,7 @@ private:
 	UPROPERTY()
 	UTimelineComponent* AdsTransitionTimeline = nullptr;
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleInstanceOnly, BlueprintGetter=GetAdsTransitionProgress, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))
 	float AdsTransitionProgress = 0.f;
 
 	UPROPERTY(EditDefaultsOnly,

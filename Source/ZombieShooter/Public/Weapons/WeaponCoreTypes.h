@@ -61,6 +61,27 @@ struct FRecoilData
 };
 
 USTRUCT(BlueprintType)
+struct FAdsData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ADS")
+	bool bHasAds = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ADS", meta=(EditCondition="bHasAds"))
+	bool bIsUsingScope = false;
+
+	UPROPERTY(EditAnywhere,
+		BlueprintReadOnly,
+		Category="ADS",
+		meta=(EditCondition="bHasAds", ClampMin="0", ClampMax="180"))
+	float TargetFOV = 50.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ADS", meta=(EditCondition="bHasAds"))
+	FVector WeaponOffset = FVector::ZeroVector;
+};
+
+USTRUCT(BlueprintType)
 struct FWeaponData
 {
 	GENERATED_USTRUCT_BODY()
@@ -87,7 +108,7 @@ struct FWeaponData
 	float ReloadTime = 1.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
-	FRecoilData Recoil;
+	FRecoilData RecoilData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Bullets")
 	EBulletType BulletType = EBulletType::HitScan;
@@ -107,14 +128,8 @@ struct FWeaponData
 		meta=(EditCondition="BulletType==EBulletType::Projectile"))
 	TSubclassOf<AProjectileBase> ProjectileClass = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ADS")
-	bool bHasAds = false;
-
-	UPROPERTY(EditAnywhere,
-		BlueprintReadOnly,
-		Category="ADS",
-		meta=(EditCondition="bHasAds", ClampMin="0", ClampMax="180"))
-	float TargetFOV = 50.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
+	FAdsData AdsData;
 };
 
 USTRUCT(BlueprintType)
@@ -191,12 +206,15 @@ struct FProjectileData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile")
 	bool bIsExplosive = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive", ClampMin="0"));
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive", ClampMin="0"))
+	;
 	float ExplosionRadius = 500.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive"));
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive"))
+	;
 	bool bDealFullDamage = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive"));
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive"))
+	;
 	bool bDamageOwner = false;
 };

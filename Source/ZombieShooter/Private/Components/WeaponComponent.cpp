@@ -63,7 +63,7 @@ void UWeaponComponent::BeginPlay()
 		AnimationFinished.BindUFunction(this, FName("OnAdsTransitionFinished"));
 		AdsTransitionTimeline->SetTimelineFinishedFunc(AnimationFinished);
 	}
-	
+
 	TargetCamera = GetOwner()->FindComponentByClass<UCameraComponent>();
 	DefaultFOV = TargetCamera->FieldOfView;
 }
@@ -111,7 +111,7 @@ void UWeaponComponent::SpawnWeapons()
 
 void UWeaponComponent::EquipNextWeapon()
 {
-	if (bIsEquipping || bIsReloading || bIsInAds) return;
+	if (bIsEquipping || bIsReloading || bIsAiming) return;
 
 	PreviousWeaponIndex = CurrentWeaponIndex;
 
@@ -129,7 +129,7 @@ void UWeaponComponent::EquipNextWeapon()
 
 void UWeaponComponent::EquipPreviousWeapon()
 {
-	if (bIsEquipping || bIsReloading || bIsInAds) return;
+	if (bIsEquipping || bIsReloading || bIsAiming) return;
 
 	PreviousWeaponIndex = CurrentWeaponIndex;
 
@@ -163,9 +163,10 @@ void UWeaponComponent::StopShooting()
 
 void UWeaponComponent::Reload()
 {
-	if (!CurrentWeapon || bIsEquipping || bIsReloading || AdsTransitionTimeline->IsPlaying() || !CurrentWeapon->CanReload()) return;
+	if (!CurrentWeapon || bIsEquipping || bIsReloading || AdsTransitionTimeline->IsPlaying() || !CurrentWeapon->
+		CanReload()) return;
 
-	if (bIsInAds)
+	if (bIsAiming)
 	{
 		ExitAds();
 	}
@@ -256,12 +257,10 @@ void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
 	CurrentWeapon = Weapons[WeaponIndex].Weapon;
 	CurrentWeapon->SetActorHiddenInGame(false);
 	RecoilTimeline->SetPlayRate(1.f / (FMath::Min(RecoilDuration, CurrentWeapon->GetTimeBetweenShots()) * 0.5f));
-	
+
 	FWeaponData WeaponData;
 	CurrentWeapon->GetWeaponData(WeaponData);
-	TargetFOV = WeaponData.TargetFOV;
-	bIsAdsAvailable = WeaponData.bHasAds;
-	
+	AdsData = WeaponData.AdsData;
 }
 
 void UWeaponComponent::OnEmptyClip(AWeaponBase* TargetWeapon)
@@ -295,7 +294,7 @@ void UWeaponComponent::CheckIsNearWall()
 
 	FVector TraceStart = ViewLocation;
 	FVector TraceDirection = ViewRotation.Vector();
-	FVector TraceEnd = TraceStart + TraceDirection * 125.f;
+	FVector TraceEnd = TraceStart + TraceDirection * WallCheckDistance;
 
 	if (!GetWorld()) return;
 
@@ -317,6 +316,11 @@ void UWeaponComponent::CheckIsNearWall()
 	{
 		StopShooting();
 	}
+
+	if (bIsAiming && bIsNearWall)
+	{
+		ExitAds();
+	}
 }
 
 void UWeaponComponent::SetRecoilProgress(const float Value)
@@ -331,8 +335,8 @@ void UWeaponComponent::SetRecoilProgress(const float Value)
 
 	FWeaponData WeaponData;
 	CurrentWeapon->GetWeaponData(WeaponData);
-	Character->AddCameraRecoil(WeaponData.Recoil.CameraRecoilPitchPower * Value,
-	                           WeaponData.Recoil.CameraRecoilYawPower * Value);
+	Character->AddCameraRecoil(WeaponData.RecoilData.CameraRecoilPitchPower * Value,
+	                           WeaponData.RecoilData.CameraRecoilYawPower * Value);
 }
 
 void UWeaponComponent::OnRecoilFinished()
@@ -416,10 +420,10 @@ void UWeaponComponent::GetCurrentWeaponAmmo(FWeaponAmmoData& AmmoData) const
 
 void UWeaponComponent::EnterAds()
 {
-	if (!bIsAdsAvailable || !TargetCamera || bIsEquipping || bIsReloading) return;
+	if (!TargetCamera || bIsEquipping || bIsReloading || !AdsData.bHasAds || bIsNearWall) return;
 
-	bIsInAds = true;
-	
+	bIsAiming = true;
+
 	if (AdsTransitionTimeline->IsPlaying())
 	{
 		AdsTransitionTimeline->Reverse();
@@ -432,7 +436,9 @@ void UWeaponComponent::EnterAds()
 
 void UWeaponComponent::ExitAds()
 {
-	if (!bIsAdsAvailable || !TargetCamera || bIsEquipping || bIsReloading || !bIsInAds) return;
+	if (!TargetCamera || bIsEquipping || bIsReloading || !bIsAiming || !AdsData.bHasAds || bIsNearWall) return;
+
+	CurrentWeapon->SetActorHiddenInGame(false);
 	
 	if (AdsTransitionTimeline->IsPlaying())
 	{
@@ -447,17 +453,21 @@ void UWeaponComponent::ExitAds()
 void UWeaponComponent::SetAdsTransitionProgress(const float Value)
 {
 	AdsTransitionProgress = Value;
-	const float NewFOV = FMath::Lerp(DefaultFOV, TargetFOV, Value);
+	const float NewFOV = FMath::Lerp(DefaultFOV, AdsData.TargetFOV, Value);
 	TargetCamera->FieldOfView = NewFOV;
 
 	if (!GetWorld()) return;
-	
+
 	UKismetMaterialLibrary::SetScalarParameterValue(GetWorld(), PaniniParameterCollection, FOVParameterName, NewFOV);
 }
 
 void UWeaponComponent::OnAdsTransitionFinished()
 {
-	if (AdsTransitionProgress >= 1.f) return;
-	
-	bIsInAds = false;
+	if (AdsTransitionProgress >= 1.f)
+	{
+		CurrentWeapon->SetActorHiddenInGame(AdsData.bIsUsingScope);
+		return;
+	}
+
+	bIsAiming = false;
 }

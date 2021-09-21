@@ -95,6 +95,8 @@ protected:
 	void OnReloadFinished() const;
 
 private:
+	const float WallCheckDistance = 80.f;
+	
 	void OnWeaponMakeShot();
 
 	void CheckIsNearWall();
@@ -202,6 +204,15 @@ public:
 	UFUNCTION(BlueprintGetter, Category="Animation|ADS")
 	float GetAdsTransitionProgress() const { return AdsTransitionProgress; }
 
+	UFUNCTION(BlueprintPure, Category="Animation|ADS")
+	bool GetIsUsingScope() const { return AdsData.bIsUsingScope; }
+
+	UFUNCTION(BlueprintGetter, Category="Animation|ADS")
+	bool GetIsAiming() const { return bIsAiming; }
+
+	UFUNCTION(BlueprintPure, Category="Animation|ADS")
+	FVector GetWeaponOffset() const { return AdsData.WeaponOffset; }
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))
 	UCurveFloat* AdsTransitionCurve = nullptr;
@@ -209,7 +220,10 @@ private:
 	UPROPERTY()
 	UTimelineComponent* AdsTransitionTimeline = nullptr;
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintGetter=GetAdsTransitionProgress, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleInstanceOnly,
+		BlueprintGetter=GetAdsTransitionProgress,
+		Category="Animation|ADS",
+		meta=(AllowPrivateAccess="true"))
 	float AdsTransitionProgress = 0.f;
 
 	UPROPERTY(EditDefaultsOnly,
@@ -224,17 +238,16 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))
 	FName FOVParameterName = FName("Global_FOV");
 
-	bool bIsAdsAvailable = false;
-
 	float DefaultFOV = 90.f;
 
-	float TargetFOV = 20.f;
+	UPROPERTY(BlueprintGetter=GetIsAiming)
+	bool bIsAiming = false;
 
-	bool bIsInAds = false;
+	FAdsData AdsData;
 
 	UPROPERTY()
 	UCameraComponent* TargetCamera = nullptr;
-	
+
 	UFUNCTION()
 	void SetAdsTransitionProgress(const float Value);
 

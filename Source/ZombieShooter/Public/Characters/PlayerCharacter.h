@@ -33,6 +33,9 @@ public:
 	UFUNCTION(BlueprintPure, Category="Player")
 	float GetAdsTransitionProgress() const { return WeaponComponent->GetAdsTransitionProgress(); }
 
+	UFUNCTION(BlueprintPure, Category="Player")
+	bool GetIsUsingScope() const { return WeaponComponent->GetIsUsingScope(); }
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UCameraComponent* PlayerCamera = nullptr;

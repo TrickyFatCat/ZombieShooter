@@ -8,6 +8,7 @@
 #include "Components/TimelineComponent.h"
 #include "Weapons/WeaponBase.h"
 #include "Core/ProjectUtils.h"
+#include "Kismet/KismetMaterialLibrary.h"
 
 UWeaponComponent::UWeaponComponent()
 {
@@ -446,7 +447,12 @@ void UWeaponComponent::ExitAds()
 void UWeaponComponent::SetAdsTransitionProgress(const float Value)
 {
 	AdsTransitionProgress = Value;
-	TargetCamera->FieldOfView = FMath::Lerp(DefaultFOV, TargetFOV, Value);
+	const float NewFOV = FMath::Lerp(DefaultFOV, TargetFOV, Value);
+	TargetCamera->FieldOfView = NewFOV;
+
+	if (!GetWorld()) return;
+	
+	UKismetMaterialLibrary::SetScalarParameterValue(GetWorld(), PaniniParameterCollection, FOVParameterName, NewFOV);
 }
 
 void UWeaponComponent::OnAdsTransitionFinished()

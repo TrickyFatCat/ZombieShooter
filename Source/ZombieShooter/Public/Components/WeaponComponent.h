@@ -11,6 +11,7 @@
 
 class AWeaponBase;
 class UCameraComponent;
+class UMaterialParameterCollection;
 
 UENUM()
 enum class EWeaponPullCommand : uint8
@@ -213,6 +214,12 @@ private:
 		Category="Animation|ADS",
 		meta=(AllowPrivateAccess="true", ClampMin="0"))
 	float AdsTransitionDuration = 0.25f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))
+	UMaterialParameterCollection* PaniniParameterCollection = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))
+	FName FOVParameterName = FName("Global_FOV");
 
 	bool bIsAdsAvailable = false;
 

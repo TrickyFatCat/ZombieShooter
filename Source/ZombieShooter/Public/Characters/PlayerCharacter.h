@@ -46,8 +46,21 @@ protected:
 	// Movement
 public:
 protected:
+	float DefaultMaxSpeed = 750.f;
+
+	float DefaultInputYawScale = 1.f;
+
+	float DefaultInputPitchScale = 1.f;
+	
 	void MoveForward(const float AxisValue);
+	
 	void MoveRight(const float AxisValue);
+
+	UFUNCTION()
+	void OnEnterAds();
+
+	UFUNCTION()
+	void OnExitAds();
 
 	// WeaponSway
 private:

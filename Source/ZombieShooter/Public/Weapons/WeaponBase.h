@@ -58,6 +58,9 @@ private:
 
 	// Shooting
 public:
+	float GetSpreadMultiplier() const { return SpreadMultiplier; }
+
+	void SetSpreadMultiplier(const float Value);
 protected:
 	FTimerHandle ShootingTimerHandle;
 
@@ -87,6 +90,8 @@ private:
 	FName MuzzleSocketName = FName("AmmoMesh");
 
 	bool bCanShoot = true;
+
+	float SpreadMultiplier = 1.f;
 
 	UFUNCTION()
 	void EnableShooting();

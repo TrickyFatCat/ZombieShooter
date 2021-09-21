@@ -5,6 +5,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/ShooterDamageControllerComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -23,6 +24,13 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	InitialRotation = PlayerArms->GetRelativeRotation();
+	DefaultMaxSpeed = GetCharacterMovement()->MaxWalkSpeed;
+
+	DefaultInputYawScale = GetController<APlayerController>()->InputYawScale;
+	DefaultInputPitchScale = GetController<APlayerController>()->InputPitchScale;
+
+	WeaponComponent->OnEnterAds.AddDynamic(this, &APlayerCharacter::OnEnterAds);
+	WeaponComponent->OnExitAds.AddDynamic(this, &APlayerCharacter::OnExitAds);
 }
 
 void APlayerCharacter::Tick(float DeltaSeconds)
@@ -110,6 +118,20 @@ void APlayerCharacter::MoveForward(const float AxisValue)
 void APlayerCharacter::MoveRight(const float AxisValue)
 {
 	AddMovementInput(GetActorRightVector(), AxisValue);
+}
+
+void APlayerCharacter::OnEnterAds()
+{
+	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxSpeed * WeaponComponent->GetMovementFactor();
+	GetController<APlayerController>()->InputYawScale = DefaultInputYawScale * WeaponComponent->GetAimFactor();
+	GetController<APlayerController>()->InputPitchScale = DefaultInputPitchScale * WeaponComponent->GetAimFactor();
+}
+
+void APlayerCharacter::OnExitAds()
+{
+	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxSpeed;
+	GetController<APlayerController>()->InputYawScale = DefaultInputYawScale;
+	GetController<APlayerController>()->InputPitchScale = DefaultInputPitchScale;
 }
 
 void APlayerCharacter::SetHorizontalSway(const float AxisValue)

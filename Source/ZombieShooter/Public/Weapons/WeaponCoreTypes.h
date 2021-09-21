@@ -12,6 +12,10 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponClipEmptySignature, AWeaponBase*)
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponShotSignature);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnterAdsSignature);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnExitAdsSignature);
+
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
 {
@@ -77,6 +81,18 @@ struct FAdsData
 		meta=(EditCondition="bHasAds", ClampMin="0", ClampMax="180"))
 	float TargetFOV = 50.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ADS", meta=(EditCondition="bHasAds", ClampMin="0", ClampMax="1"))
+	float RecoilFactor = 0.25f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ADS", meta=(EditCondition="bHasAds", ClampMin="0", ClampMax="1"))
+	float MovementFactor = 0.35f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ADS", meta=(EditCondition="bHasAds", ClampMin="0", ClampMax="1"))
+	float SpreadFactor = 0.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ADS", meta=(EditCondition="bHasAds", ClampMin="0", ClampMax="1"))
+	float AimFactor = 0.25f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="ADS", meta=(EditCondition="bHasAds"))
 	FVector WeaponOffset = FVector::ZeroVector;
 };

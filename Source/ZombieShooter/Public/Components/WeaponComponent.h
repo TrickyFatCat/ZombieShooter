@@ -110,6 +110,8 @@ public:
 	bool GetIsRecoiling() const { return RecoilTimeline->IsPlaying(); }
 
 private:
+	float RecoilMultiplier = 1.f;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation|Recoil", meta=(AllowPrivateAccess="true"))
 	UCurveFloat* RecoilAnimationCurve = nullptr;
 
@@ -195,6 +197,12 @@ private:
 
 	// ADS
 public:
+	UPROPERTY(BlueprintAssignable, Category="Weapon")
+	FOnEnterAdsSignature OnEnterAds;
+
+	UPROPERTY(BlueprintAssignable, Category="Weapon")
+	FOnExitAdsSignature OnExitAds;
+	
 	UFUNCTION()
 	void EnterAds();
 
@@ -212,6 +220,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="Animation|ADS")
 	FVector GetWeaponOffset() const { return AdsData.WeaponOffset; }
+
+	float GetMovementFactor() const { return AdsData.MovementFactor; }
+
+	float GetAimFactor() const { return AdsData.AimFactor; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Animation|ADS", meta=(AllowPrivateAccess="true"))

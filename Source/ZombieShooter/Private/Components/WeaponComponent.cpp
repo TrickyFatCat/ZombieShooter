@@ -164,7 +164,8 @@ void UWeaponComponent::StopShooting()
 void UWeaponComponent::Reload()
 {
 	if (!CurrentWeapon || bIsEquipping || bIsReloading || AdsTransitionTimeline->IsPlaying() || !CurrentWeapon->
-		CanReload()) return;
+		CanReload())
+		return;
 
 	if (bIsAiming)
 	{
@@ -335,8 +336,8 @@ void UWeaponComponent::SetRecoilProgress(const float Value)
 
 	FWeaponData WeaponData;
 	CurrentWeapon->GetWeaponData(WeaponData);
-	Character->AddCameraRecoil(WeaponData.RecoilData.CameraRecoilPitchPower * Value,
-	                           WeaponData.RecoilData.CameraRecoilYawPower * Value);
+	Character->AddCameraRecoil(WeaponData.RecoilData.CameraRecoilPitchPower * Value * RecoilMultiplier,
+	                           WeaponData.RecoilData.CameraRecoilYawPower * Value * RecoilMultiplier);
 }
 
 void UWeaponComponent::OnRecoilFinished()
@@ -439,7 +440,7 @@ void UWeaponComponent::ExitAds()
 	if (!TargetCamera || bIsEquipping || bIsReloading || !bIsAiming || !AdsData.bHasAds || bIsNearWall) return;
 
 	CurrentWeapon->SetActorHiddenInGame(false);
-	
+
 	if (AdsTransitionTimeline->IsPlaying())
 	{
 		AdsTransitionTimeline->Reverse();
@@ -466,8 +467,14 @@ void UWeaponComponent::OnAdsTransitionFinished()
 	if (AdsTransitionProgress >= 1.f)
 	{
 		CurrentWeapon->SetActorHiddenInGame(AdsData.bIsUsingScope);
+		CurrentWeapon->SetSpreadMultiplier(AdsData.SpreadFactor);
+		RecoilMultiplier = AdsData.RecoilFactor;
+		OnEnterAds.Broadcast();
 		return;
 	}
 
 	bIsAiming = false;
+	CurrentWeapon->SetSpreadMultiplier(1.f);
+	RecoilMultiplier = 1.f;
+	OnExitAds.Broadcast();
 }

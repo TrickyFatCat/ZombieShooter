@@ -39,6 +39,13 @@ void AWeaponBase::GetWeaponData(FWeaponData& Data) const
 	Data = this->WeaponData;
 }
 
+void AWeaponBase::SetSpreadMultiplier(const float Value)
+{
+	if (Value < 0.f) return;
+
+	SpreadMultiplier = Value;
+}
+
 bool AWeaponBase::GetTraceData(FVector& TraceStart, FVector& TraceEnd, const bool bCalculateSpread) const
 {
 	FVector ViewLocation = FVector::ZeroVector;
@@ -51,7 +58,7 @@ bool AWeaponBase::GetTraceData(FVector& TraceStart, FVector& TraceEnd, const boo
 
 	if (WeaponData.Spread > 0.f && bCalculateSpread)
 	{
-		const float SpreadAngleRad = FMath::DegreesToRadians(WeaponData.Spread / 2);
+		const float SpreadAngleRad = FMath::DegreesToRadians(WeaponData.Spread / 2) * SpreadMultiplier;
 		TraceDirection = FMath::VRandCone(TraceDirection, SpreadAngleRad);
 	}
 

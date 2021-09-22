@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UWeaponComponent* WeaponComponent = nullptr;
 
+	UFUNCTION()
+	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType);
+
 public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	AWeaponBase* GetCurrentWeapon() const { return WeaponComponent->GetCurrentWeapon(); }

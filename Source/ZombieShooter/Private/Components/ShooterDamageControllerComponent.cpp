@@ -57,7 +57,11 @@ void UShooterDamageControllerComponent::SetArmorModifier(const float Value)
 	ArmorModifier = Value;
 }
 
-void UShooterDamageControllerComponent::CalculateDamage(const float Damage, AController* Instigator)
+void UShooterDamageControllerComponent::CalculateDamage(const float Damage,
+                                                        AActor* DamagedActor,
+                                                        AController* Instigator,
+                                                        AActor* Causer,
+                                                        const UDamageType* DamageType)
 {
 	if (Damage <= 0.f) return;
 
@@ -69,7 +73,7 @@ void UShooterDamageControllerComponent::CalculateDamage(const float Damage, ACon
 		{
 			CurrentDamage -= GetArmor();
 			DecreaseArmor(GetArmor(), Instigator);
-			DecreaseHealth(CurrentDamage, Instigator);
+			DecreaseHealth(CurrentDamage);
 		}
 		else
 		{
@@ -78,6 +82,6 @@ void UShooterDamageControllerComponent::CalculateDamage(const float Damage, ACon
 	}
 	else
 	{
-		Super::CalculateDamage(Damage, Instigator);
+		Super::CalculateDamage(Damage, DamagedActor, Instigator, Causer, DamageType);
 	}
 }

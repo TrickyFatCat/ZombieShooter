@@ -68,6 +68,5 @@ protected:
 	UEntityResource* ArmorObject = nullptr;
 
 	// Damage
-
-	virtual void CalculateDamage(const float Damage, AController* Instigator) override;
+	virtual void CalculateDamage(const float Damage, AActor* DamagedActor, AController* Instigator, AActor* Causer, const UDamageType* DamageType) override;
 };

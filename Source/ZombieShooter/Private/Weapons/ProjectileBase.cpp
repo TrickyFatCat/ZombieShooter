@@ -105,14 +105,13 @@ void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent,
 
 	if (!World) return;
 
-	if (ProjectileData.bIsBouncing
-		&& !OtherActor->IsA(APawn::StaticClass())
-		&& !OtherActor->IsA(APlayerCharacter::StaticClass()))
-		return;
+	if (OtherActor->IsA(APlayerCharacter::StaticClass())) return;
+
+	if (ProjectileData.bIsBouncing && !OtherActor->IsA(APawn::StaticClass())) return;
 
 	ProjectileMovement->StopMovementImmediately();
 	TrailParticleComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	
+
 	if (ProjectileData.bIsExplosive)
 	{
 		DealRadialDamage();

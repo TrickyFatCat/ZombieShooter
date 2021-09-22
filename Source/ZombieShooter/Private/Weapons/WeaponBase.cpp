@@ -82,6 +82,13 @@ void AWeaponBase::GetHitScanData(FHitResult& HitResult, const FVector& TraceStar
 	                                     CollisionQueryParams);
 }
 
+AController* AWeaponBase::GetOwnerController() const
+{
+	APawn* Pawn = Cast<APawn>(GetOwner());
+
+	return Pawn ? Pawn->GetController() : nullptr;
+}
+
 void AWeaponBase::EnableShooting()
 {
 	bCanShoot = true;
@@ -99,7 +106,7 @@ void AWeaponBase::ApplyDamage(const FHitResult HitResult, const FVector& Directi
 	                                   FinalDamage,
 	                                   Direction,
 	                                   HitResult,
-	                                   GetInstigatorController(),
+	                                   GetOwnerController(),
 	                                   this,
 	                                   WeaponData.DamageType);
 

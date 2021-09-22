@@ -70,4 +70,6 @@ private:
 	void DealRadialDamage();
 
 	TSubclassOf<UDamageType> GetDamageType() const;
+
+	AController* GetOwnerController() const;
 };

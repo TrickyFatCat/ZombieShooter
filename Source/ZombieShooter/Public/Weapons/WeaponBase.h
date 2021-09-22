@@ -79,6 +79,8 @@ protected:
 
 	void GetHitScanData(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd) const;
 
+	AController* GetOwnerController() const;
+
 private:
 	UPROPERTY(EditDefaultsOnly,
 		BlueprintGetter=GetWeaponSocketName,

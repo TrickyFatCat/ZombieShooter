@@ -122,7 +122,7 @@ void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent,
 		                                   ProjectileData.Damage,
 		                                   Hit.Location,
 		                                   Hit,
-		                                   GetInstigatorController(),
+		                                   GetOwnerController(),
 		                                   this,
 		                                   GetDamageType());
 	}
@@ -136,6 +136,13 @@ TSubclassOf<UDamageType> AProjectileBase::GetDamageType() const
 	return !ProjectileData.DamageType ? UDamageType::StaticClass() : ProjectileData.DamageType;
 }
 
+AController* AProjectileBase::GetOwnerController() const
+{
+	APawn* Pawn = Cast<APawn>(GetOwner());
+
+	return Pawn ? Pawn->GetController() : nullptr;
+}
+
 void AProjectileBase::DealRadialDamage()
 {
 	if (!GetWorld()) return;
@@ -147,6 +154,6 @@ void AProjectileBase::DealRadialDamage()
 	                                    GetDamageType(),
 	                                    IgnoredActors,
 	                                    this,
-	                                    GetInstigatorController(),
+	                                    GetOwnerController(),
 	                                    ProjectileData.bDealFullDamage);
 }

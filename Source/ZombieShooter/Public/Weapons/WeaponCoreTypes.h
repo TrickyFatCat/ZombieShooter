@@ -126,11 +126,11 @@ struct FWeaponData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	FRecoilData RecoilData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Bullets")
-	EBulletType BulletType = EBulletType::HitScan;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Bullets", meta=(ClampMin="1", ClampMax="20"))
 	int32 BulletsInShot = 1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Bullets")
+	EBulletType BulletType = EBulletType::HitScan;
 
 	UPROPERTY(EditAnywhere,
 		BlueprintReadOnly,
@@ -138,6 +138,12 @@ struct FWeaponData
 		meta=(EditCondition="BulletType==EBulletType::HitScan"))
 	float HitScanDistance = 10000.f;
 
+	UPROPERTY(EditAnywhere,
+		BlueprintReadOnly,
+		Category="Bullets",
+		meta=(EditCondition="BulletType==EBulletType::HitScan"))
+	float HitScanImpulse = 10000.f;
+	
 	UPROPERTY(EditAnywhere,
 		BlueprintReadOnly,
 		Category="Bullets",

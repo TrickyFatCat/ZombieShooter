@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "Weapons/Components/WeaponFXComponent.h"
 #include "Core/ProjectUtils.h"
+#include "Kismet/GameplayStatics.h"
 #include "Weapons/ProjectileBase.h"
 
 AWeaponBase::AWeaponBase()
@@ -86,6 +87,30 @@ void AWeaponBase::EnableShooting()
 	bCanShoot = true;
 }
 
+void AWeaponBase::ApplyDamage(const FHitResult HitResult, const FVector& Direction)
+{
+	AActor* TargetActor = HitResult.GetActor();
+
+	if (!TargetActor) return;
+
+	const float FinalDamage = WeaponData.Damage / WeaponData.BulletsInShot;
+
+	UGameplayStatics::ApplyPointDamage(TargetActor,
+	                                   FinalDamage,
+	                                   Direction,
+	                                   HitResult,
+	                                   GetInstigatorController(),
+	                                   this,
+	                                   WeaponData.DamageType);
+
+	UMeshComponent* MeshComponent = Cast<UMeshComponent>(HitResult.Component);
+
+	if (MeshComponent && MeshComponent->GetCollisionObjectType() == ECollisionChannel::ECC_PhysicsBody)
+	{
+		MeshComponent->AddImpulse(Direction * WeaponData.HitScanImpulse);
+	}
+}
+
 void AWeaponBase::StartShooting()
 {
 	if (!CanShoot()) return;
@@ -144,20 +169,20 @@ void AWeaponBase::MakeShot()
 		}
 
 		GetHitScanData(HitResult, TraceStart, TraceEnd);
+		const FVector MuzzleLocation = WeaponMesh->GetSocketLocation(MuzzleSocketName);
+		const FVector EndPoint = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
+		const FVector Direction = (EndPoint - MuzzleLocation).GetSafeNormal();
 
 		if (WeaponData.BulletType == EBulletType::HitScan)
 		{
 			if (HitResult.bBlockingHit)
 			{
-				// Deal damage;
+				ApplyDamage(HitResult, Direction);
 				WeaponFXComponent->PlayImpactFX(HitResult);
 			}
 		}
 		else
 		{
-			const FVector MuzzleLocation = WeaponMesh->GetSocketLocation(MuzzleSocketName);
-			const FVector EndPoint = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
-			const FVector Direction = (EndPoint - MuzzleLocation).GetSafeNormal();
 			const FTransform SpawnTransform(FRotator::ZeroRotator, MuzzleLocation);
 			AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(
 				WeaponData.ProjectileClass,

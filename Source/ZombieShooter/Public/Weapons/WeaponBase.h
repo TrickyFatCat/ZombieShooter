@@ -96,6 +96,8 @@ private:
 	UFUNCTION()
 	void EnableShooting();
 
+	void ApplyDamage(const FHitResult HitResult, const FVector& Direction);
+
 	// Control
 public:
 	void StartShooting();

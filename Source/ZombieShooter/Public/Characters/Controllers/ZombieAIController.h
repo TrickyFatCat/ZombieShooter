@@ -18,13 +18,23 @@ public:
 	AZombieAIController();
 
 protected:
+	virtual void BeginPlay() override;
+	
+public:
 	virtual void Tick(float DeltaSeconds) override;
 
+protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviourTree", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
 	FName TargetActorKeyName = "TargetActor";
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehavorTree", meta=(AllowPrivateAccess="true"))
+	FName InitialLocationKeyName = "InitialLocation";
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehavorTree", meta=(AllowPrivateAccess="true"))
+	FName IsPatrollingKeyName = "IsPatrolling";
+	
 	AActor* GetTargetActor() const;
 };

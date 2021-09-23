@@ -22,6 +22,8 @@ public:
 
 	// Death
 protected:
+	virtual void BeginPlay() override;
+	
 	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType) override;
 
 private:
@@ -41,7 +43,9 @@ private:
 	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
 
 	private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|AI", meta=(AllowPrivateAccess))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|AI", meta=(AllowPrivateAccess="true"))
 	UBehaviorTree* BehaviorTree = nullptr;
+
+	
 	
 };

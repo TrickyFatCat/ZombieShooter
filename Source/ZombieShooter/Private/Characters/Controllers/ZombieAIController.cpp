@@ -10,6 +10,17 @@ AZombieAIController::AZombieAIController()
 {
 }
 
+void AZombieAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+
+	if (GetBlackboardComponent())
+	{
+		GetBlackboardComponent()->SetValueAsVector(InitialLocationKeyName, GetPawn()->GetActorLocation());
+	}
+}
+
 void AZombieAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -25,6 +36,8 @@ void AZombieAIController::OnPossess(APawn* InPawn)
 	{
 		RunBehaviorTree(AICharacter->GetBehaviorTree());
 	}
+	
+
 }
 
 AActor* AZombieAIController::GetTargetActor() const

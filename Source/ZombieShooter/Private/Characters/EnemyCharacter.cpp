@@ -20,6 +20,11 @@ AEnemyCharacter::AEnemyCharacter()
 	}
 }
 
+void AEnemyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType)
 {
 	Super::OnDeath(DeathInstigator, DeathCauser, DamageType);

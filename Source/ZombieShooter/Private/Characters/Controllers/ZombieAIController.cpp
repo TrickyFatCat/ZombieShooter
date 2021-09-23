@@ -14,10 +14,19 @@ void AZombieAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-	if (GetBlackboardComponent())
+	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
+	
+	if (BlackboardComponent)
 	{
-		GetBlackboardComponent()->SetValueAsVector(InitialLocationKeyName, GetPawn()->GetActorLocation());
+		BlackboardComponent->SetValueAsVector(InitialLocationKeyName, GetPawn()->GetActorLocation());
+
+		AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(GetPawn());
+
+		if (EnemyCharacter)
+		{
+			const bool IsPatrolling = EnemyCharacter->GetInitialBehavior() == EEnemyInitialBehavior::Patrol;
+			BlackboardComponent->SetValueAsBool(IsPatrollingKeyName, IsPatrolling);
+		}
 	}
 }
 
@@ -36,8 +45,6 @@ void AZombieAIController::OnPossess(APawn* InPawn)
 	{
 		RunBehaviorTree(AICharacter->GetBehaviorTree());
 	}
-	
-
 }
 
 AActor* AZombieAIController::GetTargetActor() const

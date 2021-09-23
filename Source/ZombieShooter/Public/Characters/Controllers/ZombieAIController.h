@@ -30,10 +30,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
 	FName TargetActorKeyName = "TargetActor";
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehavorTree", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
 	FName InitialLocationKeyName = "InitialLocation";
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehavorTree", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
 	FName IsPatrollingKeyName = "IsPatrolling";
 	
 	AActor* GetTargetActor() const;

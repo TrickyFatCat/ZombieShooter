@@ -9,6 +9,13 @@
 class UAnimMontage;
 class UBehaviorTree;
 
+UENUM(BlueprintType)
+enum class EEnemyInitialBehavior : uint8
+{
+	Idle,
+	Patrol
+};
+
 /**
  * 
  */
@@ -42,10 +49,12 @@ private:
 	public:
 	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
 
+	EEnemyInitialBehavior GetInitialBehavior() const { return InitialBehavior; }
+
 	private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|AI", meta=(AllowPrivateAccess="true"))
 	UBehaviorTree* BehaviorTree = nullptr;
 
-	
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Enemy|AI", meta=(AllowPrivateAccess="true"))
+	EEnemyInitialBehavior InitialBehavior = EEnemyInitialBehavior::Idle;
 };

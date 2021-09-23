@@ -7,6 +7,7 @@
 #include "EnemyCharacter.generated.h"
 
 class UAnimMontage;
+class UBehaviorTree;
 
 /**
  * 
@@ -15,6 +16,9 @@ UCLASS()
 class ZOMBIESHOOTER_API AEnemyCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
+
+public:
+	AEnemyCharacter();
 
 	// Death
 protected:
@@ -31,4 +35,13 @@ private:
 	TSubclassOf<UDamageType> BaseExplosionClass = nullptr;
 
 	const float DefaultLifeSpan = 5.f;
+
+	// Behaviour tree
+	public:
+	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
+
+	private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|AI", meta=(AllowPrivateAccess))
+	UBehaviorTree* BehaviorTree = nullptr;
+	
 };

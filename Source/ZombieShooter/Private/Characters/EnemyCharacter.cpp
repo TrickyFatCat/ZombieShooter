@@ -29,6 +29,14 @@ void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser,
 {
 	Super::OnDeath(DeathInstigator, DeathCauser, DamageType);
 
+	SetLifeSpan(DefaultLifeSpan);
+	AAIController* AIController = Cast<AAIController>(Controller);
+
+	if (AIController && AIController->BrainComponent)
+	{
+		AIController->BrainComponent->Cleanup();
+	}
+	
 	if (BaseExplosionClass && DamageType->IsA(BaseExplosionClass))
 	{
 		GetMesh()->SetSimulatePhysics(true);
@@ -39,14 +47,6 @@ void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser,
 	                                             DeathInstigator->GetPawn()->GetActorForwardVector());
 	const FName StartSectionName = DotProduct > 0.f ? DeathAnimMontageSections[0] : DeathAnimMontageSections[1];
 	PlayAnimMontage(DeathAnimMontage, 1.f, StartSectionName);
-	SetLifeSpan(DefaultLifeSpan);
-
-	AAIController* AIController = Cast<AAIController>(Controller);
-
-	if (AIController && AIController->BrainComponent)
-	{
-		AIController->BrainComponent->Cleanup();
-	}
 }
 
 bool AEnemyCharacter::IsRunning() const

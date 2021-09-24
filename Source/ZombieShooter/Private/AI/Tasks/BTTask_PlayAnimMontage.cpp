@@ -30,7 +30,7 @@ EBTNodeResult::Type UBTTask_PlayAnimMontage::ExecuteTask(UBehaviorTreeComponent&
 	MyCharacter->PlayAnimMontage(MontageToPlay, PlayRate, StartSectionName);
 
 	const int32 SectionIndex = StartSectionName == NAME_None ? 0 : MontageToPlay->GetSectionIndex(StartSectionName);
-	const float FinishDelay = MontageToPlay->GetSectionLength(SectionIndex);
+	const float FinishDelay = MontageToPlay->GetSectionLength(SectionIndex) / (PlayRate <= 0.f ? 1.f : PlayRate);
 
 	if (FinishDelay > 0)
 	{

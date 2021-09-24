@@ -49,10 +49,10 @@ void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser,
 	}
 }
 
-bool AEnemyCharacter::GetIsRunning() const
+bool AEnemyCharacter::IsRunning() const
 {
-	return GetCharacterMovement()->MaxWalkSpeed > MovementData.RunningSpedDefault + MovementData.
-		RunningSpeedRandomDeviation;
+	return GetCharacterMovement()->MaxWalkSpeed > MovementData.WalkingSpeedDefault + MovementData.
+		WalkingSpeedRandomDeviation;
 }
 
 void AEnemyCharacter::SetIsRunning(const bool bIsRunning) const

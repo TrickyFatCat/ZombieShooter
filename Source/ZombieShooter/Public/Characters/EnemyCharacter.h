@@ -65,7 +65,7 @@ public:
 	FEnemyMovementData GetMovementData() const { return MovementData; }
 	
 	UFUNCTION(BlueprintPure, Category="Enemy")
-	bool GetIsRunning() const;
+	bool IsRunning() const;
 
 	void SetIsRunning(const bool bIsRunning) const;
 

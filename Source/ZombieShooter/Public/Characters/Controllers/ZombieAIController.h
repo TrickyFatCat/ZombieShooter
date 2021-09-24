@@ -37,6 +37,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
 	FName IsPatrollingKeyName = "IsPatrolling";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
+	FName IsAttackingKeyName = "IsAttacking";
 	
 	AActor* GetTargetActor() const;
 

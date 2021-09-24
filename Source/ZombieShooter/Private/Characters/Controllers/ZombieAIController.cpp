@@ -47,6 +47,11 @@ void AZombieAIController::OnPossess(APawn* InPawn)
 	{
 		RunBehaviorTree(AICharacter->GetBehaviorTree());
 	}
+
+	if (GetBlackboardComponent())
+	{
+		GetBlackboardComponent()->SetValueAsBool(IsAttackingKeyName, false);
+	}
 }
 
 AActor* AZombieAIController::GetTargetActor() const

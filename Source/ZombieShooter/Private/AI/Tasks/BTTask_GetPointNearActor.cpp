@@ -23,11 +23,12 @@ EBTNodeResult::Type UBTTask_GetPointNearActor::ExecuteTask(UBehaviorTreeComponen
 
 	FNavLocation TargetNavLocation;
 	bool bLocationFound = false;
-	const FRotator SearchCone = FRotator(0.f, FMath::FRandRange(-SearchConeHalfAngle, SearchConeHalfAngle), 0.f);
 
 	do
 	{
-		FVector DirectionToOwner = SearchCone.RotateVector(Owner->GetActorLocation() - TargetActor->GetTargetLocation()).GetSafeNormal();
+		const FRotator SearchCone = FRotator(0.f, FMath::FRandRange(-SearchConeHalfAngle, SearchConeHalfAngle), 0.f);
+		const FVector DirectionToOwner = SearchCone.RotateVector(Owner->GetActorLocation() - TargetActor->GetTargetLocation())
+		                                     .GetSafeNormal();
 		const FVector Point = TargetActor->GetActorLocation() + DirectionToOwner * FMath::FRandRange(
 			DistanceMin,
 			DistanceMax);

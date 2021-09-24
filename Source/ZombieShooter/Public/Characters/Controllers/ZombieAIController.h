@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "AI/ZombiePerceptionComponent.h"
 #include "ZombieAIController.generated.h"
 
 /**
@@ -26,6 +27,7 @@ public:
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
+	// Behaviour tree
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
 	FName TargetActorKeyName = "TargetActor";
@@ -37,4 +39,9 @@ private:
 	FName IsPatrollingKeyName = "IsPatrolling";
 	
 	AActor* GetTargetActor() const;
+
+	// Perception
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
+	UZombiePerceptionComponent* Perception = nullptr;
 };

@@ -4,10 +4,12 @@
 #include "Characters/Controllers/ZombieAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/EnemyCharacter.h"
+#include "AI/ZombiePerceptionComponent.h"
 
 
 AZombieAIController::AZombieAIController()
 {
+	Perception = CreateDefaultSubobject<UZombiePerceptionComponent>("PerceptionComponent");
 }
 
 void AZombieAIController::BeginPlay()

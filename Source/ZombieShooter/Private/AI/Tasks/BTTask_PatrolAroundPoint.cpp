@@ -9,7 +9,7 @@
 
 UBTTask_PatrolAroundPoint::UBTTask_PatrolAroundPoint()
 {
-	NodeName="Patrol around a point";
+	NodeName="Patrol Around A Point";
 }
 
 EBTNodeResult::Type UBTTask_PatrolAroundPoint::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)

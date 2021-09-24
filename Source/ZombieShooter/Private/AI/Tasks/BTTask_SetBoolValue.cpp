@@ -7,7 +7,7 @@
 
 UBTTask_SetBoolValue::UBTTask_SetBoolValue()
 {
-	NodeName = "SetBoolValue";
+	NodeName = "Set Bool Value";
 }
 
 EBTNodeResult::Type UBTTask_SetBoolValue::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)

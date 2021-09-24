@@ -27,7 +27,6 @@ EBTNodeResult::Type UBTTask_PlayAnimMontage::ExecuteTask(UBehaviorTreeComponent&
 
 	ACharacter* const MyCharacter = Cast<ACharacter>(MyController->GetPawn());
 
-
 	MyCharacter->PlayAnimMontage(MontageToPlay, PlayRate, StartSectionName);
 
 	const int32 SectionIndex = StartSectionName == NAME_None ? 0 : MontageToPlay->GetSectionIndex(StartSectionName);

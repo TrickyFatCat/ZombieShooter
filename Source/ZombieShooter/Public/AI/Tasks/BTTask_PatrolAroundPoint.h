@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "RandomPatrollingTask.generated.h"
+#include "BTTask_PatrolAroundPoint.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ZOMBIESHOOTER_API URandomPatrollingTask : public UBTTaskNode
+class ZOMBIESHOOTER_API UBTTask_PatrolAroundPoint : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	URandomPatrollingTask();
+	UBTTask_PatrolAroundPoint();
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 

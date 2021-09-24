@@ -1,18 +1,18 @@
 // Created by Artyom Volkov during the UE4 course
 
 
-#include "AI/Tasks/RandomPatrollingTask.h"
+#include "AI/Tasks/BTTask_PatrolAroundPoint.h"
 
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-URandomPatrollingTask::URandomPatrollingTask()
+UBTTask_PatrolAroundPoint::UBTTask_PatrolAroundPoint()
 {
-	NodeName="Find random point in radius";
+	NodeName="Patrol around a point";
 }
 
-EBTNodeResult::Type URandomPatrollingTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_PatrolAroundPoint::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComponent = OwnerComp.GetBlackboardComponent();

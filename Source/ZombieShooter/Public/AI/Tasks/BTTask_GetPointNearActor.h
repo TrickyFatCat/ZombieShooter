@@ -34,4 +34,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Node")
 	float SearchRadius = 500.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Node")
+	float SearchConeHalfAngle = 90.f;
 };

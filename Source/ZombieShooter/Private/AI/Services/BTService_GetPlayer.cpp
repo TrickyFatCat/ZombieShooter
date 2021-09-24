@@ -9,7 +9,7 @@
 
 UBTService_GetPlayer::UBTService_GetPlayer()
 {
-	NodeName = "Get player";
+	NodeName = "Get Player";
 }
 
 void UBTService_GetPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -25,11 +25,6 @@ void UBTService_GetPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* No
 		{
 			AActor* Player = PerceptionComponent->GetPlayer();
 			Blackboard->SetValueAsObject(TargetActorKey.SelectedKeyName, Player);
-
-			if (Player)
-			{
-				Blackboard->SetValueAsVector(TargetActorLocationKey.SelectedKeyName, Player->GetActorLocation());
-			}
 		}
 	}
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);

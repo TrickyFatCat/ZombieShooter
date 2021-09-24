@@ -21,8 +21,5 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Node")
 	FBlackboardKeySelector TargetActorKey;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Node")
-	FBlackboardKeySelector TargetActorLocationKey;
-
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

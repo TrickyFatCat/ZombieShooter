@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/BaseCharacter.h"
+#include "Characters/EnemyCoreTypes.h"
 #include "EnemyCharacter.generated.h"
 
 class UAnimMontage;
@@ -30,7 +31,7 @@ public:
 	// Death
 protected:
 	virtual void BeginPlay() override;
-	
+
 	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType) override;
 
 private:
@@ -46,15 +47,29 @@ private:
 	const float DefaultLifeSpan = 5.f;
 
 	// Behaviour tree
-	public:
+public:
 	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
 
 	EEnemyInitialBehavior GetInitialBehavior() const { return InitialBehavior; }
 
-	private:
+private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|AI", meta=(AllowPrivateAccess="true"))
 	UBehaviorTree* BehaviorTree = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Enemy|AI", meta=(AllowPrivateAccess="true"))
 	EEnemyInitialBehavior InitialBehavior = EEnemyInitialBehavior::Idle;
+
+	// Movement
+public:
+	UFUNCTION(BlueprintGetter, Category="Enemy")
+	FEnemyMovementData GetMovementData() const { return MovementData; }
+	
+	UFUNCTION(BlueprintPure, Category="Enemy")
+	bool GetIsRunning() const;
+
+	void SetIsRunning(const bool bIsRunning) const;
+
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetMovementData, Category="Enemy", meta=(AllowPrivateAccess="true"))
+	FEnemyMovementData MovementData;
 };

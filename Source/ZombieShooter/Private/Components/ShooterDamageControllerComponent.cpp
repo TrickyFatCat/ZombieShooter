@@ -3,6 +3,8 @@
 
 #include "Components/ShooterDamageControllerComponent.h"
 
+#include "Perception/AISense_Damage.h"
+
 void UShooterDamageControllerComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -82,6 +84,20 @@ void UShooterDamageControllerComponent::CalculateDamage(const float Damage,
 	}
 	else
 	{
-		Super::CalculateDamage(Damage, DamagedActor, Instigator, Causer, DamageType);
+		Super::CalculateDamage(CurrentDamage, DamagedActor, Instigator, Causer, DamageType);
 	}
+
+	if (GetIsDead()) return;
+
+	ReportDamageEvent(CurrentDamage, Instigator);
+}
+
+void UShooterDamageControllerComponent::ReportDamageEvent(const float Damage, const AController* Instigator) const
+{
+	UAISense_Damage::ReportDamageEvent(GetWorld(),
+	                                   GetOwner(),
+	                                   Instigator->GetPawn(),
+	                                   Damage,
+	                                   Instigator->GetPawn()->GetActorLocation(),
+	                                   GetOwner()->GetActorLocation());
 }

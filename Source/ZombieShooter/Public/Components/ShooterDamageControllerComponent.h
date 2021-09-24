@@ -69,4 +69,5 @@ protected:
 
 	// Damage
 	virtual void CalculateDamage(const float Damage, AActor* DamagedActor, AController* Instigator, AActor* Causer, const UDamageType* DamageType) override;
+	void ReportDamageEvent(const float Damage, const AController* Instigator) const;
 };

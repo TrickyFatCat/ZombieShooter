@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimationMontage")
 	FName StartSectionName = NAME_None;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimationMontage", meta=(ClampMin="0", ClampMax="1"))
+	float Chance = 1.f;
+
 	UPROPERTY()
 	UBehaviorTreeComponent* MyOwnerComp;
 	

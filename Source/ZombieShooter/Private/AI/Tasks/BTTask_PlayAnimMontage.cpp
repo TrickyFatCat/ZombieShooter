@@ -17,6 +17,10 @@ UBTTask_PlayAnimMontage::UBTTask_PlayAnimMontage()
 
 EBTNodeResult::Type UBTTask_PlayAnimMontage::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	const float DiceRoll = FMath::FRand();
+
+	if (DiceRoll > Chance) return EBTNodeResult::Succeeded;
+	
 	AAIController* const MyController = OwnerComp.GetAIOwner();
 
 	// reset timer handle

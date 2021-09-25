@@ -110,7 +110,7 @@ void AWeaponBase::ApplyDamage(const FHitResult HitResult, const FVector& Directi
 
 	UMeshComponent* MeshComponent = Cast<UMeshComponent>(HitResult.Component);
 
-	if (MeshComponent && MeshComponent->GetCollisionObjectType() == ECollisionChannel::ECC_PhysicsBody)
+	if (MeshComponent && MeshComponent->IsSimulatingPhysics())
 	{
 		MeshComponent->AddImpulse(Direction * WeaponData.HitScanImpulse);
 	}

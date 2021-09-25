@@ -20,7 +20,7 @@ EBTNodeResult::Type UBTTask_PlayAnimMontage::ExecuteTask(UBehaviorTreeComponent&
 	const float DiceRoll = FMath::FRand();
 
 	if (DiceRoll > Chance) return EBTNodeResult::Succeeded;
-	
+
 	AAIController* const MyController = OwnerComp.GetAIOwner();
 
 	// reset timer handle
@@ -30,10 +30,21 @@ EBTNodeResult::Type UBTTask_PlayAnimMontage::ExecuteTask(UBehaviorTreeComponent&
 	if (!MontageToPlay && !MyController && !MyController->GetPawn()) return EBTNodeResult::Failed;
 
 	ACharacter* const MyCharacter = Cast<ACharacter>(MyController->GetPawn());
+	PlayRate += FMath::FRandRange(-RandomDeviation, RandomDeviation);
+
+	int32 SectionIndex = 0;
+
+	if (bPlayRandomSection)
+	{
+		SectionIndex = FMath::RandRange(0, SectionsNumber - 1);
+		StartSectionName = MontageToPlay->GetSectionName(SectionIndex);
+	}
+	else
+	{
+		SectionIndex = StartSectionName == NAME_None ? 0 : MontageToPlay->GetSectionIndex(StartSectionName);
+	}
 
 	MyCharacter->PlayAnimMontage(MontageToPlay, PlayRate, StartSectionName);
-
-	const int32 SectionIndex = StartSectionName == NAME_None ? 0 : MontageToPlay->GetSectionIndex(StartSectionName);
 	const float FinishDelay = MontageToPlay->GetSectionLength(SectionIndex) / (PlayRate <= 0.f ? 1.f : PlayRate);
 
 	if (FinishDelay > 0)
@@ -45,7 +56,7 @@ EBTNodeResult::Type UBTTask_PlayAnimMontage::ExecuteTask(UBehaviorTreeComponent&
 		                                                     false);
 		return EBTNodeResult::InProgress;
 	}
-	
+
 	return EBTNodeResult::Succeeded;
 }
 

@@ -72,4 +72,25 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintGetter=GetMovementData, Category="Enemy", meta=(AllowPrivateAccess="true"))
 	FEnemyMovementData MovementData;
+
+	// Stun
+public:
+	bool GetIsStunned() const { return bIsStunned; };
+	void SetIsStunned(const bool Value);
+protected:
+	UPROPERTY(VisibleAnywhere)
+	bool bIsStunned = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|HitReaction")
+	UAnimMontage* HitReactionMontage = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|HitReaction")
+	TMap<TSubclassOf<UDamageType>, float> StunChancesMap;
+	
+	UFUNCTION()
+	virtual void OnTakeDamage(AActor* DamageActor,
+	                             float Damage,
+	                             const UDamageType* DamageType,
+	                             AController* InstigatedBy,
+	                             AActor* DamageCauser);
 };

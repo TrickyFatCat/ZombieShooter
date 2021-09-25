@@ -5,6 +5,7 @@
 
 #include "BrainComponent.h"
 #include "Characters/Controllers/ZombieAIController.h"
+#include "Components/ShooterDamageControllerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AEnemyCharacter::AEnemyCharacter()
@@ -23,6 +24,8 @@ AEnemyCharacter::AEnemyCharacter()
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OnTakeAnyDamage.AddDynamic(this, &AEnemyCharacter::OnTakeDamage);
 }
 
 void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType)
@@ -74,4 +77,40 @@ void AEnemyCharacter::SetIsRunning(const bool bIsRunning) const
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+}
+
+void AEnemyCharacter::SetIsStunned(const bool Value)
+{
+	if (bIsStunned == Value) return;
+
+	AAIController* AIController = Cast<AAIController>(GetController());
+
+	if (!AIController) return;
+	
+	bIsStunned = Value;
+
+	if (bIsStunned)
+	{
+		PlayAnimMontage(HitReactionMontage);
+		AIController->StopMovement();
+	}
+}
+
+void AEnemyCharacter::OnTakeDamage(AActor* DamageActor,
+                                   float Damage,
+                                   const UDamageType* DamageType,
+                                   AController* InstigatedBy,
+                                   AActor* DamageCauser)
+{
+	if (DamageControllerComponent->GetIsDead() || bIsStunned || !StunChancesMap.Contains(DamageType->GetClass()))
+		return;
+
+	if (!HitReactionMontage) return;
+
+	const float DiceRoll = FMath::FRand();
+
+	if (DiceRoll <= StunChancesMap[DamageType->GetClass()])
+	{
+		SetIsStunned(true);
+	}
 }

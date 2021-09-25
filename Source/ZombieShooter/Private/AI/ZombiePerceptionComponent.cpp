@@ -11,11 +11,11 @@
 AActor* UZombiePerceptionComponent::GetPlayer() const
 {
 	TArray<AActor*> PerceivedActors;
-	GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), PerceivedActors);
+	GetCurrentlyPerceivedActors(UAISense_Damage::StaticClass(), PerceivedActors);
 
 	if (PerceivedActors.Num() == 0)
 	{
-		GetCurrentlyPerceivedActors(UAISense_Damage::StaticClass(), PerceivedActors);
+		GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), PerceivedActors);
 
 		if (PerceivedActors.Num() == 0) return nullptr;
 	}
@@ -34,7 +34,8 @@ AActor* UZombiePerceptionComponent::GetPlayer() const
 	{
 		if (!PerceivedActor->IsA(APlayerCharacter::StaticClass())) continue;
 
-		UShooterDamageControllerComponent* DamageController = PerceivedActor->FindComponentByClass<UShooterDamageControllerComponent>();
+		UShooterDamageControllerComponent* DamageController = PerceivedActor->FindComponentByClass<
+			UShooterDamageControllerComponent>();
 
 		if (DamageController && !DamageController->GetIsDead())
 		{

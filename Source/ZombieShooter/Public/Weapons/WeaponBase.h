@@ -81,6 +81,8 @@ protected:
 
 	AController* GetOwnerController() const;
 
+	int32 CalculateDamage() const { return FMath::Max(WeaponData.Damage / WeaponData.BulletsInShot, 1); }
+
 private:
 	UPROPERTY(EditDefaultsOnly,
 		BlueprintGetter=GetWeaponSocketName,

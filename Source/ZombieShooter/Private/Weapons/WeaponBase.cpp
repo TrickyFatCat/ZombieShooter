@@ -100,10 +100,8 @@ void AWeaponBase::ApplyDamage(const FHitResult HitResult, const FVector& Directi
 
 	if (!TargetActor) return;
 
-	const float FinalDamage = WeaponData.Damage / WeaponData.BulletsInShot;
-
 	UGameplayStatics::ApplyPointDamage(TargetActor,
-	                                   FinalDamage,
+	                                   CalculateDamage(),
 	                                   Direction,
 	                                   HitResult,
 	                                   GetOwnerController(),
@@ -197,7 +195,7 @@ void AWeaponBase::MakeShot()
 
 			if (Projectile)
 			{
-				Projectile->SetDirectionAndDamage(Direction, WeaponData.DamageType, WeaponData.Damage);
+				Projectile->SetDirectionAndDamage(Direction, WeaponData.DamageType, CalculateDamage());
 				Projectile->SetOwner(GetOwner());
 				Projectile->FinishSpawning(SpawnTransform);
 			}

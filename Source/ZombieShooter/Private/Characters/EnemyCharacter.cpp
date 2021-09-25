@@ -38,18 +38,10 @@ void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser,
 	if (AIController && AIController->BrainComponent)
 	{
 		AIController->BrainComponent->Cleanup();
+		AIController->StopMovement();
 	}
 	
-	if (BaseExplosionClass && DamageType->IsA(BaseExplosionClass))
-	{
-		GetMesh()->SetSimulatePhysics(true);
-		return;
-	}
-
-	const float DotProduct = FVector::DotProduct(GetActorForwardVector(),
-	                                             DeathInstigator->GetPawn()->GetActorForwardVector());
-	const FName StartSectionName = DotProduct > 0.f ? DeathAnimMontageSections[0] : DeathAnimMontageSections[1];
-	PlayAnimMontage(DeathAnimMontage, 1.f, StartSectionName);
+	GetMesh()->SetSimulatePhysics(true);
 }
 
 bool AEnemyCharacter::IsRunning() const
@@ -93,6 +85,10 @@ void AEnemyCharacter::SetIsStunned(const bool Value)
 	{
 		PlayAnimMontage(HitReactionMontage);
 		AIController->StopMovement();
+	}
+	else
+	{
+		AIController->BrainComponent->RestartLogic();
 	}
 }
 

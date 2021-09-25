@@ -86,10 +86,6 @@ void AEnemyCharacter::SetIsStunned(const bool Value)
 		PlayAnimMontage(HitReactionMontage);
 		AIController->StopMovement();
 	}
-	else
-	{
-		AIController->BrainComponent->RestartLogic();
-	}
 }
 
 void AEnemyCharacter::OnTakeDamage(AActor* DamageActor,

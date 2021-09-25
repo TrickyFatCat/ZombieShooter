@@ -4,9 +4,11 @@
 #include "Characters/EnemyCharacter.h"
 
 #include "BrainComponent.h"
+#include "Animation/AnimInstanceProxy.h"
 #include "Characters/Controllers/ZombieAIController.h"
 #include "Components/ShooterDamageControllerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AEnemyCharacter::AEnemyCharacter()
 {
@@ -40,7 +42,7 @@ void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser,
 		AIController->BrainComponent->Cleanup();
 		AIController->StopMovement();
 	}
-	
+
 	GetMesh()->SetSimulatePhysics(true);
 }
 
@@ -78,7 +80,7 @@ void AEnemyCharacter::SetIsStunned(const bool Value)
 	AAIController* AIController = Cast<AAIController>(GetController());
 
 	if (!AIController) return;
-	
+
 	bIsStunned = Value;
 
 	if (bIsStunned)
@@ -104,5 +106,37 @@ void AEnemyCharacter::OnTakeDamage(AActor* DamageActor,
 	if (DiceRoll <= StunChancesMap[DamageType->GetClass()])
 	{
 		SetIsStunned(true);
+	}
+}
+
+void AEnemyCharacter::AggroNeighbours()
+{
+	if (!GetWorld()) return;
+
+	TArray<FHitResult> HitResults;
+	AZombieAIController* AIController = nullptr;
+
+	UKismetSystemLibrary::SphereTraceMulti(GetWorld(),
+	                                       GetActorLocation(),
+	                                       GetActorLocation(),
+	                                       ScreamRadius,
+	                                       UEngineTypes::ConvertToTraceType(ECC_Visibility),
+	                                       false,
+	                                       {this},
+	                                       EDrawDebugTrace::ForDuration,
+	                                       HitResults,
+	                                       true);
+
+	for (auto HitResult : HitResults)
+	{
+		AEnemyCharacter* Character = Cast<AEnemyCharacter>(HitResult.GetActor());
+
+		if (!Character) continue;
+
+		AIController = Cast<AZombieAIController>(Character->GetController());
+		
+		if (!AIController) continue;
+
+		AIController->SetTargetActor(Cast<AZombieAIController>(GetController())->GetTargetActor());
 	}
 }

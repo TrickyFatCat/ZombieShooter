@@ -28,6 +28,10 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 	// Behaviour tree
+public:
+	AActor* GetTargetActor() const;
+	
+	void SetTargetActor(AActor* Value);
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
 	FName TargetActorKeyName = "TargetActor";
@@ -41,7 +45,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
 	FName IsAttackingKeyName = "IsAttacking";
 	
-	AActor* GetTargetActor() const;
 
 	// Perception
 protected:

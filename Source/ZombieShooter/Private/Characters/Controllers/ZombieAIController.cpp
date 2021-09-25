@@ -60,3 +60,10 @@ AActor* AZombieAIController::GetTargetActor() const
 
 	return Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(TargetActorKeyName));
 }
+
+void AZombieAIController::SetTargetActor(AActor* Value)
+{
+	if (!GetBlackboardComponent()) return;
+
+	GetBlackboardComponent()->SetValueAsObject(TargetActorKeyName, Value);	
+}

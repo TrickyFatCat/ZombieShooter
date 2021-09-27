@@ -1,7 +1,7 @@
 // Created by Artyom Volkov during the UE4 course
 
 
-#include "Actors/EnemySpawnPoint.h"
+#include "Actors/EnemySpawns/EnemySpawnPoint.h"
 #include "Components/ArrowComponent.h"
 
 AEnemySpawnPoint::AEnemySpawnPoint()

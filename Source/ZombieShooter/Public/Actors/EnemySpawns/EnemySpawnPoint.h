@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/BaseEnemySpawn.h"
+#include "Actors/EnemySpawns/BaseEnemySpawn.h"
 #include "EnemySpawnPoint.generated.h"
 
 class UArrowComponent;

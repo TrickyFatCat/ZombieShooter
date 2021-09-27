@@ -1,7 +1,7 @@
 // Created by Artyom Volkov during the UE4 course
 
 
-#include "Actors/BaseEnemySpawn.h"
+#include "Actors/EnemySpawns/BaseEnemySpawn.h"
 
 #include "Characters/EnemyCharacter.h"
 #include "Math/TransformCalculus3D.h"

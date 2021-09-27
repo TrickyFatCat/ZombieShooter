@@ -9,6 +9,8 @@
 class AEnemyCharacter;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemySpawnedSignature, AEnemyCharacter*, SpawnedCharacter);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSpawnStartedSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSpawnFinishedSignature);
 
 USTRUCT(BlueprintType)
 struct FSpawnData
@@ -35,9 +37,16 @@ protected:
 
 public:
 	virtual void Tick(float DeltaTime) override;
+	
 	UPROPERTY(BlueprintAssignable, Category="Spawn")
 	FOnEnemySpawnedSignature OnEnemySpawned;
 
+	UPROPERTY(BlueprintAssignable, Category="Spawn")
+	FOnSpawnStartedSignature OnSpawnStarted;
+	
+	UPROPERTY(BlueprintAssignable, Category="Spawn")
+	FOnSpawnFinishedSignature OnSpawnFinished;
+	
 	UFUNCTION(BlueprintCallable, Category="Spawn")
 	void StartSpawn();
 

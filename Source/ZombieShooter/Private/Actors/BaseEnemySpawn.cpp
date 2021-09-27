@@ -35,8 +35,8 @@ void ABaseEnemySpawn::StartSpawn()
 	if (SpawnTable.Num() <= 0 || SpawnedEnemiesMax <= 0) return;
 
 	ProcessSpawnQueue();
-
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ABaseEnemySpawn::ProcessSpawnQueue, SpawnPause, true);
+	OnSpawnStarted.Broadcast();
 }
 
 void ABaseEnemySpawn::StopSpawn()
@@ -107,6 +107,7 @@ bool ABaseEnemySpawn::IsEnemyIdOutOfBounds()
 	if (CurrentEnemyID >= CachedSpawnTable.Num())
 	{
 		StopSpawn();
+		OnSpawnFinished.Broadcast();
 		return true;
 	}
 

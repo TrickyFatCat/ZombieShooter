@@ -12,5 +12,5 @@ AEnemySpawnPoint::AEnemySpawnPoint()
 
 FTransform AEnemySpawnPoint::CalculateSpawnTransform()
 {
-	return GetActorTransform();
+	return FTransform(FRotator(0.f, GetActorRotation().Yaw, 0.f), GetActorLocation(), FVector::OneVector);
 }

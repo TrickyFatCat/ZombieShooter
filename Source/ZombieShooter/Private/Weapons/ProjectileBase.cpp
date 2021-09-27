@@ -155,5 +155,6 @@ void AProjectileBase::DealRadialDamage()
 	                                    IgnoredActors,
 	                                    this,
 	                                    GetOwnerController(),
-	                                    ProjectileData.bDealFullDamage);
+	                                    ProjectileData.bDealFullDamage,
+	                                    ECC_GameTraceChannel1);
 }

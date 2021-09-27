@@ -8,6 +8,7 @@
 #include "Characters/Controllers/ZombieAIController.h"
 #include "Components/ShooterDamageControllerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 AEnemyCharacter::AEnemyCharacter()
@@ -44,6 +45,15 @@ void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser,
 	}
 
 	GetMesh()->SetSimulatePhysics(true);
+}
+
+void AEnemyCharacter::AttackPlayer() const
+{
+	AZombieAIController* AIController = Cast<AZombieAIController>(GetController());
+
+	if (!AIController) return;
+
+	AIController->SetTargetActor(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 }
 
 bool AEnemyCharacter::IsRunning() const
@@ -134,7 +144,7 @@ void AEnemyCharacter::AggroNeighbours()
 		if (!Character) continue;
 
 		AIController = Cast<AZombieAIController>(Character->GetController());
-		
+
 		if (!AIController) continue;
 
 		AIController->SetTargetActor(Cast<AZombieAIController>(GetController())->GetTargetActor());

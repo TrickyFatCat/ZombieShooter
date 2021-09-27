@@ -46,6 +46,11 @@ private:
 
 	const float DefaultLifeSpan = 5.f;
 
+	// Commands
+public:
+	UFUNCTION(BlueprintCallable, Category="Enemy")
+	void AttackPlayer() const;
+
 	// Behaviour tree
 public:
 	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }

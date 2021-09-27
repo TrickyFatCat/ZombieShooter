@@ -123,7 +123,7 @@ void AEnemyCharacter::AggroNeighbours()
 	                                       UEngineTypes::ConvertToTraceType(ECC_Visibility),
 	                                       false,
 	                                       {this},
-	                                       EDrawDebugTrace::ForDuration,
+	                                       EDrawDebugTrace::None,
 	                                       HitResults,
 	                                       true);
 

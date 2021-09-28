@@ -54,6 +54,8 @@ void AEnemyCharacter::AttackPlayer() const
 	if (!AIController) return;
 
 	AIController->SetTargetActor(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	AIController->SetIsAttacking(true);
+	SetIsRunning(true);
 }
 
 bool AEnemyCharacter::IsRunning() const

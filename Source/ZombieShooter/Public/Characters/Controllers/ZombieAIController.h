@@ -32,6 +32,8 @@ public:
 	AActor* GetTargetActor() const;
 	
 	void SetTargetActor(AActor* Value);
+
+	void SetIsAttacking(bool Value);
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
 	FName TargetActorKeyName = "TargetActor";

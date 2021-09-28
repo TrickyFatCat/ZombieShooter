@@ -67,3 +67,10 @@ void AZombieAIController::SetTargetActor(AActor* Value)
 
 	GetBlackboardComponent()->SetValueAsObject(TargetActorKeyName, Value);	
 }
+
+void AZombieAIController::SetIsAttacking(bool Value)
+{
+	if (!GetBlackboardComponent()) return;
+
+	GetBlackboardComponent()->SetValueAsBool(IsAttackingKeyName, Value);
+}

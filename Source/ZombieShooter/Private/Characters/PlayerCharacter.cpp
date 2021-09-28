@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/ShooterDamageControllerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "TrickyPrototyping/Public/Components/InteractionQueueComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -17,6 +18,8 @@ APlayerCharacter::APlayerCharacter()
 	PlayerArms->CastShadow = false;
 	
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
+
+	InteractionQueue = CreateDefaultSubobject<UInteractionQueueComponent>("InteractionQueue");
 }
 
 void APlayerCharacter::BeginPlay()
@@ -110,6 +113,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, WeaponComponent, &UWeaponComponent::StartShooting);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, WeaponComponent, &UWeaponComponent::StopShooting);
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UWeaponComponent::Reload);
+
+	// Other
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerCharacter::StartInteraction);
 }
 
 void APlayerCharacter::MoveForward(const float AxisValue)
@@ -176,4 +182,9 @@ void APlayerCharacter::AddCameraRecoil(const float RecoilPitch, const float Reco
 {
 	AddControllerPitchInput(-RecoilPitch);
 	AddControllerYawInput(FMath::FRandRange(-RecoilYaw, RecoilYaw));
+}
+
+void APlayerCharacter::StartInteraction()
+{
+	InteractionQueue->Interact();
 }

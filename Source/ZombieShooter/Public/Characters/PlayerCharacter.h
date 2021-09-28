@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class UWeaponComponent;
+class UInteractionQueueComponent;
 
 /**
  * 
@@ -42,6 +43,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	USkeletalMeshComponent* PlayerArms = nullptr;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UInteractionQueueComponent* InteractionQueue = nullptr;
 	
 	// Movement
 public:
@@ -89,4 +93,8 @@ private:
 public:
 	UFUNCTION()
 	void AddCameraRecoil(const float RecoilPitch, const float RecoilYaw);
+
+	// Interaction
+private:
+	void StartInteraction();
 };

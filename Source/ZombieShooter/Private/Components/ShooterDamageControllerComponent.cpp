@@ -89,15 +89,17 @@ void UShooterDamageControllerComponent::CalculateDamage(const float Damage,
 
 	if (GetIsDead()) return;
 
-	ReportDamageEvent(CurrentDamage, Instigator);
+	ReportDamageEvent(CurrentDamage, Instigator, Causer);
 }
 
-void UShooterDamageControllerComponent::ReportDamageEvent(const float Damage, const AController* Instigator) const
+void UShooterDamageControllerComponent::ReportDamageEvent(const float Damage, const AController* Instigator, const AActor* Causer) const
 {
+	AActor* InstigatorPawn = Instigator == nullptr ? nullptr : Instigator->GetPawn();
+	const FVector EventLocation = Instigator == nullptr ? Causer->GetActorLocation() : InstigatorPawn->GetActorLocation();
 	UAISense_Damage::ReportDamageEvent(GetWorld(),
 	                                   GetOwner(),
-	                                   Instigator->GetPawn(),
+	                                   InstigatorPawn,
 	                                   Damage,
-	                                   Instigator->GetPawn()->GetActorLocation(),
+	                                   EventLocation,
 	                                   GetOwner()->GetActorLocation());
 }

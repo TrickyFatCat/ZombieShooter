@@ -3,6 +3,7 @@
 
 #include "Actors/ExplosiveBarrel.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "ZombieShooter/ZombieShooter.h"
 #include "Components/StaticMeshComponent.h"
@@ -24,7 +25,6 @@ void AExplosiveBarrel::BeginPlay()
 	Super::BeginPlay();
 
 	OnTakeAnyDamage.AddDynamic(this, &AExplosiveBarrel::OnTakeDamage);
-	// OnTakeRadialDamage.AddDynamic(this, &AExplosiveBarrel::OnRadialDamage);
 }
 
 void AExplosiveBarrel::Tick(float DeltaTime)
@@ -39,7 +39,19 @@ void AExplosiveBarrel::OnTakeDamage(AActor* DamagedActor,
                                     AActor* DamageCauser)
 {
 	if (bIsExploded) return;
+
+	ExplosionDelay = ExplosionDelay <= 0.f ? GetWorld()->GetTimeSeconds() : ExplosionDelay;
+	GetWorldTimerManager().SetTimer(ExplosionDelayHandle,
+	                                this,
+	                                &AExplosiveBarrel::ProcessExplosion,
+	                                ExplosionDelay,
+	                                false);
 	
+	bIsExploded = true;
+}
+
+void AExplosiveBarrel::ProcessExplosion()
+{
 	UGameplayStatics::ApplyRadialDamage(GetWorld(),
 	                                    ExplosionDamage,
 	                                    GetActorLocation(),
@@ -55,35 +67,5 @@ void AExplosiveBarrel::OnTakeDamage(AActor* DamagedActor,
 	HitResult.ImpactPoint = GetActorLocation();
 	HitResult.ImpactNormal = GetActorUpVector();
 	ExplosionFXComponent->PlayImpactFX(HitResult);
-
-	bIsExploded = true;
-	
-	Destroy();
-}
-
-void AExplosiveBarrel::OnRadialDamage(AActor* DamagedActor,
-                                      float Damage,
-                                      const UDamageType* DamageType,
-                                      FVector Origin,
-                                      FHitResult HitInfo,
-                                      AController* InstigatedBy,
-                                      AActor* DamageCauser)
-{
-	UGameplayStatics::ApplyRadialDamage(GetWorld(),
-	                                    ExplosionDamage,
-	                                    GetActorLocation(),
-	                                    ExplosionRadius,
-	                                    DamageTypeClass,
-	                                    {},
-	                                    this,
-	                                    InstigatedBy,
-	                                    bDoFullDamage,
-	                                    COLLISION_EXPLOSION);
-
-	FHitResult HitResult;
-	HitResult.ImpactPoint = GetActorLocation();
-	HitResult.ImpactNormal = GetActorUpVector();
-	ExplosionFXComponent->PlayImpactFX(HitResult);
-
 	Destroy();
 }

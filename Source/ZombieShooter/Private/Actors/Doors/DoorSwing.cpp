@@ -107,12 +107,9 @@ void ADoorSwing::CalculateTargetTransform(const AActor* Actor)
 
 	const float CurrentYaw = TargetTransforms[0].TargetRotation.Yaw;
 
-	UE_LOG(LogTemp, Error, TEXT("Previous Direction: %f | Current Dircetion; %f"), PrevSwingDirection, SwingDirection);
-
 	if (PrevSwingDirection != SwingDirection)
 	{
 		PrevSwingDirection = SwingDirection;;
-		UE_LOG(LogTemp, Error, TEXT("Target Yaw_1: %f"), TargetTransforms[0].TargetRotation.Yaw);
 		return;
 	}
 
@@ -126,8 +123,6 @@ void ADoorSwing::CalculateTargetTransform(const AActor* Actor)
 	{
 		TargetTransforms[0].TargetRotation.Yaw *= -SwingDirection;
 	}
-
-	UE_LOG(LogTemp, Error, TEXT("Target Yaw: %f"), TargetTransforms[0].TargetRotation.Yaw);
 }
 
 void ADoorSwing::StartAutoClose()

@@ -63,4 +63,8 @@ protected:
 	                         int32 OtherBodyIndex);
 
 	void CalculateTargetTransform(const AActor* Actor);
+
+	void StartAutoClose();
+	void StopAutoClose();
+	void ProcessAutoClose();
 };

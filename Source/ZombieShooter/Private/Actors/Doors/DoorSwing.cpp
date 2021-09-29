@@ -46,11 +46,7 @@ bool ADoorSwing::ProcessInteraction_Implementation(APlayerController* PlayerCont
 
 	if (!PlayerActor) return false;
 
-	if (GetWorldTimerManager().IsTimerActive(AutoCloseDelayHandle))
-	{
-		GetWorldTimerManager().ClearTimer(AutoCloseDelayHandle);
-	}
-
+	StopAutoClose();
 	CalculateTargetTransform(PlayerActor);
 	StartAnimation();
 	return true;
@@ -62,7 +58,7 @@ void ADoorSwing::FinishAnimation()
 
 	if (AutoCloseDelay <= 0.f || InteractionTrigger->GetIsActorInside()) return;
 
-	GetWorldTimerManager().SetTimer(AutoCloseDelayHandle, this, &ADoorSwing::Close, AutoCloseDelay, false);
+	StartAutoClose();
 }
 
 void ADoorSwing::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
@@ -72,9 +68,9 @@ void ADoorSwing::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
                                        bool bFromSweep,
                                        const FHitResult& SweepResult)
 {
-	if (AutoCloseDelay > 0.f && GetWorldTimerManager().IsTimerActive(AutoCloseDelayHandle))
+	if (AutoCloseDelay > 0.f)
 	{
-		GetWorldTimerManager().ClearTimer(AutoCloseDelayHandle);
+		StopAutoClose();
 		return;
 	}
 
@@ -89,9 +85,9 @@ void ADoorSwing::OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent,
                                      UPrimitiveComponent* OtherComp,
                                      int32 OtherBodyIndex)
 {
-	if (AutoCloseDelay > 0.f && GetStateCurrent() == EInteractiveActorState::Opened)
+	if (AutoCloseDelay > 0.f && IsStateCurrent(EInteractiveActorState::Opened))
 	{
-		GetWorldTimerManager().SetTimer(AutoCloseDelayHandle, this, &ADoorSwing::Close, AutoCloseDelay, false);
+		StartAutoClose();
 		return;
 	}
 
@@ -102,23 +98,53 @@ void ADoorSwing::OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent,
 
 void ADoorSwing::CalculateTargetTransform(const AActor* Actor)
 {
-	if (TargetTransforms.Num() == 0) return;
-	
+	if (TargetTransforms.Num() == 0 || !Actor) return;
+
 	PrevSwingDirection = SwingDirection;
 	const float DotProduct = FVector::DotProduct(GetActorForwardVector(),
 	                                             (GetActorLocation() - Actor->GetActorLocation()).GetSafeNormal());
 	SwingDirection = FMath::Sign(DotProduct);
 
-	if (PrevSwingDirection != SwingDirection) return;
-
 	const float CurrentYaw = TargetTransforms[0].TargetRotation.Yaw;
 
-	if (SwingDirection < 0.f && FMath::Sign(CurrentYaw) < 0.f)
+	UE_LOG(LogTemp, Error, TEXT("Previous Direction: %f | Current Dircetion; %f"), PrevSwingDirection, SwingDirection);
+
+	if (PrevSwingDirection != SwingDirection)
+	{
+		PrevSwingDirection = SwingDirection;;
+		UE_LOG(LogTemp, Error, TEXT("Target Yaw_1: %f"), TargetTransforms[0].TargetRotation.Yaw);
+		return;
+	}
+
+	const float CurrentYawSign = FMath::Sign(CurrentYaw);
+
+	if (SwingDirection < 0.f && CurrentYawSign < 0.f)
 	{
 		TargetTransforms[0].TargetRotation.Yaw *= SwingDirection;
 	}
-	else if (SwingDirection > 0.f && FMath::Sign(CurrentYaw) > 0.f)
+	else if (SwingDirection > 0.f && CurrentYawSign > 0.f)
 	{
 		TargetTransforms[0].TargetRotation.Yaw *= -SwingDirection;
 	}
+
+	UE_LOG(LogTemp, Error, TEXT("Target Yaw: %f"), TargetTransforms[0].TargetRotation.Yaw);
+}
+
+void ADoorSwing::StartAutoClose()
+{
+	GetWorldTimerManager().SetTimer(AutoCloseDelayHandle, this, &ADoorSwing::ProcessAutoClose, AutoCloseDelay, false);
+}
+
+void ADoorSwing::StopAutoClose()
+{
+	if (GetWorldTimerManager().IsTimerActive(AutoCloseDelayHandle))
+	{
+		GetWorldTimerManager().ClearTimer(AutoCloseDelayHandle);
+	}
+}
+
+void ADoorSwing::ProcessAutoClose()
+{
+	SwingDirection *= -1;
+	Close();
 }

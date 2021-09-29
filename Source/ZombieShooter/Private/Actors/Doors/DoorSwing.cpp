@@ -72,8 +72,6 @@ void ADoorSwing::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
                                        bool bFromSweep,
                                        const FHitResult& SweepResult)
 {
-	CalculateTargetTransform(OtherActor);
-
 	if (AutoCloseDelay > 0.f && GetWorldTimerManager().IsTimerActive(AutoCloseDelayHandle))
 	{
 		GetWorldTimerManager().ClearTimer(AutoCloseDelayHandle);
@@ -82,6 +80,7 @@ void ADoorSwing::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 
 	if (bRequireInteraction || GetStateCurrent() != EInteractiveActorState::Closed) return;
 
+	CalculateTargetTransform(OtherActor);
 	Open();
 }
 

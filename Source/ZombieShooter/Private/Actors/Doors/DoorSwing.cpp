@@ -103,6 +103,8 @@ void ADoorSwing::OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent,
 
 void ADoorSwing::CalculateTargetTransform(const AActor* Actor)
 {
+	if (TargetTransforms.Num() == 0) return;
+	
 	PrevSwingDirection = SwingDirection;
 	const float DotProduct = FVector::DotProduct(GetActorForwardVector(),
 	                                             (GetActorLocation() - Actor->GetActorLocation()).GetSafeNormal());

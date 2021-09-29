@@ -18,11 +18,8 @@ void ADoorSwing::BeginPlay()
 	InteractionTrigger->SetIsNormalTrigger(!bRequireInteraction);
 	InteractionTrigger->bRequireLineOfSight = bRequireInteraction;
 
-	if (!bRequireInteraction)
-	{
-		InteractionTrigger->OnComponentBeginOverlap.AddDynamic(this, &ADoorSwing::OnTriggerBeginOverlap);
-		InteractionTrigger->OnComponentEndOverlap.AddDynamic(this, &ADoorSwing::OnTriggerEndOverlap);
-	}
+	InteractionTrigger->OnComponentBeginOverlap.AddDynamic(this, &ADoorSwing::OnTriggerBeginOverlap);
+	InteractionTrigger->OnComponentEndOverlap.AddDynamic(this, &ADoorSwing::OnTriggerEndOverlap);
 }
 
 void ADoorSwing::Disable()
@@ -77,7 +74,7 @@ void ADoorSwing::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 {
 	CalculateTargetTransform(OtherActor);
 
-	if (AutoCloseDelay > 0.f)
+	if (AutoCloseDelay > 0.f && GetWorldTimerManager().IsTimerActive(AutoCloseDelayHandle))
 	{
 		GetWorldTimerManager().ClearTimer(AutoCloseDelayHandle);
 		return;
@@ -93,12 +90,12 @@ void ADoorSwing::OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent,
                                      UPrimitiveComponent* OtherComp,
                                      int32 OtherBodyIndex)
 {
-	if (AutoCloseDelay > 0.f)
+	if (AutoCloseDelay > 0.f && GetStateCurrent() == EInteractiveActorState::Opened)
 	{
 		GetWorldTimerManager().SetTimer(AutoCloseDelayHandle, this, &ADoorSwing::Close, AutoCloseDelay, false);
 		return;
 	}
-	
+
 	if (bRequireInteraction || GetStateCurrent() != EInteractiveActorState::Opened) return;
 
 	Close();

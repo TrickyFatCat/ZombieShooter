@@ -37,6 +37,7 @@ protected:
 	
 	float PrevSwingDirection = 1.f;
 
+	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle AutoCloseDelayHandle;
 
 	virtual void Disable() override;

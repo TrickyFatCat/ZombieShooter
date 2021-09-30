@@ -46,6 +46,8 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UInteractionQueueComponent* InteractionQueue = nullptr;
+
+	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType) override;
 	
 	// Movement
 public:

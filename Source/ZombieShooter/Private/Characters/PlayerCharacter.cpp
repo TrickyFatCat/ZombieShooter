@@ -5,6 +5,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/ShooterDamageControllerComponent.h"
+#include "Core/Session/SessionGameMode.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TrickyPrototyping/Public/Components/InteractionQueueComponent.h"
 
@@ -16,7 +17,7 @@ APlayerCharacter::APlayerCharacter()
 	PlayerArms = CreateDefaultSubobject<USkeletalMeshComponent>("PlayerArms");
 	PlayerArms->SetupAttachment(PlayerCamera);
 	PlayerArms->CastShadow = false;
-	
+
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 
 	InteractionQueue = CreateDefaultSubobject<UInteractionQueueComponent>("InteractionQueue");
@@ -116,6 +117,21 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	// Other
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerCharacter::StartInteraction);
+}
+
+void APlayerCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* Damage)
+{
+	Super::OnDeath(DeathInstigator, DeathCauser, Damage);
+
+	if (GetWorld())
+	{
+		ASessionGameMode* SessionGameMode = Cast<ASessionGameMode>(GetWorld()->GetAuthGameMode());
+		
+		if (SessionGameMode)
+		{
+			SessionGameMode->FinishSession();
+		}
+	}
 }
 
 void APlayerCharacter::MoveForward(const float AxisValue)

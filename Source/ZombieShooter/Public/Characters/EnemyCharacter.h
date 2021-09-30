@@ -9,6 +9,7 @@
 
 class UAnimMontage;
 class UBehaviorTree;
+class UDamageSphereComponent;
 
 UENUM(BlueprintType)
 enum class EEnemyInitialBehavior : uint8
@@ -106,4 +107,19 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy", meta=(AllowPrivateAccess="true", ClampMin="0"))
 	float ScreamRadius = 300.f;
+
+	// Attack
+public:
+	virtual void StartAttack();
+	virtual void FinishAttack();
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
+	UDamageSphereComponent* DamageTrigger = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
+	int32 AttackDamage = 10.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
+	FName AttackSocketName = "RightHandSocket";
 };

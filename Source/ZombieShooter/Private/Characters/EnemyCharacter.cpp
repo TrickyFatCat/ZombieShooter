@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Components/TriggerComponents/DamageSphereComponent.h"
 
 AEnemyCharacter::AEnemyCharacter()
 {
@@ -22,6 +23,9 @@ AEnemyCharacter::AEnemyCharacter()
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.f, 200.f, 0.f);
 	}
+
+	DamageTrigger = CreateDefaultSubobject<UDamageSphereComponent>("DamageTrigger");
+	DamageTrigger->SetupAttachment(GetMesh(), AttackSocketName);
 }
 
 void AEnemyCharacter::BeginPlay()
@@ -29,6 +33,8 @@ void AEnemyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	OnTakeAnyDamage.AddDynamic(this, &AEnemyCharacter::OnTakeDamage);
+	DamageTrigger->SetIsEnabled(true);
+	DamageTrigger->SetDamage(AttackDamage);
 }
 
 void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType)
@@ -151,4 +157,14 @@ void AEnemyCharacter::AggroNeighbours()
 
 		AIController->SetTargetActor(Cast<AZombieAIController>(GetController())->GetTargetActor());
 	}
+}
+
+void AEnemyCharacter::StartAttack()
+{
+	DamageTrigger->SetIsEnabled(true);
+}
+
+void AEnemyCharacter::FinishAttack()
+{
+	DamageTrigger->SetIsEnabled(false);
 }

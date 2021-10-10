@@ -4,6 +4,7 @@
 #include "AI/AIControllerBase.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Characters/EnemyCharacter.h"
 
 AAIControllerBase::AAIControllerBase()
 {
@@ -15,6 +16,15 @@ void AAIControllerBase::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	
 	Perception->OnPerceptionUpdated.AddDynamic(this, &AAIControllerBase::OnPerceptionUpdated);
+
+	AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(GetPawn());
+
+	if (EnemyCharacter)
+	{
+		RunBehaviorTree(EnemyCharacter->GetBehaviorTree());
+		SetGeneralState(EnemyCharacter->GetInitialState());
+		Blackboard->SetValueAsVector(SpawnLocationKeyName, EnemyCharacter->GetActorLocation());
+	}
 }
 
 EEnemyGeneralState AAIControllerBase::GetCurrentGeneralState() const

@@ -25,6 +25,9 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI|BlackboardKeys")
 	FName GeneralStateKeyName = FName("GeneralState");
+	
+	UPROPERTY(EditDefaultsOnly, Category="AI|BlackboardKeys")
+	FName SpawnLocationKeyName = FName("SpawnLocation");
 
 	// State
 public:

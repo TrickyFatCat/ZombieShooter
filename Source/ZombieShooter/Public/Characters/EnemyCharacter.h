@@ -5,18 +5,12 @@
 #include "CoreMinimal.h"
 #include "Characters/BaseCharacter.h"
 #include "Characters/EnemyCoreTypes.h"
+#include "AI/AICoreTypes.h"
 #include "EnemyCharacter.generated.h"
 
 class UAnimMontage;
 class UBehaviorTree;
 class UDamageSphereComponent;
-
-UENUM(BlueprintType)
-enum class EEnemyInitialBehavior : uint8
-{
-	Idle,
-	Patrol
-};
 
 /**
  * 
@@ -56,14 +50,14 @@ public:
 public:
 	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
 
-	EEnemyInitialBehavior GetInitialBehavior() const { return InitialBehavior; }
+	EEnemyGeneralState GetInitialState() const { return InitialState; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|AI", meta=(AllowPrivateAccess="true"))
 	UBehaviorTree* BehaviorTree = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Enemy|AI", meta=(AllowPrivateAccess="true"))
-	EEnemyInitialBehavior InitialBehavior = EEnemyInitialBehavior::Idle;
+	EEnemyGeneralState InitialState;
 
 	// Movement
 public:

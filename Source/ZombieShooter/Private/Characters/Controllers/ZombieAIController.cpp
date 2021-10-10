@@ -26,8 +26,8 @@ void AZombieAIController::BeginPlay()
 
 		if (EnemyCharacter)
 		{
-			const bool IsPatrolling = EnemyCharacter->GetInitialBehavior() == EEnemyInitialBehavior::Patrol;
-			BlackboardComponent->SetValueAsBool(IsPatrollingKeyName, IsPatrolling);
+			// const bool IsPatrolling = EnemyCharacter->GetInitialState() == EEnemyInitialBehavior::Patrol;
+			// BlackboardComponent->SetValueAsBool(IsPatrollingKeyName, IsPatrolling);
 		}
 	}
 }

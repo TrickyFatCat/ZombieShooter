@@ -46,7 +46,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="BehaviorTree", meta=(AllowPrivateAccess="true"))
 	FName IsAttackingKeyName = "IsAttacking";
-	
 
 	// Perception
 protected:

@@ -57,7 +57,7 @@ private:
 
 	FVector ShotDirection = FVector::ZeroVector;
 
-	UPROPERTY();
+	UPROPERTY()
 	TArray<AActor*> IgnoredActors;
 
 	UFUNCTION()

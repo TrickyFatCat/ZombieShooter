@@ -8,7 +8,7 @@
 
 UBTTask_PlayAnimMontage::UBTTask_PlayAnimMontage()
 {
-	NodeName = "Play Animation";
+	NodeName = "Play Animation Montage";
 	// instantiating to be able to use Timers
 	bCreateNodeInstance = true;
 

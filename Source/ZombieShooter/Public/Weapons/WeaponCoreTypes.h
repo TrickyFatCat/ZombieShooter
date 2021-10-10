@@ -229,14 +229,11 @@ struct FProjectileData
 	bool bIsExplosive = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive", ClampMin="0"))
-	;
 	float ExplosionRadius = 500.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive"))
-	;
 	bool bDealFullDamage = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile", meta=(EditCondition="bIsExplosive"))
-	;
 	bool bDamageOwner = false;
 };

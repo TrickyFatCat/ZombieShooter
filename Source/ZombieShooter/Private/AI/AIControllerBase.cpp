@@ -5,6 +5,12 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Characters/EnemyCharacter.h"
+#include "Characters/PlayerCharacter.h"
+#include "Perception/AIPerceptionSystem.h"
+#include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Damage.h"
+#include "Perception/AISense_Hearing.h"
+#include "Core/ProjectUtils.h"
 
 AAIControllerBase::AAIControllerBase()
 {
@@ -14,7 +20,7 @@ AAIControllerBase::AAIControllerBase()
 void AAIControllerBase::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	
+
 	Perception->OnPerceptionUpdated.AddDynamic(this, &AAIControllerBase::OnPerceptionUpdated);
 
 	AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(GetPawn());
@@ -39,12 +45,50 @@ void AAIControllerBase::SetGeneralState(const EEnemyGeneralState NewState) const
 	Blackboard->SetValueAsEnum(GeneralStateKeyName, static_cast<uint8>(NewState));
 }
 
+void AAIControllerBase::SetTargetActor(AActor* TargetActor) const
+{
+	Blackboard->SetValueAsObject(TargetActorKeyName, TargetActor);
+}
+
 void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 {
 	FActorPerceptionBlueprintInfo PerceptionInfo;
-	
+	AActor* SensedActor = nullptr;
+
 	for (AActor* Actor : Actors)
 	{
 		Perception->GetActorsPerception(Actor, PerceptionInfo);
+
+		SensedActor = PerceptionInfo.Target;
+
+		if (!SensedActor->IsA(APlayerCharacter::StaticClass())) break;
+
+		if (FProjectUtils::GetIsActorDead(SensedActor)) break;
+
+		for (FAIStimulus& Stimuli : PerceptionInfo.LastSensedStimuli)
+		{
+			const TSubclassOf<UAISense> SenseClass = UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimuli);
+
+			if (SenseClass == UAISense_Sight::StaticClass())
+			{
+				SetTargetActor(SensedActor);
+				SetGeneralState(EEnemyGeneralState::Attacking);
+				break;
+			}
+
+			if (SenseClass == UAISense_Damage::StaticClass())
+			{
+				// Aggro nearby AI pawns;
+				// Start investigation
+				SetGeneralState(EEnemyGeneralState::Investigating);
+				break;
+			}
+
+			if (SenseClass == UAISense_Hearing::StaticClass())
+			{
+				// Start investigation
+				SetGeneralState(EEnemyGeneralState::Investigating);
+			}
+		}
 	}
 }

@@ -29,12 +29,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI|BlackboardKeys")
 	FName SpawnLocationKeyName = FName("SpawnLocation");
 
+	UPROPERTY(EditDefaultsOnly, Category="AI|BlackboardKeys")
+	FName TargetActorKeyName = FName("TargetActor");
+
 	// State
 public:
 	UFUNCTION(BlueprintPure, Category="AI|State")
 	EEnemyGeneralState GetCurrentGeneralState() const;
 
 	void SetGeneralState(const EEnemyGeneralState NewState) const;
+
+private:
+	void SetTargetActor(AActor* TargetActor) const;
 
 	// Perception
 protected:

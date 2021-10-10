@@ -3,6 +3,9 @@
 #pragma once
 
 #include "Core/ProjectUtils.h"
+
+#include "Components/DamageControllerComponent.h"
+#include "Components/ShooterDamageControllerComponent.h"
 #include "GameFramework/Character.h"
 
 bool FProjectUtils::GetPlayerViewPoint(AActor* CharacterActor, FVector& ViewLocation, FRotator& ViewRotation)
@@ -21,4 +24,13 @@ bool FProjectUtils::GetPlayerViewPoint(AActor* CharacterActor, FVector& ViewLoca
 	}
 
 	return true;
+}
+
+bool FProjectUtils::GetIsActorDead(const AActor* TargetActor)
+{
+	UShooterDamageControllerComponent* DamageControllerComponent = TargetActor->FindComponentByClass<UShooterDamageControllerComponent>();
+
+	if (!DamageControllerComponent) return true;
+
+	return DamageControllerComponent->GetIsDead();
 }

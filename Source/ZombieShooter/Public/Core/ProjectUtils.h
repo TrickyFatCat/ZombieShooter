@@ -7,4 +7,5 @@ class FProjectUtils
 {
 public:
 	static bool  GetPlayerViewPoint(AActor* CharacterActor, FVector& ViewLocation, FRotator& ViewRotation);
+	static bool GetIsActorDead(const AActor* TargetActor);
 };

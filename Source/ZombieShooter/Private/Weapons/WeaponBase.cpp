@@ -110,6 +110,11 @@ void AWeaponBase::ApplyDamage(const FHitResult HitResult, const FVector& Directi
 
 	UMeshComponent* MeshComponent = Cast<UMeshComponent>(HitResult.Component);
 
+	if (!TargetActor->IsA(APawn::StaticClass()))
+	{
+		MakeNoise(0.75, Cast<APawn>(GetOwner()), HitResult.ImpactPoint);
+	}
+
 	if (MeshComponent && MeshComponent->IsSimulatingPhysics())
 	{
 		MeshComponent->AddImpulse(Direction * WeaponData.HitScanImpulse);

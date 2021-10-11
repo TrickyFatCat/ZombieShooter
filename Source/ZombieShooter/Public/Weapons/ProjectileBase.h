@@ -72,4 +72,6 @@ private:
 	TSubclassOf<UDamageType> GetDamageType() const;
 
 	AController* GetOwnerController() const;
+
+	APawn* GetNoiseInstigator() const { return Cast<APawn>(GetOwner()); }
 };

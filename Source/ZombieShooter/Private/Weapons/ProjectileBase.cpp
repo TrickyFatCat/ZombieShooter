@@ -69,6 +69,7 @@ void AProjectileBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		DealRadialDamage();
 		FHitResult HitResult;
 		HitResult.ImpactPoint = GetActorLocation();
+		MakeNoise(1, GetNoiseInstigator(), GetActorLocation());
 		ProjectileFX->PlayImpactFX(HitResult);
 	}
 }
@@ -127,6 +128,7 @@ void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent,
 		                                   GetDamageType());
 	}
 
+	MakeNoise(1, GetNoiseInstigator(), GetActorLocation());
 	ProjectileFX->PlayImpactFX(Hit);
 	Destroy();
 }

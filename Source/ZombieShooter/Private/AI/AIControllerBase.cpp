@@ -15,6 +15,7 @@
 AAIControllerBase::AAIControllerBase()
 {
 	Perception = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
+	bAttachToPawn = true;
 }
 
 void AAIControllerBase::OnPossess(APawn* InPawn)
@@ -72,22 +73,22 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 			if (SenseClass == UAISense_Sight::StaticClass())
 			{
 				SetTargetActor(SensedActor);
-				SetGeneralState(EEnemyGeneralState::Attacking);
+				SetGeneralState(EEnemyGeneralState::Aggressive);
+				OnEnterAggressiveState();
 				break;
 			}
 
 			if (SenseClass == UAISense_Damage::StaticClass())
 			{
-				// Aggro nearby AI pawns;
-				// Start investigation
-				SetGeneralState(EEnemyGeneralState::Investigating);
+				SetGeneralState(EEnemyGeneralState::Investigate);
+				OnEnterInvestigateState(SenseClass);
 				break;
 			}
 
 			if (SenseClass == UAISense_Hearing::StaticClass())
 			{
-				// Start investigation
-				SetGeneralState(EEnemyGeneralState::Investigating);
+				SetGeneralState(EEnemyGeneralState::Investigate);
+				OnEnterInvestigateState(SenseClass);
 			}
 		}
 	}

@@ -8,9 +8,9 @@ UENUM(Blueprintable, BlueprintType)
 enum class EEnemyGeneralState : uint8
 {
 	Idle,
-	Roaming,
-	Patrolling,
-	Investigating,
-	Stunned,
-	Attacking
+	Roam,
+	Patrol,
+	Investigate,
+	Stun,
+	Aggressive	
 };

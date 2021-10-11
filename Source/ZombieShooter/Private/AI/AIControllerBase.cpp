@@ -51,6 +51,26 @@ void AAIControllerBase::SetTargetActor(AActor* TargetActor) const
 	Blackboard->SetValueAsObject(TargetActorKeyName, TargetActor);
 }
 
+void AAIControllerBase::SetInvestigationLocation(const FVector Location) const
+{
+	Blackboard->SetValueAsVector(InvestigationLocationKeyName, Location);
+}
+
+void AAIControllerBase::StartInvestigation(const FVector Location)
+{
+	if (GetCurrentGeneralState() == EEnemyGeneralState::Investigate) return;
+	
+	AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(GetPawn());
+	
+	if (EnemyCharacter)
+	{
+		EnemyCharacter->SetIsRunning(true);
+	}
+	
+	SetInvestigationLocation(GetPawn()->GetActorLocation());
+	SetGeneralState(EEnemyGeneralState::Investigate);
+}
+
 void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 {
 	FActorPerceptionBlueprintInfo PerceptionInfo;
@@ -76,16 +96,14 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 				SetGeneralState(EEnemyGeneralState::Aggressive);
 				break;
 			}
-
-			if (SenseClass == UAISense_Damage::StaticClass())
+			else if (SenseClass == UAISense_Hearing::StaticClass())
 			{
-				SetGeneralState(EEnemyGeneralState::Investigate);
-				break;
+				StartInvestigation(Stimuli.StimulusLocation);
 			}
-
-			if (SenseClass == UAISense_Hearing::StaticClass())
+			else if (SenseClass == UAISense_Damage::StaticClass())
 			{
-				SetGeneralState(EEnemyGeneralState::Investigate);
+				StartInvestigation(Stimuli.ReceiverLocation);
+				break;
 			}
 		}
 	}

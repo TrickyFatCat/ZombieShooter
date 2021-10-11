@@ -31,6 +31,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="AI|BlackboardKeys")
 	FName TargetActorKeyName = FName("TargetActor");
+	
+	UPROPERTY(EditDefaultsOnly, Category="AI|BlackboardKeys")
+	FName InvestigationLocationKeyName = FName("InvestigationLocation");
 
 	// State
 public:
@@ -41,6 +44,10 @@ public:
 
 private:
 	void SetTargetActor(AActor* TargetActor) const;
+
+	void SetInvestigationLocation(FVector Location) const;
+
+	void StartInvestigation(const FVector Location);
 
 	// Perception
 protected:

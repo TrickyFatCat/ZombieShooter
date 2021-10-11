@@ -74,21 +74,18 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 			{
 				SetTargetActor(SensedActor);
 				SetGeneralState(EEnemyGeneralState::Aggressive);
-				OnEnterAggressiveState();
 				break;
 			}
 
 			if (SenseClass == UAISense_Damage::StaticClass())
 			{
 				SetGeneralState(EEnemyGeneralState::Investigate);
-				OnEnterInvestigateState(SenseClass);
 				break;
 			}
 
 			if (SenseClass == UAISense_Hearing::StaticClass())
 			{
 				SetGeneralState(EEnemyGeneralState::Investigate);
-				OnEnterInvestigateState(SenseClass);
 			}
 		}
 	}

@@ -13,6 +13,8 @@
 #include "Core/ProjectUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "Navigation/CrowdFollowingComponent.h"
+#include "DrawDebugHelpers.h"
+#include "Debug/DebugDrawService.h"
 
 AAIControllerBase::AAIControllerBase(const FObjectInitializer& ObjectInitializer): Super(
 	ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent")))
@@ -59,19 +61,40 @@ void AAIControllerBase::SetInvestigationLocation(const FVector Location) const
 	Blackboard->SetValueAsVector(InvestigationLocationKeyName, Location);
 }
 
-void AAIControllerBase::StartInvestigation(const FVector Location)
+
+void AAIControllerBase::StartInvestigation(const FVector Location) const
 {
 	if (GetCurrentGeneralState() == EEnemyGeneralState::Investigate) return;
 
+	StartRunning();
+	SetIsScreaming(true);
+	SetInvestigationLocation(Location);
+	SetGeneralState(EEnemyGeneralState::Investigate);
+}
+
+void AAIControllerBase::StartAttacking(AActor* TargetActor) const
+{
+	if (GetCurrentGeneralState() == EEnemyGeneralState::Aggressive) return;
+
+	SetTargetActor(TargetActor);
+	StartRunning();
+	SetIsScreaming(true);
+	SetGeneralState(EEnemyGeneralState::Aggressive);
+}
+
+void AAIControllerBase::SetIsScreaming(const bool bIsScreaming) const
+{
+	Blackboard->SetValueAsBool(IsScreamingKeyName, bIsScreaming);
+}
+
+void AAIControllerBase::StartRunning() const
+{
 	AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(GetPawn());
 
 	if (EnemyCharacter)
 	{
 		EnemyCharacter->SetIsRunning(true);
 	}
-
-	SetInvestigationLocation(GetPawn()->GetActorLocation());
-	SetGeneralState(EEnemyGeneralState::Investigate);
 }
 
 void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
@@ -85,7 +108,6 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 
 		SensedActor = PerceptionInfo.Target;
 
-		if (!SensedActor->IsA(APlayerCharacter::StaticClass())) break;
 
 		if (FProjectUtils::GetIsActorDead(SensedActor)) break;
 
@@ -95,25 +117,56 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 
 			if (SenseClass == UAISense_Sight::StaticClass())
 			{
+				if (!SensedActor->IsA(APlayerCharacter::StaticClass())) continue;
+
 				SetTargetActor(SensedActor);
 				SetGeneralState(EEnemyGeneralState::Aggressive);
 				break;
 			}
 			else if (SenseClass == UAISense_Hearing::StaticClass())
 			{
-				StartInvestigation(Stimuli.StimulusLocation);
+				FHitResult OutHit;
+				FCollisionQueryParams QueryParams;
+				QueryParams.AddIgnoredActor(this);
+				QueryParams.AddIgnoredActor(GetPawn());
+				GetWorld()->LineTraceSingleByChannel(OutHit,
+				                                     GetPawn()->GetActorLocation(),
+				                                     Stimuli.StimulusLocation,
+				                                     ECollisionChannel::ECC_EngineTraceChannel3,
+				                                     QueryParams);
+
+				DrawDebugLine(GetWorld(), GetPawn()->GetActorLocation(), OutHit.ImpactPoint, FColor::Red, false, 3, 0, 3);
+
+				if (OutHit.bBlockingHit && !Stimuli.StimulusLocation.Equals(OutHit.ImpactPoint, 0.01f))
+				{
+					Stimuli.SetStimulusAge(100.f);
+					break;
+				}
+				
+				if (SensedActor->IsA(AEnemyCharacter::StaticClass()))
+				{
+					AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(SensedActor);
+
+					if (!EnemyCharacter) continue;
+
+					StartAttacking(EnemyCharacter->GetTargetActor());
+				}
+				StartAttacking(SensedActor);
+				// StartInvestigation(Stimuli.StimulusLocation);
 			}
 			else if (SenseClass == UAISense_Damage::StaticClass())
 			{
-				StartInvestigation(Stimuli.ReceiverLocation);
+				if (!SensedActor->IsA(APlayerCharacter::StaticClass())) continue;
+
+				StartAttacking(SensedActor);
+				// StartInvestigation(Stimuli.ReceiverLocation);
 				break;
 			}
 		}
 	}
 }
 
-void AAIControllerBase::AttackPlayer() const
+AActor* AAIControllerBase::GetTargetActor() const
 {
-	SetTargetActor(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	SetGeneralState(EEnemyGeneralState::Aggressive);
+	return Cast<AActor>(Blackboard->GetValueAsObject(TargetActorKeyName));
 }

@@ -35,20 +35,30 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI|BlackboardKeys")
 	FName InvestigationLocationKeyName = FName("InvestigationLocation");
 
+	UPROPERTY(EditDefaultsOnly, Category="AI|BlackboardKeys")
+	FName IsScreamingKeyName = FName("IsScreaming");
+
 	// State
 public:
 	UFUNCTION(BlueprintPure, Category="AI|State")
 	EEnemyGeneralState GetCurrentGeneralState() const;
 
 	void SetGeneralState(const EEnemyGeneralState NewState) const;
+	
+	void StartAttacking(AActor* TargetActor) const;
 
 private:
 	void SetTargetActor(AActor* TargetActor) const;
 
 	void SetInvestigationLocation(FVector Location) const;
+	
+	void StartInvestigation(const FVector Location) const;
 
-	void StartInvestigation(const FVector Location);
 
+	void SetIsScreaming(const bool bIsScreaming) const;
+
+	void StartRunning() const;
+	
 	// Perception
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
@@ -59,5 +69,5 @@ protected:
 
 	// Other
 public:
-	void AttackPlayer() const;
+	AActor* GetTargetActor() const;
 };

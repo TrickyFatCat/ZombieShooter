@@ -105,7 +105,10 @@ private:
 	// Attack
 public:
 	virtual void StartAttack();
+	
 	virtual void FinishAttack();
+
+	AActor* GetTargetActor() const;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")

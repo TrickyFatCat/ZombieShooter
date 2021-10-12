@@ -59,7 +59,7 @@ void AEnemyCharacter::AttackPlayer() const
 
 	if (!AIController) return;
 
-	AIController->AttackPlayer();
+	AIController->StartAttacking(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	SetIsRunning(true);
 }
 
@@ -154,7 +154,7 @@ void AEnemyCharacter::AggroNeighbours()
 
 		if (!AIController) continue;
 
-		AIController->AttackPlayer();
+		AIController->StartAttacking(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	}
 }
 
@@ -166,4 +166,13 @@ void AEnemyCharacter::StartAttack()
 void AEnemyCharacter::FinishAttack()
 {
 	DamageTrigger->SetIsEnabled(false);
+}
+
+AActor* AEnemyCharacter::GetTargetActor() const
+{
+	AAIControllerBase* AIControllerBase = Cast<AAIControllerBase>(GetController());
+
+	if (!AIControllerBase) return nullptr;
+
+	return AIControllerBase->GetTargetActor();
 }

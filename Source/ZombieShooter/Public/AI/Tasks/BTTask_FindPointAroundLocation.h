@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_PatrolAroundPoint.generated.h"
+#include "BTTask_FindPointAroundLocation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ZOMBIESHOOTER_API UBTTask_PatrolAroundPoint : public UBTTaskNode
+class ZOMBIESHOOTER_API UBTTask_FindPointAroundLocation : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_PatrolAroundPoint();
+	UBTTask_FindPointAroundLocation();
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
@@ -24,7 +24,7 @@ protected:
 	float Radius = 500.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Patrolling")
-	FBlackboardKeySelector InitialLocationKey;
+	FBlackboardKeySelector PointKey;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Patrolling")
 	FBlackboardKeySelector TargetLocationKey;

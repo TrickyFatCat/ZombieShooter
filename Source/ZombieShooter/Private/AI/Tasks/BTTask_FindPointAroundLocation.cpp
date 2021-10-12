@@ -1,18 +1,18 @@
 // Created by Artyom Volkov during the UE4 course
 
 
-#include "AI/Tasks/BTTask_PatrolAroundPoint.h"
+#include "AI/Tasks/BTTask_FindPointAroundLocation.h"
 
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-UBTTask_PatrolAroundPoint::UBTTask_PatrolAroundPoint()
+UBTTask_FindPointAroundLocation::UBTTask_FindPointAroundLocation()
 {
-	NodeName="Patrol Around A Point";
+	NodeName="Find Point Around Location";
 }
 
-EBTNodeResult::Type UBTTask_PatrolAroundPoint::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_FindPointAroundLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComponent = OwnerComp.GetBlackboardComponent();
@@ -29,7 +29,7 @@ EBTNodeResult::Type UBTTask_PatrolAroundPoint::ExecuteTask(UBehaviorTreeComponen
 
 	FNavLocation TargetLocation;
 	const bool bLocationFound = NavSystem->GetRandomReachablePointInRadius(
-		BlackboardComponent->GetValueAsVector(InitialLocationKey.SelectedKeyName),
+		BlackboardComponent->GetValueAsVector(PointKey.SelectedKeyName),
 		Radius,
 		TargetLocation);
 

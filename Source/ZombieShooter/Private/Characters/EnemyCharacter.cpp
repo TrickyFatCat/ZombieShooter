@@ -5,7 +5,7 @@
 
 #include "BrainComponent.h"
 #include "Animation/AnimInstanceProxy.h"
-#include "Characters/Controllers/ZombieAIController.h"
+#include "AI/AIControllerBase.h"
 #include "Components/ShooterDamageControllerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -15,7 +15,7 @@
 AEnemyCharacter::AEnemyCharacter()
 {
 	AutoPossessAI = EAutoPossessAI::Disabled;
-	AIControllerClass = AZombieAIController::StaticClass();
+	AIControllerClass = AAIControllerBase::StaticClass();
 	bUseControllerRotationYaw = false;
 
 	if (GetCharacterMovement())
@@ -55,12 +55,11 @@ void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser,
 
 void AEnemyCharacter::AttackPlayer() const
 {
-	AZombieAIController* AIController = Cast<AZombieAIController>(GetController());
+	AAIControllerBase* AIController = Cast<AAIControllerBase>(GetController());
 
 	if (!AIController) return;
 
-	AIController->SetTargetActor(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	AIController->SetIsAttacking(true);
+	AIController->AttackPlayer();
 	SetIsRunning(true);
 }
 
@@ -132,7 +131,7 @@ void AEnemyCharacter::AggroNeighbours()
 	if (!GetWorld()) return;
 
 	TArray<FHitResult> HitResults;
-	AZombieAIController* AIController = nullptr;
+	AAIControllerBase* AIController = nullptr;
 
 	UKismetSystemLibrary::SphereTraceMulti(GetWorld(),
 	                                       GetActorLocation(),
@@ -151,11 +150,11 @@ void AEnemyCharacter::AggroNeighbours()
 
 		if (!Character) continue;
 
-		AIController = Cast<AZombieAIController>(Character->GetController());
+		AIController = Cast<AAIControllerBase>(Character->GetController());
 
 		if (!AIController) continue;
 
-		AIController->SetTargetActor(Cast<AZombieAIController>(GetController())->GetTargetActor());
+		AIController->AttackPlayer();
 	}
 }
 

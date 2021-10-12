@@ -11,8 +11,11 @@
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Hearing.h"
 #include "Core/ProjectUtils.h"
+#include "Kismet/GameplayStatics.h"
+#include "Navigation/CrowdFollowingComponent.h"
 
-AAIControllerBase::AAIControllerBase()
+AAIControllerBase::AAIControllerBase(const FObjectInitializer& ObjectInitializer): Super(
+	ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent")))
 {
 	Perception = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
 	bAttachToPawn = true;
@@ -59,14 +62,14 @@ void AAIControllerBase::SetInvestigationLocation(const FVector Location) const
 void AAIControllerBase::StartInvestigation(const FVector Location)
 {
 	if (GetCurrentGeneralState() == EEnemyGeneralState::Investigate) return;
-	
+
 	AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(GetPawn());
-	
+
 	if (EnemyCharacter)
 	{
 		EnemyCharacter->SetIsRunning(true);
 	}
-	
+
 	SetInvestigationLocation(GetPawn()->GetActorLocation());
 	SetGeneralState(EEnemyGeneralState::Investigate);
 }
@@ -107,4 +110,10 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 			}
 		}
 	}
+}
+
+void AAIControllerBase::AttackPlayer() const
+{
+	SetTargetActor(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	SetGeneralState(EEnemyGeneralState::Aggressive);
 }

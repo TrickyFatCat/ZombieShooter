@@ -16,7 +16,7 @@ class ZOMBIESHOOTER_API AAIControllerBase : public AAIController
 	GENERATED_BODY()
 
 public:
-	AAIControllerBase();
+	AAIControllerBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
@@ -56,4 +56,8 @@ protected:
 
 	UFUNCTION()
 	virtual void OnPerceptionUpdated(const TArray<AActor*>& Actors);
+
+	// Other
+public:
+	void AttackPlayer() const;
 };

@@ -15,6 +15,7 @@
 #include "Navigation/CrowdFollowingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Debug/DebugDrawService.h"
+#include "TraceServices/Public/TraceServices/Containers/Timelines.h"
 
 AAIControllerBase::AAIControllerBase(const FObjectInitializer& ObjectInitializer): Super(
 	ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent")))
@@ -125,22 +126,23 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 			}
 			else if (SenseClass == UAISense_Hearing::StaticClass())
 			{
+				if (GetCurrentGeneralState() == EEnemyGeneralState::Aggressive) continue;
 				FHitResult OutHit;
 				FCollisionQueryParams QueryParams;
+				AActor* TargetActor = SensedActor;
 				QueryParams.AddIgnoredActor(this);
 				QueryParams.AddIgnoredActor(GetPawn());
+				QueryParams.AddIgnoredActor(SensedActor);
 				GetWorld()->LineTraceSingleByChannel(OutHit,
 				                                     GetPawn()->GetActorLocation(),
 				                                     Stimuli.StimulusLocation,
-				                                     ECollisionChannel::ECC_EngineTraceChannel3,
+				                                     ECollisionChannel::ECC_GameTraceChannel3,
 				                                     QueryParams);
-
-				DrawDebugLine(GetWorld(), GetPawn()->GetActorLocation(), OutHit.ImpactPoint, FColor::Red, false, 3, 0, 3);
 
 				if (OutHit.bBlockingHit && !Stimuli.StimulusLocation.Equals(OutHit.ImpactPoint, 0.01f))
 				{
-					Stimuli.SetStimulusAge(100.f);
-					break;
+					Stimuli.MarkExpired();
+					continue;
 				}
 				
 				if (SensedActor->IsA(AEnemyCharacter::StaticClass()))
@@ -149,9 +151,10 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 
 					if (!EnemyCharacter) continue;
 
-					StartAttacking(EnemyCharacter->GetTargetActor());
+					TargetActor = EnemyCharacter->GetTargetActor();
 				}
-				StartAttacking(SensedActor);
+				
+				StartAttacking(TargetActor);
 				// StartInvestigation(Stimuli.StimulusLocation);
 			}
 			else if (SenseClass == UAISense_Damage::StaticClass())

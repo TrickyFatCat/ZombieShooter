@@ -120,8 +120,7 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 			{
 				if (!SensedActor->IsA(APlayerCharacter::StaticClass())) continue;
 
-				SetTargetActor(SensedActor);
-				SetGeneralState(EEnemyGeneralState::Aggressive);
+				StartAttacking(SensedActor);
 				break;
 			}
 			else if (SenseClass == UAISense_Hearing::StaticClass())

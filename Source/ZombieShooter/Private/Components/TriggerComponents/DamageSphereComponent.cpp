@@ -24,8 +24,7 @@ void UDamageSphereComponent::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
                                             const FHitResult& SweepResult)
 {
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-
-	UE_LOG(LogTemp, Error, TEXT("Overlapped Actor %s"), *OtherActor->GetName());
+	
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	AController* OwnerController = nullptr;
 

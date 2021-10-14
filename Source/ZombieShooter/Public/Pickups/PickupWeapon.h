@@ -19,7 +19,7 @@ public:
 	APickupWeapon();
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Component", meta=(AllowPrivateAccess="true"))
-	USkeletalMeshComponent* WeaponMesh = nullptr;
+	UStaticMeshComponent* WeaponMesh = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Pickup", meta=(AllowPrivateAccess="true"))
 	TSubclassOf<AWeaponBase> WeaponClass;

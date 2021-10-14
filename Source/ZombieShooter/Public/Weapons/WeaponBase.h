@@ -54,6 +54,9 @@ private:
 		meta=(AllowPrivateAccess="true"))
 	FWeaponData WeaponData;
 
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	FVector WeaponOffset = FVector::ZeroVector;
+
 	float TimeBetweenShots = 1.f;
 
 	// Shooting

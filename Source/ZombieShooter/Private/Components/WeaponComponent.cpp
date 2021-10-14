@@ -98,18 +98,20 @@ void UWeaponComponent::SpawnWeapons()
 
 	for (auto WeaponClass : WeaponClasses)
 	{
-		AWeaponBase* Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+		AWeaponBase* Weapon = GetWorld()->SpawnActorDeferred<AWeaponBase>(
+			WeaponClass,
+			FTransform(FRotator::ZeroRotator, FVector::ZeroVector), GetOwner());
 
 		if (!Weapon) continue;
 
 		Weapon->OnWeaponClipEmpty.AddUObject(this, &UWeaponComponent::OnEmptyClip);
-		Weapon->SetOwner(GetOwner());
 		Weapons.Add(FWeaponInventoryData{Weapon, false});
 		FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 		Weapon->AttachToComponent(PlayerCharacter->GetPlayerArms(),
 		                          AttachmentTransformRules);
 		Weapon->SetActorHiddenInGame(true);
 		Weapon->OnMakeShot.AddUObject(this, &UWeaponComponent::OnWeaponMakeShot);
+		Weapon->FinishSpawning(FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
 	}
 }
 
@@ -152,7 +154,7 @@ void UWeaponComponent::EquipPreviousWeapon()
 void UWeaponComponent::StartShooting()
 {
 	if (!CurrentWeapon) return;
-	
+
 	if (!CanShoot()) return;
 
 	CurrentWeapon->StartShooting();
@@ -162,7 +164,7 @@ void UWeaponComponent::StartShooting()
 void UWeaponComponent::StopShooting()
 {
 	if (!CurrentWeapon) return;
-	
+
 	if (!CurrentWeapon) return;
 
 	CurrentWeapon->StopShooting();
@@ -445,7 +447,8 @@ void UWeaponComponent::EnterAds()
 
 void UWeaponComponent::ExitAds()
 {
-	if (!CurrentWeapon || !TargetCamera || bIsEquipping || bIsReloading || !bIsAiming || !AdsData.bHasAds || bIsNearWall) return;
+	if (!CurrentWeapon || !TargetCamera || bIsEquipping || bIsReloading || !bIsAiming || !AdsData.bHasAds ||
+		bIsNearWall) return;
 
 	CurrentWeapon->SetActorHiddenInGame(false);
 

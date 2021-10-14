@@ -28,6 +28,7 @@ void AWeaponBase::BeginPlay()
 	WeaponMesh->SetPlayRate(1.f / TimeBetweenShots);
 	AmmoData.ClipAmmoCurrent = AmmoData.ClipAmmoMax;
 	AmmoData.StorageAmmoCurrent = AmmoData.StorageAmmoMax;
+	SetActorRelativeLocation(WeaponOffset);
 }
 
 void AWeaponBase::Tick(float DeltaTime)

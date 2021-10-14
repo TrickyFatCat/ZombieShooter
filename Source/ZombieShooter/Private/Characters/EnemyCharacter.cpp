@@ -126,38 +126,6 @@ void AEnemyCharacter::OnTakeDamage(AActor* DamageActor,
 	}
 }
 
-void AEnemyCharacter::AggroNeighbours()
-{
-	if (!GetWorld()) return;
-
-	TArray<FHitResult> HitResults;
-	AAIControllerBase* AIController = nullptr;
-
-	UKismetSystemLibrary::SphereTraceMulti(GetWorld(),
-	                                       GetActorLocation(),
-	                                       GetActorLocation(),
-	                                       ScreamRadius,
-	                                       UEngineTypes::ConvertToTraceType(ECC_Visibility),
-	                                       false,
-	                                       {this},
-	                                       EDrawDebugTrace::None,
-	                                       HitResults,
-	                                       true);
-
-	for (auto HitResult : HitResults)
-	{
-		AEnemyCharacter* Character = Cast<AEnemyCharacter>(HitResult.GetActor());
-
-		if (!Character) continue;
-
-		AIController = Cast<AAIControllerBase>(Character->GetController());
-
-		if (!AIController) continue;
-
-		AIController->StartAttacking(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	}
-}
-
 void AEnemyCharacter::StartAttack()
 {
 	DamageTrigger->SetIsEnabled(true);

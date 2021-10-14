@@ -94,14 +94,6 @@ protected:
 	                             AController* InstigatedBy,
 	                             AActor* DamageCauser);
 
-	// Scream
-public:
-	void AggroNeighbours();
-
-private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy", meta=(AllowPrivateAccess="true", ClampMin="0"))
-	float ScreamRadius = 300.f;
-
 	// Attack
 public:
 	virtual void StartAttack();

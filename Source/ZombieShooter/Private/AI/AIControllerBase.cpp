@@ -13,9 +13,6 @@
 #include "Core/ProjectUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "Navigation/CrowdFollowingComponent.h"
-#include "DrawDebugHelpers.h"
-#include "Debug/DebugDrawService.h"
-#include "TraceServices/Public/TraceServices/Containers/Timelines.h"
 
 AAIControllerBase::AAIControllerBase(const FObjectInitializer& ObjectInitializer): Super(
 	ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent")))
@@ -154,14 +151,12 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& Actors)
 				}
 				
 				StartAttacking(TargetActor);
-				// StartInvestigation(Stimuli.StimulusLocation);
 			}
 			else if (SenseClass == UAISense_Damage::StaticClass())
 			{
 				if (!SensedActor->IsA(APlayerCharacter::StaticClass())) continue;
 
 				StartAttacking(SensedActor);
-				// StartInvestigation(Stimuli.ReceiverLocation);
 				break;
 			}
 		}

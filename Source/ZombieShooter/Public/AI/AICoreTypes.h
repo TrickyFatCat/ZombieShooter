@@ -9,8 +9,8 @@ enum class EEnemyGeneralState : uint8
 {
 	Idle,
 	Roam,
-	Patrol,
-	Investigate,
-	Stun,
-	Aggressive	
+	Patrol UMETA(Hidden),
+	Investigate UMETA(Hidden),
+	Stun UMETA(Hidden),
+	Aggressive UMETA(Hidden)	
 };

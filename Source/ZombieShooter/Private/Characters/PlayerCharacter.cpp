@@ -3,6 +3,7 @@
 
 #include "Characters/PlayerCharacter.h"
 
+#include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ShooterDamageControllerComponent.h"
 #include "Core/Session/SessionGameMode.h"
@@ -12,11 +13,10 @@
 APlayerCharacter::APlayerCharacter()
 {
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
-	PlayerCamera->SetupAttachment(GetRootComponent());
+	PlayerCamera->SetupAttachment(GetMesh());
 
-	PlayerArms = CreateDefaultSubobject<USkeletalMeshComponent>("PlayerArms");
+	PlayerArms = CreateDefaultSubobject<USceneComponent>("WeaponScene");
 	PlayerArms->SetupAttachment(PlayerCamera);
-	PlayerArms->CastShadow = false;
 
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 

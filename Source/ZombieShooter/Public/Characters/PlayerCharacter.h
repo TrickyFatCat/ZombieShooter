@@ -29,7 +29,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	USkeletalMeshComponent* GetPlayerArms() const { return PlayerArms; }
+	USceneComponent* GetPlayerArms() const { return PlayerArms; }
 
 	UFUNCTION(BlueprintPure, Category="Player")
 	float GetAdsTransitionProgress() const { return WeaponComponent->GetAdsTransitionProgress(); }
@@ -42,7 +42,7 @@ protected:
 	UCameraComponent* PlayerCamera = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
-	USkeletalMeshComponent* PlayerArms = nullptr;
+	USceneComponent* PlayerArms = nullptr;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UInteractionQueueComponent* InteractionQueue = nullptr;

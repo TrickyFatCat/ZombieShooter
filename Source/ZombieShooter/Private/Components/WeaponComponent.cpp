@@ -3,7 +3,6 @@
 
 #include "Components/WeaponComponent.h"
 
-#include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Characters/PlayerCharacter.h"
 #include "Components/TimelineComponent.h"
@@ -39,7 +38,7 @@ void UWeaponComponent::BeginPlay()
 	if (PullAnimationCurve)
 	{
 		FOnTimelineFloat AnimationProgress;
-		AnimationProgress.BindUFunction(this, FName("SetPullProgress"));
+		AnimationProgress.BindUFunction(this, FName("SetPullRotation"));
 		PullAnimationTimeline->AddInterpFloat(PullAnimationCurve, AnimationProgress);
 
 		FOnTimelineEvent AnimationFinished;
@@ -363,6 +362,19 @@ void UWeaponComponent::OnRecoilFinished()
 	}
 
 	RecoilTimeline->ReverseFromEnd();
+}
+
+void UWeaponComponent::SetPullRotation(const float Value)
+{
+	PullProgress = Value;
+	
+	FRotator NewRotator = FRotator::ZeroRotator;
+	NewRotator += PullRotationOffset * Value;
+	CurrentWeapon->SetActorRelativeRotation(NewRotator);
+
+	FVector NewLocation = CurrentWeapon->GetWeaponOffset();
+	NewLocation += PullLocationOffset * Value;
+	CurrentWeapon->SetActorRelativeLocation(NewLocation);
 }
 
 void UWeaponComponent::OnPullFinished()

@@ -39,6 +39,8 @@ public:
 
 	FOnMakeShotSignature OnMakeShot;
 
+	FVector GetWeaponOffset() const { return WeaponOffset; }
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
 	USceneComponent* WeaponRoot = nullptr;

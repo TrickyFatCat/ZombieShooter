@@ -3,6 +3,7 @@
 
 #include "Components/WeaponComponent.h"
 
+#include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Characters/PlayerCharacter.h"
 #include "Components/TimelineComponent.h"
@@ -25,8 +26,12 @@ void UWeaponComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnWeapons();
-	Weapons[0].bIsAvailable = true;
-	EquipWeapon(CurrentWeaponIndex);
+
+	if (Weapons.Num() > 0)
+	{
+		Weapons[0].bIsAvailable = true;
+		EquipWeapon(CurrentWeaponIndex);
+	}
 
 	PullAnimationTimeline->SetPlayRate(1.f / (PullDuration * 0.5f));
 	AdsTransitionTimeline->SetPlayRate(1.f / (AdsTransitionDuration * 0.5f));
@@ -102,8 +107,7 @@ void UWeaponComponent::SpawnWeapons()
 		Weapons.Add(FWeaponInventoryData{Weapon, false});
 		FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
 		Weapon->AttachToComponent(PlayerCharacter->GetPlayerArms(),
-		                          AttachmentTransformRules,
-		                          Weapon->GetWeaponSocketName());
+		                          AttachmentTransformRules);
 		Weapon->SetActorHiddenInGame(true);
 		Weapon->OnMakeShot.AddUObject(this, &UWeaponComponent::OnWeaponMakeShot);
 	}
@@ -147,6 +151,8 @@ void UWeaponComponent::EquipPreviousWeapon()
 
 void UWeaponComponent::StartShooting()
 {
+	if (!CurrentWeapon) return;
+	
 	if (!CanShoot()) return;
 
 	CurrentWeapon->StartShooting();
@@ -155,6 +161,8 @@ void UWeaponComponent::StartShooting()
 
 void UWeaponComponent::StopShooting()
 {
+	if (!CurrentWeapon) return;
+	
 	if (!CurrentWeapon) return;
 
 	CurrentWeapon->StopShooting();
@@ -421,7 +429,7 @@ void UWeaponComponent::GetCurrentWeaponAmmo(FWeaponAmmoData& AmmoData) const
 
 void UWeaponComponent::EnterAds()
 {
-	if (!TargetCamera || bIsEquipping || bIsReloading || !AdsData.bHasAds || bIsNearWall) return;
+	if (!CurrentWeapon || !TargetCamera || bIsEquipping || bIsReloading || !AdsData.bHasAds || bIsNearWall) return;
 
 	bIsAiming = true;
 
@@ -437,7 +445,7 @@ void UWeaponComponent::EnterAds()
 
 void UWeaponComponent::ExitAds()
 {
-	if (!TargetCamera || bIsEquipping || bIsReloading || !bIsAiming || !AdsData.bHasAds || bIsNearWall) return;
+	if (!CurrentWeapon || !TargetCamera || bIsEquipping || bIsReloading || !bIsAiming || !AdsData.bHasAds || bIsNearWall) return;
 
 	CurrentWeapon->SetActorHiddenInGame(false);
 

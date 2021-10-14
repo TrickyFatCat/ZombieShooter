@@ -51,11 +51,11 @@ struct FRecoilData
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
-	float MeshRecoilYPower = 5.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil")
+	FVector MeshLocationOffset = FVector(0.f, -10.f, 0.f);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
-	float MeshRecoilRollPower = 5.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil")
+	FRotator MeshRotationOffset = FRotator(0.f, 0.f, -10.f);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Recoil", meta=(ClampMin="0"))
 	float CameraRecoilPitchPower = 0.15f;

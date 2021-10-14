@@ -38,7 +38,7 @@ void UWeaponComponent::BeginPlay()
 	if (PullAnimationCurve)
 	{
 		FOnTimelineFloat AnimationProgress;
-		AnimationProgress.BindUFunction(this, FName("SetPullRotation"));
+		AnimationProgress.BindUFunction(this, FName("SetPullOffset"));
 		PullAnimationTimeline->AddInterpFloat(PullAnimationCurve, AnimationProgress);
 
 		FOnTimelineEvent AnimationFinished;
@@ -49,7 +49,7 @@ void UWeaponComponent::BeginPlay()
 	if (RecoilAnimationCurve)
 	{
 		FOnTimelineFloat AnimationProgress;
-		AnimationProgress.BindUFunction(this, FName("SetRecoilProgress"));
+		AnimationProgress.BindUFunction(this, FName("SetRecoilOffset"));
 		RecoilTimeline->AddInterpFloat(RecoilAnimationCurve, AnimationProgress);
 
 		FOnTimelineEvent AnimationFinished;
@@ -333,9 +333,20 @@ void UWeaponComponent::CheckIsNearWall()
 	}
 }
 
-void UWeaponComponent::SetRecoilProgress(const float Value)
+void UWeaponComponent::SetRecoilOffset(const float Value)
 {
 	RecoilProgress = Value;
+
+	FWeaponData WeaponData;
+	CurrentWeapon->GetWeaponData(WeaponData);
+	
+	FRotator NewRotator = FRotator::ZeroRotator;
+	NewRotator += WeaponData.RecoilData.MeshRotationOffset * Value;
+	CurrentWeapon->SetActorRelativeRotation(NewRotator);
+
+	FVector NewLocation = CurrentWeapon->GetWeaponOffset();
+	NewLocation += WeaponData.RecoilData.MeshLocationOffset * Value;
+	CurrentWeapon->SetActorRelativeLocation(NewLocation);
 
 	if (RecoilTimeline->IsReversing()) return;
 
@@ -343,7 +354,6 @@ void UWeaponComponent::SetRecoilProgress(const float Value)
 
 	if (!Character) return;
 
-	FWeaponData WeaponData;
 	CurrentWeapon->GetWeaponData(WeaponData);
 	Character->AddCameraRecoil(WeaponData.RecoilData.CameraRecoilPitchPower * Value * RecoilMultiplier,
 	                           WeaponData.RecoilData.CameraRecoilYawPower * Value * RecoilMultiplier);
@@ -364,16 +374,16 @@ void UWeaponComponent::OnRecoilFinished()
 	RecoilTimeline->ReverseFromEnd();
 }
 
-void UWeaponComponent::SetPullRotation(const float Value)
+void UWeaponComponent::SetPullOffset(const float Value)
 {
 	PullProgress = Value;
 	
 	FRotator NewRotator = FRotator::ZeroRotator;
-	NewRotator += PullRotationOffset * Value;
+	NewRotator += EquipRotationOffset * Value;
 	CurrentWeapon->SetActorRelativeRotation(NewRotator);
 
 	FVector NewLocation = CurrentWeapon->GetWeaponOffset();
-	NewLocation += PullLocationOffset * Value;
+	NewLocation += EquipLocationOffset * Value;
 	CurrentWeapon->SetActorRelativeLocation(NewLocation);
 }
 

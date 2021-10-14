@@ -30,9 +30,6 @@ public:
 	EWeaponType GetWeaponType() const { return WeaponData.WeaponType; }
 
 	UFUNCTION(BlueprintPure, Category="Weapon")
-	FName GetWeaponSocketName() const { return WeaponSocketName; }
-
-	UFUNCTION(BlueprintPure, Category="Weapon")
 	void GetWeaponData(FWeaponData& Data) const;
 
 	float GetTimeBetweenShots() const { return TimeBetweenShots; }
@@ -89,14 +86,8 @@ protected:
 	int32 CalculateDamage() const { return FMath::Max(WeaponData.Damage / WeaponData.BulletsInShot, 1); }
 
 private:
-	UPROPERTY(EditDefaultsOnly,
-		BlueprintGetter=GetWeaponSocketName,
-		Category="Weapon|Visuals",
-		meta=(AllowPrivateAccess="true"))
-	FName WeaponSocketName = FName("WeaponPoint");
-
 	UPROPERTY(EditDefaultsOnly, Category="Weapon|Visuals")
-	FName MuzzleSocketName = FName("AmmoMesh");
+	FName MuzzleSocketName = FName("MuzzleSocket");
 
 	bool bCanShoot = true;
 

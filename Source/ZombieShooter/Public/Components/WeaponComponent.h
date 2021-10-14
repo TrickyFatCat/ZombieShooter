@@ -128,10 +128,10 @@ private:
 		BlueprintReadOnly,
 		Category="Animation|Recoil",
 		meta=(AllowPrivateAccess="true", ClampMin="0"))
-	float RecoilDuration = 0.05f;
+	float RecoilDuration = 0.2f;
 
 	UFUNCTION()
-	void SetRecoilProgress(const float Value);
+	void SetRecoilOffset(const float Value);
 
 	UFUNCTION()
 	void OnRecoilFinished();
@@ -158,15 +158,15 @@ private:
 	float PullDuration = 0.25f;
 
 	UPROPERTY(EditDefaultsOnly, Category="Animation|Pull")
-	FRotator PullRotationOffset = FRotator(0.f, 0.f, 60.f);
+	FRotator EquipRotationOffset = FRotator(0.f, 0.f, 60.f);
 
 	UPROPERTY(EditDefaultsOnly, Category="Animation|Pull")
-	FVector PullLocationOffset = FVector(0.f, 0.f, -40.f);
+	FVector EquipLocationOffset = FVector(0.f, 0.f, -40.f);
 
 	EWeaponPullCommand PullCommand = EWeaponPullCommand::Equip;
 
 	UFUNCTION()
-	void SetPullRotation(const float Value);
+	void SetPullOffset(const float Value);
 
 	UFUNCTION()
 	void OnPullFinished();

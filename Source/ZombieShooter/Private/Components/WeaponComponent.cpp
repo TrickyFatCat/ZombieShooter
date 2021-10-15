@@ -405,11 +405,6 @@ void UWeaponComponent::OnPullFinished()
 	case EWeaponPullCommand::Reload:
 		if (PullProgress >= 1.f)
 		{
-			// GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle,
-			//                                        this,
-			//                                        &UWeaponComponent::OnReloadFinished,
-			//                                        WeaponData.ReloadTime,
-			//                                        false);
 			CurrentWeapon->PlayReloadAnimation();
 			return;
 		}

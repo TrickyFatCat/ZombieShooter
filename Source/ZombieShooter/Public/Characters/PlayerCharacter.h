@@ -9,6 +9,7 @@
 class UCameraComponent;
 class UWeaponComponent;
 class UInteractionQueueComponent;
+class UPlayerArmsComponent;
 
 /**
  * 
@@ -29,7 +30,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	USceneComponent* GetPlayerArms() const { return PlayerArms; }
+	UPlayerArmsComponent* GetPlayerArms() const { return PlayerArms; }
 
 	UFUNCTION(BlueprintPure, Category="Player")
 	float GetAdsTransitionProgress() const { return WeaponComponent->GetAdsTransitionProgress(); }
@@ -42,7 +43,7 @@ protected:
 	UCameraComponent* PlayerCamera = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
-	USceneComponent* PlayerArms = nullptr;
+	UPlayerArmsComponent* PlayerArms = nullptr;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UInteractionQueueComponent* InteractionQueue = nullptr;
@@ -73,23 +74,6 @@ protected:
 
 	UFUNCTION()
 	void ExitCrouch();
-
-	// WeaponSway
-private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
-	float SwayPower = 2.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
-	float SwaySpeed = 100.f;
-
-	UPROPERTY(VisibleInstanceOnly)
-	FRotator InitialRotation = FRotator::ZeroRotator;
-	
-	void SetHorizontalSway(const float AxisValue);
-
-	void SetVerticalSway(const float AxisValue);
-
-	void ProcessSwayRotation(const float DeltaTime) const;
 
 	// Camera recoil
 public:

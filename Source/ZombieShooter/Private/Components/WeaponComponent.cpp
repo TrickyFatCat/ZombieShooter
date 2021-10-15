@@ -9,6 +9,7 @@
 #include "Weapons/WeaponBase.h"
 #include "Core/ProjectUtils.h"
 #include "Kismet/KismetMaterialLibrary.h"
+#include "Components/PlayerArmsComponent.h"
 
 UWeaponComponent::UWeaponComponent()
 {

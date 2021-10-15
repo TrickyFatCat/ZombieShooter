@@ -3,19 +3,19 @@
 
 #include "Characters/PlayerCharacter.h"
 
-#include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ShooterDamageControllerComponent.h"
 #include "Core/Session/SessionGameMode.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TrickyPrototyping/Public/Components/InteractionQueueComponent.h"
+#include "Components/PlayerArmsComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
 	PlayerCamera->SetupAttachment(GetMesh());
 
-	PlayerArms = CreateDefaultSubobject<USceneComponent>("WeaponScene");
+	PlayerArms = CreateDefaultSubobject<UPlayerArmsComponent>("WeaponScene");
 	PlayerArms->SetupAttachment(PlayerCamera);
 
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
@@ -27,7 +27,6 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitialRotation = PlayerArms->GetRelativeRotation();
 	DefaultMaxSpeed = GetCharacterMovement()->MaxWalkSpeed;
 
 	DefaultInputYawScale = GetController<APlayerController>()->InputYawScale;
@@ -42,8 +41,6 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	ProcessSwayRotation(DeltaSeconds);
 
 	// const FString Separator = TEXT("\n=====================\n");
 	const FString PlayerDataHeader = TEXT("==== PLAYER DATA ====");
@@ -99,8 +96,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// Aiming
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookRight", this, &APlayerCharacter::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::SetVerticalSway);
-	PlayerInputComponent->BindAxis("LookRight", this, &APlayerCharacter::SetHorizontalSway);
+	PlayerInputComponent->BindAxis("LookUp", PlayerArms, &UPlayerArmsComponent::SetVerticalSway);
+	PlayerInputComponent->BindAxis("LookRight", PlayerArms, &UPlayerArmsComponent::SetHorizontalSway);
 	PlayerInputComponent->BindAction("ADS", IE_Pressed, WeaponComponent, &UWeaponComponent::EnterAds);
 	PlayerInputComponent->BindAction("ADS", IE_Released, WeaponComponent, &UWeaponComponent::ExitAds);
 
@@ -168,32 +165,6 @@ void APlayerCharacter::EnterCrouch()
 void APlayerCharacter::ExitCrouch()
 {
 	UnCrouch();
-}
-
-void APlayerCharacter::SetHorizontalSway(const float AxisValue)
-{
-	FRotator FinalRotation = PlayerArms->GetRelativeRotation();
-	FinalRotation.Yaw = FinalRotation.Yaw - AxisValue * SwayPower;
-	PlayerArms->SetRelativeRotation(FinalRotation);
-}
-
-void APlayerCharacter::SetVerticalSway(const float AxisValue)
-{
-	FRotator FinalRotation = PlayerArms->GetRelativeRotation();
-	FinalRotation.Roll = FinalRotation.Roll - AxisValue * SwayPower;
-	PlayerArms->SetRelativeRotation(FinalRotation);
-}
-
-void APlayerCharacter::ProcessSwayRotation(const float DeltaTime) const
-{
-	const FRotator TargetRotation = FRotator(PlayerArms->GetRelativeRotation().Pitch,
-	                                         InitialRotation.Yaw,
-	                                         InitialRotation.Roll);
-	const FRotator FinalRotation = FMath::RInterpTo(PlayerArms->GetRelativeRotation(),
-	                                                TargetRotation,
-	                                                DeltaTime,
-	                                                SwaySpeed);
-	PlayerArms->SetRelativeRotation(FinalRotation);
 }
 
 void APlayerCharacter::AddCameraRecoil(const float RecoilPitch, const float RecoilYaw)

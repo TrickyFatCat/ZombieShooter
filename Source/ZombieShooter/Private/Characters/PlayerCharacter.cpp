@@ -35,6 +35,8 @@ void APlayerCharacter::BeginPlay()
 
 	WeaponComponent->OnEnterAds.AddDynamic(this, &APlayerCharacter::OnEnterAds);
 	WeaponComponent->OnExitAds.AddDynamic(this, &APlayerCharacter::OnExitAds);
+
+	PlayerCamera->SetRelativeScale3D(FVector(0.2, 0.2, 0.2));
 }
 
 void APlayerCharacter::Tick(float DeltaSeconds)

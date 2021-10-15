@@ -92,7 +92,8 @@ protected:
 
 	void OnEmptyClip(AWeaponBase* TargetWeapon);
 
-	void OnReloadFinished() const;
+	UFUNCTION()
+	void OnReloadFinished();
 
 private:
 	const float WallCheckDistance = 80.f;

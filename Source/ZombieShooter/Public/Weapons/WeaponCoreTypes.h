@@ -7,6 +7,7 @@
 class AWeaponBase;
 class AProjectileBase;
 class USoundCue;
+class UAnimationAsset;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponClipEmptySignature, AWeaponBase*)
 
@@ -15,6 +16,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponShotSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnterAdsSignature);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnExitAdsSignature);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReloadFinishedSignature);
 
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
@@ -152,6 +155,30 @@ struct FWeaponData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	FAdsData AdsData;
+};
+
+USTRUCT(BlueprintType)
+struct FWeaponVisualData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Visuals")
+	FName MuzzleSocketName = FName("MuzzleSocket");
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Visuals")
+	FVector WeaponLocationOffset = FVector::ZeroVector;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Visuals")
+	UAnimationAsset* FireAnimation = nullptr;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Visuals")
+	UAnimationAsset* ReloadAnimation = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Visuals")
+	FVector ReloadLocationOffset = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Visuals")
+	FRotator ReloadRotationOffset = FRotator::ZeroRotator;
 };
 
 USTRUCT(BlueprintType)

@@ -110,6 +110,7 @@ void UWeaponComponent::SpawnWeapons()
 		                          AttachmentTransformRules);
 		Weapon->SetActorHiddenInGame(true);
 		Weapon->OnMakeShot.AddUObject(this, &UWeaponComponent::OnWeaponMakeShot);
+		Weapon->OnReloadFinished.AddDynamic(this, &UWeaponComponent::OnReloadFinished);
 		Weapon->FinishSpawning(FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
 	}
 }
@@ -187,13 +188,14 @@ void UWeaponComponent::Reload()
 	FWeaponData WeaponData;
 	CurrentWeapon->GetWeaponData(WeaponData);
 
-	if (WeaponData.ReloadTime <= 0.f)
+	if (WeaponData.ReloadTime <= 0.f || !CurrentWeapon->GetReloadAnimation())
 	{
 		CurrentWeapon->Reload();
 		bIsReloading = false;
 		return;
 	}
 
+	// CurrentWeapon->PlayReloadAnimation();
 	PullAnimationTimeline->PlayFromStart();
 }
 
@@ -283,9 +285,10 @@ void UWeaponComponent::OnEmptyClip(AWeaponBase* TargetWeapon)
 	}
 }
 
-void UWeaponComponent::OnReloadFinished() const
+void UWeaponComponent::OnReloadFinished()
 {
-	CurrentWeapon->Reload();
+	// bIsReloading = false;
+	// CurrentWeapon->Reload();
 	PullAnimationTimeline->ReverseFromEnd();
 }
 
@@ -344,7 +347,7 @@ void UWeaponComponent::SetRecoilOffset(const float Value)
 	NewRotator += WeaponData.RecoilData.MeshRotationOffset * Value;
 	CurrentWeapon->SetActorRelativeRotation(NewRotator);
 
-	FVector NewLocation = CurrentWeapon->GetWeaponOffset();
+	FVector NewLocation = CurrentWeapon->GetWeaponLocationOffset();
 	NewLocation += WeaponData.RecoilData.MeshLocationOffset * Value;
 	CurrentWeapon->SetActorRelativeLocation(NewLocation);
 
@@ -377,13 +380,17 @@ void UWeaponComponent::OnRecoilFinished()
 void UWeaponComponent::SetPullOffset(const float Value)
 {
 	PullProgress = Value;
+	const FRotator TargetRotator = PullCommand == EWeaponPullCommand::Reload ? CurrentWeapon->GetReloadRotationOffset() : EquipRotationOffset;
+	const FVector TargetLocation = PullCommand == EWeaponPullCommand::Reload ? CurrentWeapon->GetReloadLocationOffset() : EquipLocationOffset;
+
+	// if (PullCommand == EWeaponPullCommand::Reload) return;
 	
 	FRotator NewRotator = FRotator::ZeroRotator;
-	NewRotator += EquipRotationOffset * Value;
+	NewRotator += TargetRotator * Value;
 	CurrentWeapon->SetActorRelativeRotation(NewRotator);
 
-	FVector NewLocation = CurrentWeapon->GetWeaponOffset();
-	NewLocation += EquipLocationOffset * Value;
+	FVector NewLocation = CurrentWeapon->GetWeaponLocationOffset();
+	NewLocation += TargetLocation * Value;
 	CurrentWeapon->SetActorRelativeLocation(NewLocation);
 }
 
@@ -397,11 +404,12 @@ void UWeaponComponent::OnPullFinished()
 	case EWeaponPullCommand::Reload:
 		if (PullProgress >= 1.f)
 		{
-			GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle,
-			                                       this,
-			                                       &UWeaponComponent::OnReloadFinished,
-			                                       WeaponData.ReloadTime,
-			                                       false);
+			// GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle,
+			//                                        this,
+			//                                        &UWeaponComponent::OnReloadFinished,
+			//                                        WeaponData.ReloadTime,
+			//                                        false);
+			CurrentWeapon->PlayReloadAnimation();
 			return;
 		}
 

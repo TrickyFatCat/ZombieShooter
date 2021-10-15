@@ -28,7 +28,7 @@ void AWeaponBase::BeginPlay()
 	WeaponMesh->SetPlayRate(1.f / TimeBetweenShots);
 	AmmoData.ClipAmmoCurrent = AmmoData.ClipAmmoMax;
 	AmmoData.StorageAmmoCurrent = AmmoData.StorageAmmoMax;
-	SetActorRelativeLocation(WeaponOffset);
+	SetActorRelativeLocation(VisualData.WeaponLocationOffset);
 }
 
 void AWeaponBase::Tick(float DeltaTime)
@@ -148,6 +148,8 @@ void AWeaponBase::Reload()
 
 	StopShooting();
 
+	OnReloadFinished.Broadcast();
+
 	if (AmmoData.bIsStorageInfinite)
 	{
 		IncreaseClipAmmoCurrent(AmmoData.ClipAmmoMax);
@@ -158,6 +160,11 @@ void AWeaponBase::Reload()
 	const int32 DeltaAmmo = RequiredAmmo > AmmoData.StorageAmmoCurrent ? AmmoData.StorageAmmoCurrent : RequiredAmmo;
 	IncreaseClipAmmoCurrent(DeltaAmmo);
 	DecreaseStorageAmmoCurrent(DeltaAmmo);
+}
+
+void AWeaponBase::PlayReloadAnimation() const
+{
+	WeaponMesh->PlayAnimation(VisualData.ReloadAnimation, false);
 }
 
 void AWeaponBase::MakeShot()
@@ -180,7 +187,7 @@ void AWeaponBase::MakeShot()
 		}
 
 		GetHitScanData(HitResult, TraceStart, TraceEnd);
-		const FVector MuzzleLocation = WeaponMesh->GetSocketLocation(MuzzleSocketName);
+		const FVector MuzzleLocation = WeaponMesh->GetSocketLocation(VisualData.MuzzleSocketName);
 		const FVector EndPoint = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
 		const FVector Direction = (EndPoint - MuzzleLocation).GetSafeNormal();
 
@@ -212,7 +219,7 @@ void AWeaponBase::MakeShot()
 
 	OnWeaponShot();
 	OnMakeShot.Broadcast();
-	WeaponMesh->PlayAnimation(ShootAnimation, false);
+	WeaponMesh->PlayAnimation(VisualData.FireAnimation, false);
 	DecreaseClipAmmoCurrent(WeaponData.ShotCost);
 }
 

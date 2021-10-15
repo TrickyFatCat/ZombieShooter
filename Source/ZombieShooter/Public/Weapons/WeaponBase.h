@@ -32,11 +32,12 @@ public:
 	UFUNCTION(BlueprintPure, Category="Weapon")
 	void GetWeaponData(FWeaponData& Data) const;
 
+	USkeletalMeshComponent* GetMesh() const { return WeaponMesh; }
+
 	float GetTimeBetweenShots() const { return TimeBetweenShots; }
 
 	FOnMakeShotSignature OnMakeShot;
 
-	FVector GetWeaponOffset() const { return WeaponOffset; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
@@ -53,9 +54,6 @@ private:
 		meta=(AllowPrivateAccess="true"))
 	FWeaponData WeaponData;
 
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	FVector WeaponOffset = FVector::ZeroVector;
-
 	float TimeBetweenShots = 1.f;
 
 	// Shooting
@@ -67,9 +65,6 @@ protected:
 	FTimerHandle ShootingTimerHandle;
 
 	FTimerHandle ShootingCooldownHandle;
-
-	UPROPERTY(EditDefaultsOnly, Category="Weapon|Effects")
-	UAnimationAsset* ShootAnimation = nullptr;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Weapon")
 	void OnWeaponShot();
@@ -86,9 +81,6 @@ protected:
 	int32 CalculateDamage() const { return FMath::Max(WeaponData.Damage / WeaponData.BulletsInShot, 1); }
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category="Weapon|Visuals")
-	FName MuzzleSocketName = FName("MuzzleSocket");
-
 	bool bCanShoot = true;
 
 	float SpreadMultiplier = 1.f;
@@ -103,6 +95,7 @@ public:
 	void StartShooting();
 	void StopShooting();
 	void Reload();
+	FOnReloadFinishedSignature OnReloadFinished;
 
 private:
 	void MakeShot();
@@ -135,4 +128,19 @@ protected:
 	void DecreaseClipAmmoCurrent(const int32 Amount);
 
 	void DecreaseStorageAmmoCurrent(const int32 Amount);
+
+	// Visuals
+public:
+	void PlayReloadAnimation() const;
+
+	UAnimationAsset* GetReloadAnimation() const { return VisualData.ReloadAnimation; }
+
+	FVector GetWeaponLocationOffset() const { return VisualData.WeaponLocationOffset; }
+
+	FVector GetReloadLocationOffset() const { return VisualData.ReloadLocationOffset; }
+	
+	FRotator GetReloadRotationOffset() const { return VisualData.ReloadRotationOffset; }
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess="true"))
+	FWeaponVisualData VisualData;
 };

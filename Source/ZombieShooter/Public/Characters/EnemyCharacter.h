@@ -6,6 +6,7 @@
 #include "Characters/BaseCharacter.h"
 #include "Characters/EnemyCoreTypes.h"
 #include "AI/AICoreTypes.h"
+#include "Components/TriggerComponents/DamageCapsuleComponent.h"
 #include "EnemyCharacter.generated.h"
 
 class UAnimMontage;
@@ -103,8 +104,8 @@ public:
 	AActor* GetTargetActor() const;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
-	UDamageSphereComponent* DamageTrigger = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UDamageCapsuleComponent* DamageComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
 	int32 AttackDamage = 10.f;

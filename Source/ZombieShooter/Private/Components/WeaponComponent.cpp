@@ -80,7 +80,7 @@ void UWeaponComponent::TickComponent(float DeltaTime,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	CheckIsNearWall();
+	// CheckIsNearWall();
 }
 
 void UWeaponComponent::GetCurrentWeaponData(FWeaponData& WeaponData) const
@@ -196,7 +196,6 @@ void UWeaponComponent::Reload()
 		return;
 	}
 
-	// CurrentWeapon->PlayReloadAnimation();
 	PullAnimationTimeline->PlayFromStart();
 }
 
@@ -288,8 +287,6 @@ void UWeaponComponent::OnEmptyClip(AWeaponBase* TargetWeapon)
 
 void UWeaponComponent::OnReloadFinished()
 {
-	// bIsReloading = false;
-	// CurrentWeapon->Reload();
 	PullAnimationTimeline->ReverseFromEnd();
 }
 
@@ -384,8 +381,6 @@ void UWeaponComponent::SetPullOffset(const float Value)
 	const FRotator TargetRotator = PullCommand == EWeaponPullCommand::Reload ? CurrentWeapon->GetReloadRotationOffset() : EquipRotationOffset;
 	const FVector TargetLocation = PullCommand == EWeaponPullCommand::Reload ? CurrentWeapon->GetReloadLocationOffset() : EquipLocationOffset;
 
-	// if (PullCommand == EWeaponPullCommand::Reload) return;
-	
 	FRotator NewRotator = FRotator::ZeroRotator;
 	NewRotator += TargetRotator * Value;
 	CurrentWeapon->SetActorRelativeRotation(NewRotator);

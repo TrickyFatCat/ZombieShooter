@@ -26,9 +26,6 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable, Category="Weapon")
-	EWeaponType GetWeaponType() const { return WeaponData.WeaponType; }
-
 	UFUNCTION(BlueprintPure, Category="Weapon")
 	void GetWeaponData(FWeaponData& Data) const;
 

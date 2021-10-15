@@ -106,9 +106,6 @@ struct FWeaponData
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
-	EWeaponType WeaponType = EWeaponType::Pistol;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")
 	TSubclassOf<UDamageType> DamageType = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon")

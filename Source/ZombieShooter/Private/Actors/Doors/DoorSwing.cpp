@@ -6,60 +6,24 @@
 
 ADoorSwing::ADoorSwing()
 {
-	InteractionTrigger = CreateDefaultSubobject<UInteractionBoxComponent>("InteractionTrigger");
-	SetRootComponent(InteractionTrigger);
 }
 
 
 void ADoorSwing::BeginPlay()
 {
 	Super::BeginPlay();
-
-	InteractionTrigger->SetIsNormalTrigger(!bRequireInteraction);
-	InteractionTrigger->bRequireLineOfSight = bRequireInteraction;
-
-	InteractionTrigger->OnComponentBeginOverlap.AddDynamic(this, &ADoorSwing::OnTriggerBeginOverlap);
-	InteractionTrigger->OnComponentEndOverlap.AddDynamic(this, &ADoorSwing::OnTriggerEndOverlap);
-}
-
-void ADoorSwing::Disable()
-{
-	Super::Disable();
-
-	InteractionTrigger->SetIsEnabled(false);
-}
-
-void ADoorSwing::Enable()
-{
-	Super::Enable();
-
-	InteractionTrigger->SetIsEnabled(true);
 }
 
 bool ADoorSwing::ProcessInteraction_Implementation(APlayerController* PlayerController)
 {
-	if (!PlayerController || !bRequireInteraction) return false;
-
-	if (!GetIsReversible() && GetStateCurrent() == EInteractiveActorState::Transition) return false;
-
 	const AActor* PlayerActor = Cast<AActor>(PlayerController->GetPawn());
 
 	if (!PlayerActor) return false;
 
-	StopAutoClose();
 	CalculateTargetTransform(PlayerActor);
-	StartAnimation();
-	return true;
+	return Super::ProcessInteraction_Implementation(PlayerController);
 }
 
-void ADoorSwing::FinishAnimation()
-{
-	Super::FinishAnimation();
-
-	if (AutoCloseDelay <= 0.f || InteractionTrigger->GetIsActorInside()) return;
-
-	StartAutoClose();
-}
 
 void ADoorSwing::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
                                        AActor* OtherActor,
@@ -68,32 +32,12 @@ void ADoorSwing::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent,
                                        bool bFromSweep,
                                        const FHitResult& SweepResult)
 {
-	if (AutoCloseDelay > 0.f)
+	if (GetDoorType() == EDoorType::Interactive)
 	{
-		StopAutoClose();
-		return;
+		CalculateTargetTransform(OtherActor);
 	}
 
-	if (bRequireInteraction || GetStateCurrent() != EInteractiveActorState::Closed) return;
-
-	CalculateTargetTransform(OtherActor);
-	Open();
-}
-
-void ADoorSwing::OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent,
-                                     AActor* OtherActor,
-                                     UPrimitiveComponent* OtherComp,
-                                     int32 OtherBodyIndex)
-{
-	if (AutoCloseDelay > 0.f && IsStateCurrent(EInteractiveActorState::Opened))
-	{
-		StartAutoClose();
-		return;
-	}
-
-	if (bRequireInteraction || GetStateCurrent() != EInteractiveActorState::Opened) return;
-
-	Close();
+	Super::OnTriggerBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }
 
 void ADoorSwing::CalculateTargetTransform(const AActor* Actor)
@@ -122,19 +66,6 @@ void ADoorSwing::CalculateTargetTransform(const AActor* Actor)
 	else if (SwingDirection > 0.f && CurrentYawSign > 0.f)
 	{
 		TargetTransforms[0].TargetRotation.Yaw *= -SwingDirection;
-	}
-}
-
-void ADoorSwing::StartAutoClose()
-{
-	GetWorldTimerManager().SetTimer(AutoCloseDelayHandle, this, &ADoorSwing::ProcessAutoClose, AutoCloseDelay, false);
-}
-
-void ADoorSwing::StopAutoClose()
-{
-	if (GetWorldTimerManager().IsTimerActive(AutoCloseDelayHandle))
-	{
-		GetWorldTimerManager().ClearTimer(AutoCloseDelayHandle);
 	}
 }
 

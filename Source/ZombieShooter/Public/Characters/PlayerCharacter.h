@@ -38,6 +38,10 @@ public:
 	UFUNCTION(BlueprintPure, Category="Player")
 	bool GetIsUsingScope() const { return WeaponComponent->GetIsUsingScope(); }
 
+	bool CanShoot() const { return WeaponComponent->CanShoot(); }
+
+	bool IsShooting() const { return WeaponComponent->GetIsShooting(); }
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UCameraComponent* PlayerCamera = nullptr;

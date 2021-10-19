@@ -15,7 +15,7 @@ APlayerCharacter::APlayerCharacter()
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
 	PlayerCamera->SetupAttachment(GetMesh());
 
-	PlayerArms = CreateDefaultSubobject<UPlayerArmsComponent>("WeaponScene");
+	PlayerArms = CreateDefaultSubobject<UPlayerArmsComponent>("PlayerArms");
 	PlayerArms->SetupAttachment(PlayerCamera);
 
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
@@ -111,7 +111,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	                                 WeaponComponent,
 	                                 &UWeaponComponent::EquipPreviousWeapon);
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, WeaponComponent, &UWeaponComponent::StartShooting);
+	PlayerInputComponent->BindAction("Shoot", IE_Pressed, PlayerArms, &UPlayerArmsComponent::StartShooting);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, WeaponComponent, &UWeaponComponent::StopShooting);
+	PlayerInputComponent->BindAction("Shoot", IE_Released, PlayerArms, &UPlayerArmsComponent::StopShooting);
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UWeaponComponent::Reload);
 
 	// Other

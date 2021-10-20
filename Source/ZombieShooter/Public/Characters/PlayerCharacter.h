@@ -46,7 +46,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UCameraComponent* PlayerCamera = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UPlayerArmsComponent* PlayerArms = nullptr;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Components")

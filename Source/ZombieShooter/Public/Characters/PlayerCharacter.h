@@ -10,6 +10,7 @@ class UCameraComponent;
 class UWeaponComponent;
 class UInteractionQueueComponent;
 class UPlayerArmsComponent;
+class UKeyRingComponent;
 
 /**
  * 
@@ -51,6 +52,9 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UInteractionQueueComponent* InteractionQueue = nullptr;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UKeyRingComponent* KeyRing = nullptr;	
 
 	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType) override;
 	

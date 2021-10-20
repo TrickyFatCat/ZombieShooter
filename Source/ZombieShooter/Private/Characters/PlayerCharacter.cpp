@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TrickyPrototyping/Public/Components/InteractionQueueComponent.h"
 #include "Components/PlayerArmsComponent.h"
+#include "Components/KeyRingComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -21,6 +22,8 @@ APlayerCharacter::APlayerCharacter()
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 
 	InteractionQueue = CreateDefaultSubobject<UInteractionQueueComponent>("InteractionQueue");
+
+	KeyRing = CreateDefaultSubobject<UKeyRingComponent>("KeyRing");
 }
 
 void APlayerCharacter::BeginPlay()

@@ -70,6 +70,8 @@ public:
 
 	void EquipPreviousWeapon();
 
+	void ChooseWeapon(const int32 WeaponIndex);
+
 	void StartShooting();
 
 	void StopShooting();

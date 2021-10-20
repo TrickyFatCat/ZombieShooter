@@ -152,6 +152,21 @@ void UWeaponComponent::EquipPreviousWeapon()
 	StartEquipAnimation();
 }
 
+void UWeaponComponent::ChooseWeapon(const int32 WeaponIndex)
+{
+	
+	if (bIsEquipping || bIsReloading || bIsAiming) return;
+
+	if (WeaponIndex < 0 || WeaponIndex >= Weapons.Num()) return;
+
+	if (!Weapons[WeaponIndex].bIsAvailable || CurrentWeaponIndex == WeaponIndex) return;
+
+	CurrentWeaponIndex = WeaponIndex;
+	PreviousWeaponIndex = CurrentWeaponIndex;
+	CurrentWeapon->StopShooting();
+	StartEquipAnimation();
+}
+
 void UWeaponComponent::StartShooting()
 {
 	if (!CurrentWeapon) return;

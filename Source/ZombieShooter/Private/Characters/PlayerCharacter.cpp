@@ -111,10 +111,18 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	                                 WeaponComponent,
 	                                 &UWeaponComponent::EquipPreviousWeapon);
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, WeaponComponent, &UWeaponComponent::StartShooting);
-	PlayerInputComponent->BindAction("Shoot", IE_Pressed, PlayerArms, &UPlayerArmsComponent::StartShooting);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, WeaponComponent, &UWeaponComponent::StopShooting);
+	PlayerInputComponent->BindAction("Shoot", IE_Pressed, PlayerArms, &UPlayerArmsComponent::StartShooting);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, PlayerArms, &UPlayerArmsComponent::StopShooting);
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UWeaponComponent::Reload);
+
+	DECLARE_DELEGATE_OneParam(FChooseWeaponDelegate, const int32);
+	PlayerInputComponent->BindAction<FChooseWeaponDelegate>("ChooseRevolver", IE_Pressed, WeaponComponent, &UWeaponComponent::ChooseWeapon, 0);
+	PlayerInputComponent->BindAction<FChooseWeaponDelegate>("ChooseSMG", IE_Pressed, WeaponComponent, &UWeaponComponent::ChooseWeapon, 1);
+	PlayerInputComponent->BindAction<FChooseWeaponDelegate>("ChooseShotgun", IE_Pressed, WeaponComponent, &UWeaponComponent::ChooseWeapon, 2);
+	PlayerInputComponent->BindAction<FChooseWeaponDelegate>("ChooseAssaultRifle", IE_Pressed, WeaponComponent, &UWeaponComponent::ChooseWeapon, 3);
+	PlayerInputComponent->BindAction<FChooseWeaponDelegate>("ChooseSniperRifle", IE_Pressed, WeaponComponent, &UWeaponComponent::ChooseWeapon, 4);
+	PlayerInputComponent->BindAction<FChooseWeaponDelegate>("ChooseLauncher", IE_Pressed, WeaponComponent, &UWeaponComponent::ChooseWeapon, 5);
 
 	// Other
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerCharacter::StartInteraction);

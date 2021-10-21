@@ -4,19 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "AnimNotify_SetDamageEnabled.generated.h"
+#include "Characters/EnemyCoreTypes.h"
+#include "AnimNotify_EnemyStartAttack.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ZOMBIESHOOTER_API UAnimNotify_SetDamageEnabled : public UAnimNotify
+class ZOMBIESHOOTER_API UAnimNotify_EnemyStartAttack : public UAnimNotify
 {
 	GENERATED_BODY()
 
 protected:
 	UPROPERTY(EditAnywhere)
-	bool bIsEnabled = true;
+	EEnemyMeleeAttackType AttackType;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 	

@@ -21,3 +21,11 @@ struct FEnemyMovementData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Enemy", meta=(ClampMin="0"))
 	float RunningSpeedRandomDeviation = 0.f;
 };
+
+UENUM(BlueprintType)
+enum class EEnemyMeleeAttackType : uint8
+{
+	Right,
+	Left,
+	Bite
+};

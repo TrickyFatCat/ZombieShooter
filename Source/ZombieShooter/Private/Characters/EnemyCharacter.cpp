@@ -24,8 +24,14 @@ AEnemyCharacter::AEnemyCharacter()
 		GetCharacterMovement()->RotationRate = FRotator(0.f, 200.f, 0.f);
 	}
 
-	DamageComponent = CreateDefaultSubobject<UDamageCapsuleComponent>("DamageComponent");
-	DamageComponent->SetupAttachment(GetMesh(), AttackSocketName);
+	DamageTriggerRight = CreateDefaultSubobject<UDamageCapsuleComponent>("DamageTriggerRight");
+	DamageTriggerRight->SetupAttachment(GetMesh(), RightHandSocketName);
+
+	DamageTriggerLeft = CreateDefaultSubobject<UDamageCapsuleComponent>("DamageTriggerLeft");
+	DamageTriggerLeft->SetupAttachment(GetMesh(), LeftHandSocketName);
+
+	DamageTriggerMouth = CreateDefaultSubobject<UDamageCapsuleComponent>("DamageTriggerMouth");
+	DamageTriggerMouth->SetupAttachment(GetMesh(), MouthSocketNme);
 }
 
 void AEnemyCharacter::BeginPlay()
@@ -33,8 +39,15 @@ void AEnemyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	OnTakeAnyDamage.AddDynamic(this, &AEnemyCharacter::OnTakeDamage);
-	DamageComponent->SetIsEnabled(false);
-	DamageComponent->SetDamage(AttackDamage);
+
+	DamageTriggerRight->SetIsEnabled(false);
+	DamageTriggerRight->SetDamage(AttackDamage);
+
+	DamageTriggerLeft->SetIsEnabled(false);
+	DamageTriggerLeft->SetDamage(AttackDamage);
+
+	DamageTriggerMouth->SetIsEnabled(false);
+	DamageTriggerMouth->SetDamage(AttackDamage);
 }
 
 void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType)
@@ -126,14 +139,42 @@ void AEnemyCharacter::OnTakeDamage(AActor* DamageActor,
 	}
 }
 
-void AEnemyCharacter::StartAttack()
+void AEnemyCharacter::StartAttack(const EEnemyMeleeAttackType AttackType)
 {
-	DamageComponent->SetIsEnabled(true);
+	CurrentAttackType = AttackType;
+
+	switch (CurrentAttackType)
+	{
+	case EEnemyMeleeAttackType::Left:
+		DamageTriggerLeft->SetIsEnabled(true);
+		break;
+
+	case EEnemyMeleeAttackType::Right:
+		DamageTriggerRight->SetIsEnabled(true);
+		break;
+
+	case EEnemyMeleeAttackType::Bite:
+		DamageTriggerMouth->SetIsEnabled(true);
+		break;
+	}
 }
 
 void AEnemyCharacter::FinishAttack()
 {
-	DamageComponent->SetIsEnabled(false);
+	switch (CurrentAttackType)
+	{
+	case EEnemyMeleeAttackType::Left:
+		DamageTriggerLeft->SetIsEnabled(true);
+		break;
+
+	case EEnemyMeleeAttackType::Right:
+		DamageTriggerRight->SetIsEnabled(true);
+		break;
+
+	case EEnemyMeleeAttackType::Bite:
+		DamageTriggerMouth->SetIsEnabled(true);
+		break;
+	}
 }
 
 AActor* AEnemyCharacter::GetTargetActor() const

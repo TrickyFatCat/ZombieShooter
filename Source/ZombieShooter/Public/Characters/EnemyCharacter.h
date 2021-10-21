@@ -97,19 +97,33 @@ protected:
 
 	// Attack
 public:
-	virtual void StartAttack();
+	virtual void StartAttack(const EEnemyMeleeAttackType AttackType);
 	
 	virtual void FinishAttack();
 
 	AActor* GetTargetActor() const;
 
 protected:
+	EEnemyMeleeAttackType CurrentAttackType;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
-	UDamageCapsuleComponent* DamageComponent = nullptr;
+	UDamageCapsuleComponent* DamageTriggerRight = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UDamageCapsuleComponent* DamageTriggerLeft = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UDamageCapsuleComponent* DamageTriggerMouth = nullptr;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
 	int32 AttackDamage = 10.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
-	FName AttackSocketName = "RightHandSocket";
+	FName RightHandSocketName = "RightHandSocket";
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
+	FName LeftHandSocketName = "LeftHandSocket";
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
+	FName MouthSocketNme = "LeftHandSocket";
 };

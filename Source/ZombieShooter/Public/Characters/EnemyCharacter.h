@@ -125,5 +125,5 @@ protected:
 	FName LeftHandSocketName = "LeftHandSocket";
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
-	FName MouthSocketNme = "LeftHandSocket";
+	FName MouthSocketName = "MouthSocket";
 };

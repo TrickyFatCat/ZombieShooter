@@ -26,12 +26,21 @@ AEnemyCharacter::AEnemyCharacter()
 
 	DamageTriggerRight = CreateDefaultSubobject<UDamageCapsuleComponent>("DamageTriggerRight");
 	DamageTriggerRight->SetupAttachment(GetMesh(), RightHandSocketName);
+	DamageTriggerRight->SetCapsuleRadius(10.f);
+	DamageTriggerRight->SetCapsuleHalfHeight(16.f);
+	DamageTriggerRight->SetRelativeLocation(FVector(0.f, 0.f, 5.f));
 
 	DamageTriggerLeft = CreateDefaultSubobject<UDamageCapsuleComponent>("DamageTriggerLeft");
 	DamageTriggerLeft->SetupAttachment(GetMesh(), LeftHandSocketName);
+	DamageTriggerLeft->SetCapsuleRadius(10.f);
+	DamageTriggerLeft->SetCapsuleHalfHeight(16.f);
+	DamageTriggerLeft->SetRelativeLocation(FVector(0.f, 0.f, 5.f));
 
 	DamageTriggerMouth = CreateDefaultSubobject<UDamageCapsuleComponent>("DamageTriggerMouth");
-	DamageTriggerMouth->SetupAttachment(GetMesh(), MouthSocketNme);
+	DamageTriggerMouth->SetupAttachment(GetMesh(), MouthSocketName);
+	DamageTriggerMouth->SetCapsuleRadius(8.f);
+	DamageTriggerMouth->SetCapsuleHalfHeight(16.f);
+	DamageTriggerMouth->SetRelativeLocation(FVector(0.f, 0.f, 11.f));
 }
 
 void AEnemyCharacter::BeginPlay()
@@ -164,15 +173,15 @@ void AEnemyCharacter::FinishAttack()
 	switch (CurrentAttackType)
 	{
 	case EEnemyMeleeAttackType::Left:
-		DamageTriggerLeft->SetIsEnabled(true);
+		DamageTriggerLeft->SetIsEnabled(false);
 		break;
 
 	case EEnemyMeleeAttackType::Right:
-		DamageTriggerRight->SetIsEnabled(true);
+		DamageTriggerRight->SetIsEnabled(false);
 		break;
 
 	case EEnemyMeleeAttackType::Bite:
-		DamageTriggerMouth->SetIsEnabled(true);
+		DamageTriggerMouth->SetIsEnabled(false);
 		break;
 	}
 }

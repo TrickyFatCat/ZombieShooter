@@ -124,7 +124,9 @@ void AEnemyCharacter::SetIsStunned(const bool Value)
 
 	if (bIsStunned)
 	{
-		PlayAnimMontage(HitReactionMontage);
+		const int SectionIndex = FMath::RandRange(0, SectionsNumber - 1);
+		const FName SectionName = HitReactionMontage->GetSectionName(SectionIndex);
+		PlayAnimMontage(HitReactionMontage, 1, SectionName);
 		AIController->StopMovement();
 	}
 }

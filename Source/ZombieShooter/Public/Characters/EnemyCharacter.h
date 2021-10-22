@@ -64,7 +64,7 @@ private:
 public:
 	UFUNCTION(BlueprintGetter, Category="Enemy")
 	FEnemyMovementData GetMovementData() const { return MovementData; }
-	
+
 	UFUNCTION(BlueprintPure, Category="Enemy")
 	bool IsRunning() const;
 
@@ -84,46 +84,49 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|HitReaction")
 	UAnimMontage* HitReactionMontage = nullptr;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Enemy|HitReaction")
+	int32 SectionsNumber = 1;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|HitReaction")
 	TMap<TSubclassOf<UDamageType>, float> StunChancesMap;
-	
+
 	UFUNCTION()
 	virtual void OnTakeDamage(AActor* DamageActor,
-	                             float Damage,
-	                             const UDamageType* DamageType,
-	                             AController* InstigatedBy,
-	                             AActor* DamageCauser);
+	                          float Damage,
+	                          const UDamageType* DamageType,
+	                          AController* InstigatedBy,
+	                          AActor* DamageCauser);
 
 	// Attack
 public:
 	virtual void StartAttack(const EEnemyMeleeAttackType AttackType);
-	
+
 	virtual void FinishAttack();
 
 	AActor* GetTargetActor() const;
 
 protected:
 	EEnemyMeleeAttackType CurrentAttackType;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UDamageCapsuleComponent* DamageTriggerRight = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UDamageCapsuleComponent* DamageTriggerLeft = nullptr;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UDamageCapsuleComponent* DamageTriggerMouth = nullptr;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
 	int32 AttackDamage = 10.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
 	FName RightHandSocketName = "RightHandSocket";
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
 	FName LeftHandSocketName = "LeftHandSocket";
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
 	FName MouthSocketName = "MouthSocket";
 };

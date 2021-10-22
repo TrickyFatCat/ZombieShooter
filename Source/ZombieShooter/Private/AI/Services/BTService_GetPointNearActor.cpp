@@ -22,26 +22,28 @@ void UBTService_GetPointNearActor::TickNode(UBehaviorTreeComponent& OwnerComp, u
 		if (TargetActor && NavSystem)
 		{
 			FNavLocation TargetNavLocation;
-			bool bLocationFound = false;
 
-			do
+			const FRotator SearchCone = FRotator(0.f,
+			                                     FMath::FRandRange(-SearchConeHalfAngle, SearchConeHalfAngle),
+			                                     0.f);
+			const FVector DirectionToOwner = SearchCone.RotateVector(
+				                                           Owner->GetActorLocation() - TargetActor->
+				                                           GetTargetLocation())
+			                                           .GetSafeNormal();
+			const FVector Point = TargetActor->GetActorLocation() + DirectionToOwner * FMath::FRandRange(
+				DistanceMin,
+				DistanceMax);
+			const bool bLocationFound = NavSystem->GetRandomPointInNavigableRadius(
+				Point,
+				SearchRadius,
+				TargetNavLocation);
+
+			if (bLocationFound)
 			{
-				const FRotator SearchCone = FRotator(0.f,
-				                                     FMath::FRandRange(-SearchConeHalfAngle, SearchConeHalfAngle),
-				                                     0.f);
-				const FVector DirectionToOwner = SearchCone.RotateVector(
-					                                           Owner->GetActorLocation() - TargetActor->
-					                                           GetTargetLocation())
-				                                           .GetSafeNormal();
-				const FVector Point = TargetActor->GetActorLocation() + DirectionToOwner * FMath::FRandRange(
-					DistanceMin,
-					DistanceMax);
-				bLocationFound = NavSystem->GetRandomReachablePointInRadius(Point, SearchRadius, TargetNavLocation);
+				Blackboard->SetValueAsVector(TargetLocationKey.SelectedKeyName, TargetNavLocation);
 			}
-			while (!bLocationFound);
-
-			Blackboard->SetValueAsVector(TargetLocationKey.SelectedKeyName, TargetNavLocation);
-			Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 		}
+
+		Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 	}
 }

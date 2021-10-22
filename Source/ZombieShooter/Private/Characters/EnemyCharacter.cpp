@@ -57,6 +57,8 @@ void AEnemyCharacter::BeginPlay()
 
 	DamageTriggerMouth->SetIsEnabled(false);
 	DamageTriggerMouth->SetDamage(AttackDamage);
+
+	GetCharacterMovement()->MaxWalkSpeed = MovementData.WalkingSpeedDefault;
 }
 
 void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType)

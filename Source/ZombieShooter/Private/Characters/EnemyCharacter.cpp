@@ -59,6 +59,8 @@ void AEnemyCharacter::BeginPlay()
 	DamageTriggerMouth->SetDamage(AttackDamage);
 
 	GetCharacterMovement()->MaxWalkSpeed = MovementData.WalkingSpeedDefault;
+
+	SetRandomMesh();
 }
 
 void AEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType)
@@ -197,4 +199,12 @@ AActor* AEnemyCharacter::GetTargetActor() const
 	if (!AIControllerBase) return nullptr;
 
 	return AIControllerBase->GetTargetActor();
+}
+
+void AEnemyCharacter::SetRandomMesh()
+{
+	if (EnemyMeshes.Num() == 0) return;
+
+	const int32 Index = FMath::RandRange(0, EnemyMeshes.Num() - 1);
+	GetMesh()->SetSkeletalMesh(EnemyMeshes[Index]);
 }

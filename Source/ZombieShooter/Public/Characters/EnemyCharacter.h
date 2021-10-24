@@ -31,14 +31,11 @@ protected:
 	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType) override;
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category="Enemy|Animations")
+	UPROPERTY(EditDefaultsOnly, Category="Enemy|Death")
 	UAnimMontage* DeathAnimMontage = nullptr;
 
-	UPROPERTY(VisibleDefaultsOnly, Category="Enemy|Animations")
+	UPROPERTY(VisibleDefaultsOnly, Category="Enemy|Death")
 	TArray<FName> DeathAnimMontageSections = {FName("Death_Front"), FName("Death_Back")};
-
-	UPROPERTY(EditDefaultsOnly, Category="Enemy|Animations")
-	TSubclassOf<UDamageType> BaseExplosionClass = nullptr;
 
 	const float DefaultLifeSpan = 5.f;
 
@@ -129,4 +126,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
 	FName MouthSocketName = "MouthSocket";
+
+	// Visuals
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Visuals")
+	TArray<USkeletalMesh*> EnemyMeshes;
+
+private:
+	void SetRandomMesh();
 };

@@ -4,25 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTDecorator.h"
-#include "BTDecorator_CheckDistanceToActor.generated.h"
-
-UENUM(BlueprintType)
-enum class EDistanceCheckMethod : uint8
-{
-	IsNear,
-	IsFar
-};
+#include "BTDecorator_TargetIsNear.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ZOMBIESHOOTER_API UBTDecorator_CheckDistanceToActor : public UBTDecorator
+class ZOMBIESHOOTER_API UBTDecorator_TargetIsNear : public UBTDecorator
 {
 	GENERATED_BODY()
 
 public:
-	UBTDecorator_CheckDistanceToActor();
+	UBTDecorator_TargetIsNear();
 
 protected:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
@@ -33,9 +26,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Node")
 	FBlackboardKeySelector DistanceToActorKey;
 
-	UPROPERTY(EditAnywhere, Category="Node")
-	EDistanceCheckMethod CheckMethod = EDistanceCheckMethod::IsFar;
-	
 	UPROPERTY(EditAnywhere, Category="Node")
 	float TargetDistance = 200.f;
 };

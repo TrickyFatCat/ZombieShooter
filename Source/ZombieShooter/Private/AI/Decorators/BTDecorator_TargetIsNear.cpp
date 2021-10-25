@@ -1,16 +1,16 @@
 // Created by Artyom Volkov during the UE4 course
 
 
-#include "AI/Decorators/BTDecorator_CheckDistanceToActor.h"
+#include "AI/Decorators/BTDecorator_TargetIsNear.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 
-UBTDecorator_CheckDistanceToActor::UBTDecorator_CheckDistanceToActor()
+UBTDecorator_TargetIsNear::UBTDecorator_TargetIsNear()
 {
-	NodeName = "Check Distance To Target Actor";
+	NodeName = "Target Is Near";
 }
 
-bool UBTDecorator_CheckDistanceToActor::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp,
+bool UBTDecorator_TargetIsNear::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp,
                                                                    uint8* NodeMemory) const
 {
 	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
@@ -22,9 +22,7 @@ bool UBTDecorator_CheckDistanceToActor::CalculateRawConditionValue(UBehaviorTree
 	if (!TargetActor) return false;
 
 	const float CurrentDistance = Blackboard->GetValueAsFloat(DistanceToActorKey.SelectedKeyName);
-	const bool Result = CheckMethod == EDistanceCheckMethod::IsFar
-		                    ? CurrentDistance > TargetDistance
-		                    : CurrentDistance <= TargetDistance;
+	const bool Result = CurrentDistance <= TargetDistance;
 
 	return Result;
 }

@@ -6,13 +6,37 @@
 #include "AIController.h"
 #include "Weapons/ProjectileBase.h"
 
+void ARangedEnemyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TimeBetweenAttacks = 1.f / RateOfFire;
+}
+
 void ARangedEnemyCharacter::StartAttack(const EEnemyMeleeAttackType Attack)
 {
+	if (!GetWorld() || !SpitProjectile) return;
+
 	SpawnProjectiles();
+
+	if (CurrentAttackNumber < MaxAttackNumber)
+	{
+		GetWorldTimerManager().SetTimer(AttackTimerHandle,
+		                                this,
+		                                &ARangedEnemyCharacter::SpawnProjectiles,
+		                                TimeBetweenAttacks,
+		                                true);
+	}
 }
 
 void ARangedEnemyCharacter::FinishAttack()
 {
+	CurrentAttackNumber = 0;
+	
+	if (GetWorldTimerManager().IsTimerActive(AttackTimerHandle))
+	{
+		GetWorldTimerManager().ClearTimer(AttackTimerHandle);
+	}
 }
 
 void ARangedEnemyCharacter::SpawnProjectiles()
@@ -74,5 +98,8 @@ void ARangedEnemyCharacter::SpawnProjectiles()
 		}
 	}
 
-	
+	if (++CurrentAttackNumber >= MaxAttackNumber)
+	{
+		FinishAttack();
+	}
 }

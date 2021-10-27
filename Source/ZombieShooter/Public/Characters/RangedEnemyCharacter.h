@@ -15,6 +15,8 @@ class ZOMBIESHOOTER_API ARangedEnemyCharacter : public AEnemyCharacter
 	GENERATED_BODY()
 
 protected:
+	virtual void BeginPlay() override;
+	
 	virtual void StartAttack(const EEnemyMeleeAttackType AttackType) override;
 
 	virtual void FinishAttack() override;
@@ -28,6 +30,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|RangedAttack", meta=(AllowPrivateAccess="true"))
 	float RateOfFire = 1.f;
+
+	float TimeBetweenAttacks = 1.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|RangedAttack", meta=(AllowPrivateAccess="true"))
 	int32 MaxAttackNumber = 1;

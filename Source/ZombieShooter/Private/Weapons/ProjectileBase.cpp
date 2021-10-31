@@ -106,8 +106,6 @@ void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent,
 
 	if (!World) return;
 
-	if (OtherActor->IsA(APlayerCharacter::StaticClass())) return;
-
 	if (ProjectileData.bIsBouncing && !OtherActor->IsA(APawn::StaticClass())) return;
 
 	ProjectileMovement->StopMovementImmediately();

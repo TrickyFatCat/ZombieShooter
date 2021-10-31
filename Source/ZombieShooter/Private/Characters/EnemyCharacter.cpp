@@ -154,21 +154,21 @@ void AEnemyCharacter::OnTakeDamage(AActor* DamageActor,
 	}
 }
 
-void AEnemyCharacter::StartAttack(const EEnemyMeleeAttackType AttackType)
+void AEnemyCharacter::StartAttack(const EEnemyAttackType AttackType)
 {
 	CurrentAttackType = AttackType;
 
 	switch (CurrentAttackType)
 	{
-	case EEnemyMeleeAttackType::Left:
+	case EEnemyAttackType::Left:
 		DamageTriggerLeft->SetIsEnabled(true);
 		break;
 
-	case EEnemyMeleeAttackType::Right:
+	case EEnemyAttackType::Right:
 		DamageTriggerRight->SetIsEnabled(true);
 		break;
 
-	case EEnemyMeleeAttackType::Bite:
+	case EEnemyAttackType::Bite:
 		DamageTriggerMouth->SetIsEnabled(true);
 		break;
 	}
@@ -178,15 +178,15 @@ void AEnemyCharacter::FinishAttack()
 {
 	switch (CurrentAttackType)
 	{
-	case EEnemyMeleeAttackType::Left:
+	case EEnemyAttackType::Left:
 		DamageTriggerLeft->SetIsEnabled(false);
 		break;
 
-	case EEnemyMeleeAttackType::Right:
+	case EEnemyAttackType::Right:
 		DamageTriggerRight->SetIsEnabled(false);
 		break;
 
-	case EEnemyMeleeAttackType::Bite:
+	case EEnemyAttackType::Bite:
 		DamageTriggerMouth->SetIsEnabled(false);
 		break;
 	}

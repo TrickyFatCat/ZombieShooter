@@ -97,14 +97,14 @@ protected:
 
 	// Attack
 public:
-	virtual void StartAttack(const EEnemyMeleeAttackType AttackType);
+	virtual void StartAttack(const EEnemyAttackType AttackType);
 
 	virtual void FinishAttack();
 
 	AActor* GetTargetActor() const;
 
 protected:
-	EEnemyMeleeAttackType CurrentAttackType;
+	EEnemyAttackType CurrentAttackType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UDamageCapsuleComponent* DamageTriggerRight = nullptr;

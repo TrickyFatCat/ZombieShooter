@@ -10,11 +10,22 @@ void ARangedEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (RateOfFire <= 0.f)
+	{
+		RateOfFire = 1.f;
+	}
+	
 	TimeBetweenAttacks = 1.f / RateOfFire;
 }
 
-void ARangedEnemyCharacter::StartAttack(const EEnemyMeleeAttackType Attack)
+void ARangedEnemyCharacter::StartAttack(const EEnemyAttackType Attack)
 {
+	if (Attack != EEnemyAttackType::Ranged)
+	{
+		Super::StartAttack(Attack);
+		return;
+	}
+	
 	if (!GetWorld() || !SpitProjectile) return;
 
 	SpawnProjectiles();
@@ -31,6 +42,12 @@ void ARangedEnemyCharacter::StartAttack(const EEnemyMeleeAttackType Attack)
 
 void ARangedEnemyCharacter::FinishAttack()
 {
+	if (CurrentAttackType != EEnemyAttackType::Ranged)
+	{
+		Super::FinishAttack();
+		return;
+	}
+	
 	CurrentAttackNumber = 0;
 	
 	if (GetWorldTimerManager().IsTimerActive(AttackTimerHandle))
@@ -56,6 +73,7 @@ void ARangedEnemyCharacter::SpawnProjectiles()
 	}
 
 	Controller->GetActorEyesViewPoint(TraceStart, ViewRotation);
+	const FVector MouthSocketLocation = GetMesh()->GetSocketLocation(MouthSocketName);
 	FVector AttackDirection = ViewRotation.Vector();
 	int32 ProjectileDamage = FMath::Max(AttackDamage / ProjectilesAmount, 1);
 
@@ -85,7 +103,7 @@ void ARangedEnemyCharacter::SpawnProjectiles()
 
 		if (!SpitProjectile) break;
 
-		const FTransform SpawnTransform(FRotator::ZeroRotator, TraceStart);
+		const FTransform SpawnTransform(FRotator::ZeroRotator, MouthSocketLocation);
 		AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(
 			SpitProjectile,
 			SpawnTransform);

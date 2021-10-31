@@ -23,9 +23,10 @@ struct FEnemyMovementData
 };
 
 UENUM(BlueprintType)
-enum class EEnemyMeleeAttackType : uint8
+enum class EEnemyAttackType : uint8
 {
 	Right,
 	Left,
-	Bite
+	Bite,
+	Ranged
 };

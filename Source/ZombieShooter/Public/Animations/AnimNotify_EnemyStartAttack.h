@@ -17,7 +17,7 @@ class ZOMBIESHOOTER_API UAnimNotify_EnemyStartAttack : public UAnimNotify
 
 protected:
 	UPROPERTY(EditAnywhere)
-	EEnemyMeleeAttackType AttackType;
+	EEnemyAttackType AttackType;
 	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 	

@@ -20,11 +20,9 @@ void ARangedEnemyCharacter::BeginPlay()
 
 void ARangedEnemyCharacter::StartAttack(const EEnemyAttackType Attack)
 {
-	if (Attack != EEnemyAttackType::Ranged)
-	{
-		Super::StartAttack(Attack);
-		return;
-	}
+	Super::StartAttack(Attack);
+
+	if (Attack != EEnemyAttackType::Ranged) return;
 	
 	if (!GetWorld() || !SpitProjectile) return;
 

@@ -115,16 +115,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UDamageCapsuleComponent* DamageTriggerMouth = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Melee")
 	int32 AttackDamage = 10.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Melee")
 	FName RightHandSocketName = "RightHandSocket";
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Melee")
 	FName LeftHandSocketName = "LeftHandSocket";
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Melee")
 	FName MouthSocketName = "MouthSocket";
 
 	// Visuals

@@ -6,6 +6,7 @@
 #include "Characters/RangedEnemyCharacter.h"
 #include "ExplosiveEnemyCharacter.generated.h"
 
+class APoisonousCloud;
 /**
  * 
  */
@@ -37,4 +38,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Explosion")
 	USoundCue* ExplosionSound = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Explosion")
+	TSubclassOf<APoisonousCloud> PoisonousCloudClass = nullptr;
 };

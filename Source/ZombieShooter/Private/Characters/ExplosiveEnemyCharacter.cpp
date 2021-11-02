@@ -3,11 +3,10 @@
 
 #include "Characters/ExplosiveEnemyCharacter.h"
 #include "Kismet/GameplayStatics.h"
-#include "Weapons/Components/WeaponFXComponent.h"
+#include "Sound/SoundCue.h"
 
 AExplosiveEnemyCharacter::AExplosiveEnemyCharacter()
 {
-	ExplosionFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("ExplosionFXComponent");
 }
 
 void AExplosiveEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* Damage)
@@ -22,17 +21,7 @@ void AExplosiveEnemyCharacter::OnDeath(AController* DeathInstigator, AActor* Dea
 	                                    GetController(),
 	                                    bDealFullDamage,
 	                                    ECC_GameTraceChannel1);
-
-	FHitResult HitResult;
-	FCollisionQueryParams CollisionQueryParams;
-	CollisionQueryParams.AddIgnoredActor(this);
-
-	GetWorld()->LineTraceSingleByChannel(HitResult,
-	                                     GetActorLocation(),
-	                                     GetActorLocation() + GetActorUpVector() * -100,
-	                                     ECC_Visibility,
-	                                     CollisionQueryParams);
-
-	ExplosionFXComponent->PlayImpactFX(HitResult);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation());
 	Super::OnDeath(DeathInstigator, DeathCauser, Damage);
 }

@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class ZOMBIESHOOTER_API AExplosiveEnemyCharacter : public ARangedEnemyCharacter
+class ZOMBIESHOOTER_API AExplosiveEnemyCharacter : public AEnemyCharacter
 {
 	GENERATED_BODY()
 
@@ -19,9 +19,6 @@ public:
 
 protected:
 	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType) override;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
-	UWeaponFXComponent* ExplosionFXComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Explosion")
 	bool bDealFullDamage = true;
@@ -34,4 +31,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Explosion")
 	TSubclassOf<UDamageType> ExplosionDamageType = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Explosion")
+	UParticleSystem* ExplosionEffect = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Explosion")
+	USoundCue* ExplosionSound = nullptr;
 };

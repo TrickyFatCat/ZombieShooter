@@ -36,5 +36,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Node")
 	float SearchConeHalfAngle = 90.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Node")
+	bool bCheckLineOfSight = false;
+
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

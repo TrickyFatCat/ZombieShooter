@@ -27,7 +27,6 @@ void UBTService_CheckLineOfSight::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 			FHitResult HitResult;
 			FCollisionQueryParams CollisionQueryParams;
 			CollisionQueryParams.AddIgnoredActor(Owner);
-			FCollisionResponseParams CollisionResponseParams;
 
 			UKismetSystemLibrary::SphereTraceSingle(World,
 			                                        Owner->GetActorLocation(),

@@ -5,6 +5,7 @@
 
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 UBTTask_GetPointNearActor::UBTTask_GetPointNearActor()
 {
@@ -32,9 +33,33 @@ EBTNodeResult::Type UBTTask_GetPointNearActor::ExecuteTask(UBehaviorTreeComponen
 		const FVector Point = TargetActor->GetActorLocation() + DirectionToOwner * FMath::FRandRange(
 			DistanceMin,
 			DistanceMax);
-		bLocationFound = NavSystem->GetRandomReachablePointInRadius(Point, SearchRadius, TargetNavLocation);
+		bLocationFound = NavSystem->GetRandomPointInNavigableRadius(Point, SearchRadius, TargetNavLocation);
+
+		if (bLocationFound)
+		{
+			FHitResult HitResult;
+			FCollisionQueryParams CollisionQueryParams;
+			CollisionQueryParams.AddIgnoredActor(Owner);
+
+			UKismetSystemLibrary::SphereTraceSingle(GetWorld(),
+			                                        Point,
+			                                        TargetActor->GetActorLocation(),
+			                                        64,
+			                                        UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1),
+			                                        false,
+			                                        {Owner},
+			                                        EDrawDebugTrace::ForDuration,
+			                                        HitResult,
+			                                        true, FLinearColor::Green, FLinearColor::Red, 0.1f);
+
+			bLocationFound = !HitResult.bBlockingHit;
+
+			if (bLocationFound) break;
+		}
 	}
 	while (!bLocationFound);
+	
+	if (!bLocationFound) return EBTNodeResult::Failed;
 
 	Blackboard->SetValueAsVector(TargetLocationKey.SelectedKeyName, TargetNavLocation);
 	return EBTNodeResult::Succeeded;

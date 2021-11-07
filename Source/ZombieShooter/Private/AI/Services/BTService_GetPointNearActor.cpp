@@ -62,11 +62,10 @@ void UBTService_GetPointNearActor::TickNode(UBehaviorTreeComponent& OwnerComp, u
 			                                        0.1f);
 
 			bLocationFound = !HitResult.bBlockingHit;
-
-			if (bLocationFound)
-			{
-				Blackboard->SetValueAsVector(TargetLocationKey.SelectedKeyName, TargetNavLocation);
-			}
+		}
+		if (bLocationFound)
+		{
+			Blackboard->SetValueAsVector(TargetLocationKey.SelectedKeyName, TargetNavLocation);
 		}
 	}
 

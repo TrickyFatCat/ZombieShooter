@@ -279,6 +279,7 @@ void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
 	{
 		CurrentWeapon->StopShooting();
 		CurrentWeapon->SetActorHiddenInGame(true);
+		ExitAds();
 	}
 
 	CurrentWeapon = Weapons[WeaponIndex].Weapon;
@@ -483,7 +484,7 @@ void UWeaponComponent::EnterAds()
 
 void UWeaponComponent::ExitAds()
 {
-	if (!CurrentWeapon || !TargetCamera || bIsEquipping || bIsReloading || !bIsAiming || !AdsData.bHasAds ||
+	if (!CurrentWeapon || !TargetCamera || bIsReloading || !bIsAiming || !AdsData.bHasAds ||
 		bIsNearWall) return;
 
 	CurrentWeapon->SetActorHiddenInGame(false);

@@ -57,6 +57,16 @@ protected:
 	UKeyRingComponent* KeyRing = nullptr;	
 
 	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType) override;
+
+	virtual void Crouch(bool bClientSimulation) override;
+
+	virtual void UnCrouch(bool bClientSimulation) override;
+
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Camera", meta=(AllowPrivateAccess="true"))
+	float CameraCrouchSpeed = 0.15f;
+
+	FVector CameraInitialLocation = FVector::ZeroVector;
 	
 	// Movement
 public:
@@ -76,12 +86,6 @@ protected:
 
 	UFUNCTION()
 	void OnExitAds();
-
-	UFUNCTION()
-	void EnterCrouch();
-
-	UFUNCTION()
-	void ExitCrouch();
 
 	// Camera recoil
 public:

@@ -54,7 +54,7 @@ void UBTService_GetPointNearActor::TickNode(UBehaviorTreeComponent& OwnerComp, u
 			                                        UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1),
 			                                        false,
 			                                        {Owner},
-			                                        EDrawDebugTrace::ForDuration,
+			                                        EDrawDebugTrace::None,
 			                                        HitResult,
 			                                        true,
 			                                        FLinearColor::Green,

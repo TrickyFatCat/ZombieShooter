@@ -4,6 +4,7 @@
 #include "Characters/PlayerCharacter.h"
 
 #include "Camera/CameraComponent.h"
+#include "Components/FlashlightComponent.h"
 #include "Components/ShooterDamageControllerComponent.h"
 #include "Core/Session/SessionGameMode.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -18,6 +19,9 @@ APlayerCharacter::APlayerCharacter()
 
 	PlayerArms = CreateDefaultSubobject<UPlayerArmsComponent>("PlayerArms");
 	PlayerArms->SetupAttachment(PlayerCamera);
+
+	Flashlight = CreateDefaultSubobject<UFlashlightComponent>("Flashlight");
+	Flashlight->SetupAttachment(PlayerCamera);
 
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 
@@ -174,6 +178,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	// Other
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerCharacter::StartInteraction);
+	PlayerInputComponent->BindAction("SwitchFlashlight", IE_Pressed, Flashlight, &UFlashlightComponent::Switch);
 }
 
 void APlayerCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* Damage)
@@ -189,24 +194,6 @@ void APlayerCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser
 			SessionGameMode->FinishSession();
 		}
 	}
-}
-
-void APlayerCharacter::Crouch(bool bClientSimulation)
-{
-	Super::Crouch(bClientSimulation);
-	//
-	// const FVector NewLocation = FVector(CameraInitialLocation.X, CameraInitialLocation.Y, CameraCrouchZ);
-	// PlayerCamera->SetRelativeLocation(NewLocation);
-}
-
-void APlayerCharacter::UnCrouch(bool bClientSimulation)
-{
-	Super::UnCrouch(bClientSimulation);
-
-	if (GetCharacterMovement()->IsCrouching()) return;
-
-	// const FVector NewLocation = FVector(CameraInitialLocation.X, CameraInitialLocation.Y, CameraDefaultZ);
-	// PlayerCamera->SetRelativeLocation(NewLocation);
 }
 
 void APlayerCharacter::MoveForward(const float AxisValue)

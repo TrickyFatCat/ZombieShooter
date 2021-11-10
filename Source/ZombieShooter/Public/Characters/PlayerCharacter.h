@@ -11,6 +11,7 @@ class UWeaponComponent;
 class UInteractionQueueComponent;
 class UPlayerArmsComponent;
 class UKeyRingComponent;
+class UFlashlightComponent;
 
 /**
  * 
@@ -50,6 +51,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UPlayerArmsComponent* PlayerArms = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UFlashlightComponent* Flashlight = nullptr;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UInteractionQueueComponent* InteractionQueue = nullptr;
 
@@ -57,10 +61,6 @@ protected:
 	UKeyRingComponent* KeyRing = nullptr;	
 
 	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType) override;
-
-	virtual void Crouch(bool bClientSimulation) override;
-
-	virtual void UnCrouch(bool bClientSimulation) override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Camera", meta=(AllowPrivateAccess="true"))

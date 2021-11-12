@@ -66,6 +66,9 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Spawn", meta=(ClampMin="1"))
 	int32 SpawnNumber = 1;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Spawn")
+	bool bAggroEnemyOnSpawn = false;
+	
 	int32 CurrentEnemyID = 0;
 
 	int32 SpawnedEnemiesCount = 0;

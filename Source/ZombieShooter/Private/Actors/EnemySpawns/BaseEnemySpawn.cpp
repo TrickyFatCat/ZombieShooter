@@ -3,6 +3,7 @@
 
 #include "Actors/EnemySpawns/BaseEnemySpawn.h"
 
+#include "AI/EnemyFunctionLibrary.h"
 #include "Characters/EnemyCharacter.h"
 #include "Math/TransformCalculus3D.h"
 
@@ -54,6 +55,11 @@ AEnemyCharacter* ABaseEnemySpawn::SpawnEnemy(const TSubclassOf<AEnemyCharacter> 
 	if (!EnemyCharacter) return nullptr;
 
 	OnEnemySpawned.Broadcast(EnemyCharacter);
+
+	if (bAggroEnemyOnSpawn)
+	{
+		UEnemyFunctionLibrary::AggroEnemy(EnemyCharacter);
+	}
 
 	return EnemyCharacter;
 }

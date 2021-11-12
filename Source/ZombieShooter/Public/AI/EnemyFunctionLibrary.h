@@ -19,4 +19,7 @@ class ZOMBIESHOOTER_API UEnemyFunctionLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintCallable, Category="Enemy")
 	static void AggroEnemies(TArray<AEnemyCharacter*> Enemies);
+
+	UFUNCTION(BlueprintCallable, Category="Enemy")
+	static void AggroEnemy(AEnemyCharacter* Enemy);
 };

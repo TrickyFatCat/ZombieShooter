@@ -13,3 +13,10 @@ void UEnemyFunctionLibrary::AggroEnemies(TArray<AEnemyCharacter*> Enemies)
 		Enemy->AttackPlayer();
 	}
 }
+
+void UEnemyFunctionLibrary::AggroEnemy(AEnemyCharacter* Enemy)
+{
+	if (!IsValid(Enemy)) return;
+
+	Enemy->AttackPlayer();
+}

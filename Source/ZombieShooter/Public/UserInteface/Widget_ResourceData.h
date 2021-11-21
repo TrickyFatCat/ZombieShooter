@@ -8,6 +8,8 @@
 
 class UImage;
 class UProgressBar;
+class UTextBlock;
+class UShooterDamageControllerComponent;
 
 /**
  * 
@@ -20,11 +22,25 @@ class ZOMBIESHOOTER_API UWidget_ResourceData : public UUserWidget
 public:
 	virtual void NativeOnInitialized() override;
 
+	// virtual void NativeTi
+
 protected:
 	UPROPERTY(meta=(BindWidget))
 	UImage* Image_ResourceIcon = nullptr;
 
 	UPROPERTY(meta=(BindWidget))
-	UProgressBar* ProgressBar_ResourceProgress = nullptr;
+	UTextBlock* Text_CurrentResource = nullptr;
 	
+	UPROPERTY(meta=(BindWidget))
+	UProgressBar* ProgressBar_ResourceProgress = nullptr;
+
+private:
+	UPROPERTY()
+	UShooterDamageControllerComponent* DamageControllerComponent = nullptr;
+	
+	UFUNCTION(BlueprintPure, Category="UserInterface")
+	int32 GetCurrentHealth() const;
+
+	UFUNCTION(BlueprintPure, Category="UserInterface")
+	int32 GetCurrentArmor() const;
 };

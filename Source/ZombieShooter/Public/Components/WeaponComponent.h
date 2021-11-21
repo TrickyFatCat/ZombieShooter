@@ -20,6 +20,7 @@ enum class EWeaponPullCommand : uint8
 	Reload
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponChangedSignature, const AWeaponBase*, NewWeapon);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ZOMBIESHOOTER_API UWeaponComponent : public UActorComponent
@@ -65,6 +66,9 @@ private:
 public:
 	UPROPERTY(BlueprintAssignable, Category="Weapon")
 	FOnWeaponShotSignature OnWeaponShot;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnWeaponChangedSignature OnWeaponChanged;
 
 	void EquipNextWeapon();
 

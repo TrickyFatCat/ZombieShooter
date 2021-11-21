@@ -176,6 +176,9 @@ struct FWeaponVisualData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Visuals")
 	FRotator ReloadRotationOffset = FRotator::ZeroRotator;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Visuals")
+	UTexture2D* Icon = nullptr;
 };
 
 USTRUCT(BlueprintType)

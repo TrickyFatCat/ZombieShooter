@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/WeaponComponent.h"
 #include "Weapons/WeaponCoreTypes.h"
 #include "Widget_WeaponData.generated.h"
 
 class UImage;
 class UTextBlock;
+class UWeaponComponent;
 
 /**
  * 
@@ -31,10 +33,16 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* Text_InventoryAmmo = nullptr;
 
+	UPROPERTY()
+	UWeaponComponent* WeaponComponent = nullptr;
+
 private:
 	UFUNCTION(BlueprintPure, Category="UserInterface")
 	void GetCurrentWeaponAmmoData(FWeaponAmmoData& WeaponAmmoData) const;
 
 	UFUNCTION(BlueprintPure, Category="UserInterface")
 	static FString FormatAmmoData(const int32 AmmoNumber, const int32 MaxLength);
+
+	UFUNCTION()
+	void SetWeaponIcon(const AWeaponBase* CurrentWeapon);
 };

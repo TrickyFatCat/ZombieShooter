@@ -289,6 +289,8 @@ void UWeaponComponent::EquipWeapon(const int32 WeaponIndex)
 	FWeaponData WeaponData;
 	CurrentWeapon->GetWeaponData(WeaponData);
 	AdsData = WeaponData.AdsData;
+
+	OnWeaponChanged.Broadcast(CurrentWeapon);
 }
 
 void UWeaponComponent::OnEmptyClip(AWeaponBase* TargetWeapon)

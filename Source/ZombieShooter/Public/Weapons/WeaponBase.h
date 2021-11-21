@@ -137,6 +137,8 @@ public:
 	FVector GetReloadLocationOffset() const { return VisualData.ReloadLocationOffset; }
 	
 	FRotator GetReloadRotationOffset() const { return VisualData.ReloadRotationOffset; }
+
+	UTexture2D* GetIcon() const { return VisualData.Icon; }
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess="true"))
 	FWeaponVisualData VisualData;

@@ -21,7 +21,7 @@ protected:
 
 	// Armor
 public:
-	UPROPERTY()
+	UPROPERTY(BlueprintAssignable)
 	FOnArmorChangedSignature OnArmorChanged;
 
 	UFUNCTION(BlueprintCallable, Category="Armor")

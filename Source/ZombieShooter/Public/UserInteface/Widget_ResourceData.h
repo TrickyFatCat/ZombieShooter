@@ -22,8 +22,6 @@ class ZOMBIESHOOTER_API UWidget_ResourceData : public UUserWidget
 public:
 	virtual void NativeOnInitialized() override;
 
-	// virtual void NativeTi
-
 protected:
 	UPROPERTY(meta=(BindWidget))
 	UImage* Image_ResourceIcon = nullptr;
@@ -31,11 +29,14 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* Text_CurrentResource = nullptr;
 	
-	UPROPERTY(meta=(BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	UProgressBar* ProgressBar_ResourceProgress = nullptr;
 
 private:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	APawn* PlayerPawn = nullptr;
+	
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	UShooterDamageControllerComponent* DamageControllerComponent = nullptr;
 	
 	UFUNCTION(BlueprintPure, Category="UserInterface")
@@ -43,4 +44,16 @@ private:
 
 	UFUNCTION(BlueprintPure, Category="UserInterface")
 	int32 GetCurrentArmor() const;
+
+	UFUNCTION(BlueprintCallable, Category="UserInterface")
+	float GetNormalizedHealth() const;
+	
+	UFUNCTION(BlueprintCallable, Category="UserInterface")
+	float GetNormalizedArmor() const;
+
+	UFUNCTION(BlueprintPure, Category="UserInterface")
+	float CalculateHealthPercent(const float LerpAlpha = 0.25f) const;
+	
+	UFUNCTION(BlueprintPure, Category="UserInterface")
+	float CalculateArmorPercent(const float LerpAlpha = 0.25f) const;
 };

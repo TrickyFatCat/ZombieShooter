@@ -15,6 +15,7 @@ ABaseCharacter::ABaseCharacter()
 	DamageControllerComponent = CreateDefaultSubobject<UShooterDamageControllerComponent>("DamageController");
 	
 	FootstepsAudioComponent = CreateDefaultSubobject<UFootstepsAudioComponent>("FootstepsAudio");
+	FootstepsAudioComponent->SetupAttachment(GetRootComponent());
 	FootstepsAudioComponent->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
 }
 

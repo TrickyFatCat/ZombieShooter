@@ -12,6 +12,8 @@
 #include "TrickyPrototyping/Public/Components/InteractionQueueComponent.h"
 #include "Components/PlayerArmsComponent.h"
 #include "Components/KeyRingComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -191,6 +193,7 @@ void APlayerCharacter::OnJumped_Implementation()
 	Super::OnJumped_Implementation();
 
 	FootstepsAudioComponent->StopPlayingSound();
+	UGameplayStatics::PlaySound2D(this, JumpSound);
 }
 
 void APlayerCharacter::Landed(const FHitResult& Hit)
@@ -201,6 +204,7 @@ void APlayerCharacter::Landed(const FHitResult& Hit)
 	{
 		FootstepsAudioComponent->StartPlayingSound();
 	}
+	UGameplayStatics::PlaySound2D(this, LandSound);
 }
 
 void APlayerCharacter::SwitchFootstepsSound() const

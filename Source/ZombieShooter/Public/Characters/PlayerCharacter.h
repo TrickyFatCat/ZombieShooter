@@ -12,6 +12,7 @@ class UInteractionQueueComponent;
 class UPlayerArmsComponent;
 class UKeyRingComponent;
 class UFlashlightComponent;
+class USoundCue;
 
 /**
  * 
@@ -101,4 +102,12 @@ public:
 	// Interaction
 private:
 	void StartInteraction();
+
+	// Other
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement|Sounds")
+	USoundCue* JumpSound = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement|Sounds")
+	USoundCue* LandSound = nullptr;
 };

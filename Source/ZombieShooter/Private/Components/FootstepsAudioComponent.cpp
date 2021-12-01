@@ -7,16 +7,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
+constexpr float TickDuration = 0.1f;
+constexpr float TraceDistance = 35.f;
 
 UFootstepsAudioComponent::UFootstepsAudioComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-}
-
-void UFootstepsAudioComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
+	SetComponentTickInterval(TickDuration);
 }
 
 void UFootstepsAudioComponent::TickComponent(float DeltaTime,
@@ -25,12 +22,12 @@ void UFootstepsAudioComponent::TickComponent(float DeltaTime,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	CheckSurface(TraceHit);
-	SetCurrentSurface(TraceHit);
+	UpdateSurface();
 }
 
 void UFootstepsAudioComponent::StartPlayingSound()
 {
+	UpdateSurface();
 	if (!FootstepsSounds.Contains(CurrentSurface) || IsPlaying()) return;
 
 	Sound = FootstepsSounds[CurrentSurface];
@@ -44,7 +41,7 @@ void UFootstepsAudioComponent::StopPlayingSound()
 	Stop();
 }
 
-void UFootstepsAudioComponent::CheckSurface(FHitResult& HitResult) const
+void UFootstepsAudioComponent::UpdateSurface()
 {
 	FCollisionObjectQueryParams CollisionObjectQueryParams;
 	CollisionObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
@@ -52,20 +49,18 @@ void UFootstepsAudioComponent::CheckSurface(FHitResult& HitResult) const
 
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.bReturnPhysicalMaterial = true;
+	CollisionQueryParams.AddIgnoredActor(GetOwner());
 
 	const FVector StartPoint = GetComponentLocation();
-	const FVector EndPoint = StartPoint - FVector::UpVector * 25.f;
+	const FVector EndPoint = StartPoint - FVector::UpVector * TraceDistance;
 
-	GetWorld()->LineTraceSingleByObjectType(HitResult,
+	GetWorld()->LineTraceSingleByObjectType(TraceHit,
 	                                        StartPoint,
 	                                        EndPoint,
 	                                        CollisionObjectQueryParams,
 	                                        CollisionQueryParams);
-}
 
-void UFootstepsAudioComponent::SetCurrentSurface(const FHitResult& HitResult)
-{
-	if (!HitResult.PhysMaterial.IsValid()) return;
+	if (!TraceHit.bBlockingHit || !TraceHit.PhysMaterial.IsValid()) return;
 
-	CurrentSurface = HitResult.PhysMaterial->SurfaceType;
+	CurrentSurface = TraceHit.PhysMaterial->SurfaceType;
 }

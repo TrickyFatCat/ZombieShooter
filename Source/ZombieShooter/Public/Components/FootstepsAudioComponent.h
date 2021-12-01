@@ -17,10 +17,6 @@ class ZOMBIESHOOTER_API UFootstepsAudioComponent : public UAudioComponent
 public:	
 	UFootstepsAudioComponent();
 
-protected:
-	virtual void BeginPlay() override;
-
-public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION()
@@ -34,11 +30,9 @@ protected:
 	TMap<TEnumAsByte<EPhysicalSurface>, USoundCue*> FootstepsSounds;
 	
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Sound|Footsteps")
-	TEnumAsByte<EPhysicalSurface> CurrentSurface = EPhysicalSurface::SurfaceType1;
+	TEnumAsByte<EPhysicalSurface> CurrentSurface = EPhysicalSurface::SurfaceType_Default;
 
 	FHitResult TraceHit;
-	
-	void CheckSurface(FHitResult& HitResult) const;
 
-	void SetCurrentSurface(const FHitResult& HitResult);
+	void UpdateSurface();
 };

@@ -7,7 +7,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
-#include "DrawDebugHelpers.h"
 
 UFootstepsAudioComponent::UFootstepsAudioComponent()
 {
@@ -49,6 +48,7 @@ void UFootstepsAudioComponent::CheckSurface(FHitResult& HitResult) const
 {
 	FCollisionObjectQueryParams CollisionObjectQueryParams;
 	CollisionObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	CollisionObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.bReturnPhysicalMaterial = true;
@@ -61,8 +61,6 @@ void UFootstepsAudioComponent::CheckSurface(FHitResult& HitResult) const
 	                                        EndPoint,
 	                                        CollisionObjectQueryParams,
 	                                        CollisionQueryParams);
-
-	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Cyan, false, 0.25f);
 }
 
 void UFootstepsAudioComponent::SetCurrentSurface(const FHitResult& HitResult)

@@ -4,6 +4,7 @@
 #include "Characters/BaseCharacter.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Components/FootstepsAudioComponent.h"
 #include "Components/ShooterDamageControllerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -12,6 +13,9 @@ ABaseCharacter::ABaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	DamageControllerComponent = CreateDefaultSubobject<UShooterDamageControllerComponent>("DamageController");
+	
+	FootstepsAudioComponent = CreateDefaultSubobject<UFootstepsAudioComponent>("FootstepsAudio");
+	FootstepsAudioComponent->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
 }
 
 void ABaseCharacter::BeginPlay()

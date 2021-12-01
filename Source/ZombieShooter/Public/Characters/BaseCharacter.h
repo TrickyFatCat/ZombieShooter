@@ -10,6 +10,7 @@
 
 class UShooterDamageControllerComponent;
 class AWeaponBase;
+class UFootstepsAudioComponent;
 
 UCLASS()
 class ZOMBIESHOOTER_API ABaseCharacter : public ACharacter
@@ -31,6 +32,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	UWeaponComponent* WeaponComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UFootstepsAudioComponent* FootstepsAudioComponent = nullptr;
 
 	UFUNCTION()
 	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType);

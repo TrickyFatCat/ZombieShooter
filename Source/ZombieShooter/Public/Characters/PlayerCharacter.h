@@ -87,6 +87,12 @@ protected:
 	UFUNCTION()
 	void OnExitAds();
 
+	virtual void OnJumped_Implementation() override;
+
+	virtual void Landed(const FHitResult& Hit) override;
+
+	void SwitchFootstepsSound() const;
+
 	// Camera recoil
 public:
 	UFUNCTION()

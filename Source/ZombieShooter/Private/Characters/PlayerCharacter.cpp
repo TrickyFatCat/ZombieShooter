@@ -5,6 +5,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/FlashlightComponent.h"
+#include "Components/FootstepsAudioComponent.h"
 #include "Components/ShooterDamageControllerComponent.h"
 #include "Core/Session/SessionGameMode.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -54,7 +55,7 @@ void APlayerCharacter::Tick(float DeltaSeconds)
 	if (!GetCharacterMovement()->IsFalling())
 	{
 		float NewZ = 0.f;
-		
+
 		if (GetCharacterMovement()->IsCrouching())
 		{
 			NewZ = FMath::Lerp(PlayerCamera->GetRelativeLocation().Z, CrouchedEyeHeight, CameraCrouchSpeed);
@@ -160,11 +161,15 @@ void APlayerCharacter::OnDeath(AController* DeathInstigator, AActor* DeathCauser
 void APlayerCharacter::MoveForward(const float AxisValue)
 {
 	AddMovementInput(GetActorForwardVector(), AxisValue);
+
+	SwitchFootstepsSound();
 }
 
 void APlayerCharacter::MoveRight(const float AxisValue)
 {
 	AddMovementInput(GetActorRightVector(), AxisValue);
+
+	SwitchFootstepsSound();
 }
 
 void APlayerCharacter::OnEnterAds()
@@ -179,6 +184,37 @@ void APlayerCharacter::OnExitAds()
 	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxSpeed;
 	GetController<APlayerController>()->InputYawScale = DefaultInputYawScale;
 	GetController<APlayerController>()->InputPitchScale = DefaultInputPitchScale;
+}
+
+void APlayerCharacter::OnJumped_Implementation()
+{
+	Super::OnJumped_Implementation();
+
+	FootstepsAudioComponent->StopPlayingSound();
+}
+
+void APlayerCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	if (GetVelocity().Size() > 0.f)
+	{
+		FootstepsAudioComponent->StartPlayingSound();
+	}
+}
+
+void APlayerCharacter::SwitchFootstepsSound() const
+{
+	if (GetMovementComponent()->IsFalling()) return;
+
+	if (FMath::IsNearlyZero(GetVelocity().Size(), 0.00001f))
+	{
+		FootstepsAudioComponent->StopPlayingSound();
+	}
+	else if (!FootstepsAudioComponent->IsPlaying())
+	{
+		FootstepsAudioComponent->StartPlayingSound();
+	}
 }
 
 void APlayerCharacter::AddCameraRecoil(const float RecoilPitch, const float RecoilYaw)

@@ -27,12 +27,20 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sound|Footsteps")
+	float TimeBetweenFootsteps = 0.1f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sound|Footsteps")
 	TMap<TEnumAsByte<EPhysicalSurface>, USoundCue*> FootstepsSounds;
 	
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Sound|Footsteps")
 	TEnumAsByte<EPhysicalSurface> CurrentSurface = EPhysicalSurface::SurfaceType_Default;
 
 	FHitResult TraceHit;
+	
+	FTimerHandle SoundPauseHandle;
 
 	void UpdateSurface();
+
+	UFUNCTION()
+	void PlaySound();
 };

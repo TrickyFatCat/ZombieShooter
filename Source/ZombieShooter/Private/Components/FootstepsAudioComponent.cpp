@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
-constexpr float TickDuration = 0.1f;
+constexpr float TickDuration = 0.15f;
 constexpr float TraceDistance = 35.f;
 
 UFootstepsAudioComponent::UFootstepsAudioComponent()
@@ -17,8 +17,8 @@ UFootstepsAudioComponent::UFootstepsAudioComponent()
 }
 
 void UFootstepsAudioComponent::TickComponent(float DeltaTime,
-                                        ELevelTick TickType,
-                                        FActorComponentTickFunction* ThisTickFunction)
+                                             ELevelTick TickType,
+                                             FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -28,17 +28,24 @@ void UFootstepsAudioComponent::TickComponent(float DeltaTime,
 void UFootstepsAudioComponent::StartPlayingSound()
 {
 	UpdateSurface();
-	if (!FootstepsSounds.Contains(CurrentSurface) || IsPlaying()) return;
+	if (!FootstepsSounds.Contains(CurrentSurface) || !GetWorld()) return;
 
-	Sound = FootstepsSounds[CurrentSurface];
-	Play();
+	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+
+	if (TimerManager.IsTimerActive(SoundPauseHandle)) return;
+
+	TimerManager.SetTimer(SoundPauseHandle,
+	                      this,
+	                      &UFootstepsAudioComponent::PlaySound,
+	                      TimeBetweenFootsteps,
+	                      true);
 }
 
 void UFootstepsAudioComponent::StopPlayingSound()
 {
-	if (!IsPlaying()) return;
-	
-	Stop();
+	if (!GetWorld() || !GetWorld()->GetTimerManager().IsTimerActive(SoundPauseHandle)) return;
+
+	GetWorld()->GetTimerManager().ClearTimer(SoundPauseHandle);
 }
 
 void UFootstepsAudioComponent::UpdateSurface()
@@ -63,4 +70,12 @@ void UFootstepsAudioComponent::UpdateSurface()
 	if (!TraceHit.bBlockingHit || !TraceHit.PhysMaterial.IsValid()) return;
 
 	CurrentSurface = TraceHit.PhysMaterial->SurfaceType;
+}
+
+void UFootstepsAudioComponent::PlaySound()
+{
+	if (IsPlaying()) return;
+
+	Sound = FootstepsSounds[CurrentSurface];
+	Play();
 }

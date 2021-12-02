@@ -9,6 +9,7 @@
 
 class USkeletalMeshComponent;
 class UWeaponFXComponent;
+class USoundCue;
 
 DECLARE_MULTICAST_DELEGATE(FOnMakeShotSignature)
 
@@ -126,7 +127,7 @@ protected:
 
 	void DecreaseStorageAmmoCurrent(const int32 Amount);
 
-	// Visuals
+	// Visuals and sounds
 public:
 	void PlayReloadAnimation() const;
 
@@ -142,4 +143,10 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess="true"))
 	FWeaponVisualData VisualData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon|Sounds", meta=(AllowPrivateAccess="true"))
+	USoundCue* EmptySound = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon|Sounds", meta=(AllowPrivateAccess="true"))
+	USoundCue* ShotSound = nullptr;
 };

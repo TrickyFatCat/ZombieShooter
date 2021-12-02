@@ -6,6 +6,7 @@
 #include "Core/ProjectUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "Weapons/ProjectileBase.h"
+#include "Sound/SoundCue.h"
 
 AWeaponBase::AWeaponBase()
 {
@@ -124,6 +125,11 @@ void AWeaponBase::ApplyDamage(const FHitResult HitResult, const FVector& Directi
 
 void AWeaponBase::StartShooting()
 {
+	if (AmmoData.ClipAmmoCurrent == 0 && AmmoData.StorageAmmoCurrent == 0)
+	{
+		UGameplayStatics::PlaySound2D(this, EmptySound);
+	}
+	
 	if (!CanShoot()) return;
 
 	MakeShot();
@@ -217,6 +223,7 @@ void AWeaponBase::MakeShot()
 		OnBulletShot(HitResult, TraceStart, HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd);
 	}
 
+	UGameplayStatics::PlaySound2D(this, ShotSound);
 	OnWeaponShot();
 	OnMakeShot.Broadcast();
 	WeaponMesh->PlayAnimation(VisualData.FireAnimation, false);

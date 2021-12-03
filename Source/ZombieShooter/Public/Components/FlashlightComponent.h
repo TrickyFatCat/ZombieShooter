@@ -6,6 +6,8 @@
 #include "Components/SpotLightComponent.h"
 #include "FlashlightComponent.generated.h"
 
+class USoundCue;
+
 /**
  * 
  */
@@ -22,6 +24,12 @@ protected:
 	virtual void BeginPlay() override;
 	
 private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Flashlight", meta=(AllowPrivateAccess="true"))
+	USoundCue* SwitchOnSound = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Flashlight", meta=(AllowPrivateAccess="true"))
+	USoundCue* SwitchOffSound = nullptr;
+	
 	void Enable();
 
 	void Disable();

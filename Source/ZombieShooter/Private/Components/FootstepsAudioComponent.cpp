@@ -7,8 +7,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
-constexpr float TickDuration = 0.15f;
-constexpr float TraceDistance = 35.f;
+namespace
+{
+	constexpr float TickDuration = 0.15f;
+	constexpr float TraceDistance = 35.f;
+}
 
 UFootstepsAudioComponent::UFootstepsAudioComponent()
 {

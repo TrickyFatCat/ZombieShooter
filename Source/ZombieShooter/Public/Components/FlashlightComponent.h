@@ -40,7 +40,6 @@ private:
 	void Disable();
 
 	FHitResult TraceHit;
-	FCollisionQueryParams CollisionQueryParams;
-	UPROPERTY(VisibleAnywhere)
-	float DefaultIntensity = 0.f;
+	
+	float MaxIntensity = 0.f;
 };

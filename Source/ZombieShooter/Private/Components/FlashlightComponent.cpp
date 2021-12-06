@@ -5,13 +5,12 @@
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "DrawDebugHelpers.h"
-
 namespace Flashlight
 {
 	constexpr float TickDuration = 0.15f;
-	constexpr float TraceDistance = 150.f;
-	constexpr float TraceRadius = 25.f;
+	constexpr float TraceDistanceMin = 25.f;
+	constexpr float TraceDistanceMax = 150.f;
+	constexpr float IntensityInterpSpeed = 650.f;
 }
 
 UFlashlightComponent::UFlashlightComponent()
@@ -25,55 +24,59 @@ void UFlashlightComponent::TickComponent(float DeltaTime,
 {
 	Super::TickComponent(DeltaTime, Tick, ThisTickFunction);
 
-	if (bHiddenInGame) return;
-	const FVector TraceStart = GetComponentLocation() + GetForwardVector() * 25.f;
-	const FVector TraceEnd = TraceStart + GetForwardVector() * Flashlight::TraceDistance;
+	float Alpha = 0.f;
 
-	UKismetSystemLibrary::SphereTraceSingle(GetWorld(),
-	                                        TraceStart,
-	                                        TraceEnd,
-	                                        Flashlight::TraceRadius,
-	                                        UEngineTypes::ConvertToTraceType(ECC_Visibility),
-	                                        false,
-	                                        { GetOwner() },
-	                                        EDrawDebugTrace::None,
-	                                        TraceHit,
-	                                        true);
+	if (bIsEnabled)
+	{
+		// Calculate trace points.
+		const FVector TraceStart = GetComponentLocation() + GetForwardVector() * Flashlight::TraceDistanceMin;
+		const FVector TraceEnd = TraceStart + GetForwardVector() * Flashlight::TraceDistanceMax;
 
-	const float DistanceToImpact = FVector::DistSquared(TraceStart, TraceHit.ImpactPoint);
-	const float MaxDistance = FVector::DistSquared(TraceStart, TraceEnd);
-	const float Alpha = FMath::Clamp(DistanceToImpact / MaxDistance, 0.f, 1.f);
-	const float TargetIntensity = FMath::Lerp(MinIntensity, MaxIntensity, Alpha);
-	const float NewIntensity = FMath::FInterpConstantTo(Intensity, TargetIntensity, Tick, 750);
+		// Make trace.
+		GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, CollisionQueryParams);
+
+		// Calculate intensity alpha.
+		const float DistanceToImpact = FVector::DistSquared(TraceStart, TraceHit.ImpactPoint);
+		const float MaxDistance = FVector::DistSquared(TraceStart, TraceEnd);
+		Alpha = FMath::Clamp(DistanceToImpact / MaxDistance, 0.f, 1.f);
+	}
+
+	// Calculate intensity.
+	const float TargetIntensity = FMath::Lerp(bIsEnabled ? MinIntensity : 0.f, MaxIntensity, Alpha);
+	const float NewIntensity = FMath::FInterpConstantTo(Intensity,
+	                                                    TargetIntensity,
+	                                                    Tick,
+	                                                    Flashlight::IntensityInterpSpeed);
 	SetIntensity(NewIntensity);
-}
-
-void UFlashlightComponent::Switch()
-{
-	bHiddenInGame ? Enable() : Disable();
 }
 
 void UFlashlightComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CollisionQueryParams.AddIgnoredActor(GetOwner());
 	MaxIntensity = Intensity;
-	Disable();
+	SetIntensity(0.f);
+	bIsEnabled = false;
+}
+
+void UFlashlightComponent::Switch()
+{
+	bIsEnabled ? Disable() : Enable();
 }
 
 void UFlashlightComponent::Enable()
 {
-	if (!bHiddenInGame) return;
+	if (bIsEnabled) return;
 
-	SetHiddenInGame(false);
+	bIsEnabled = true;
 	UGameplayStatics::PlaySound2D(GetWorld(), SwitchOnSound);
 }
 
 void UFlashlightComponent::Disable()
 {
-	if (bHiddenInGame) return;
+	if (!bIsEnabled) return;
 
-	SetHiddenInGame(true);
-	SetIntensity(0.f);
+	bIsEnabled = false;
 	UGameplayStatics::PlaySound2D(GetWorld(), SwitchOffSound);
 }

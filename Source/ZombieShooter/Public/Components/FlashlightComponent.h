@@ -19,15 +19,24 @@ class ZOMBIESHOOTER_API UFlashlightComponent : public USpotLightComponent
 public:
 	UFlashlightComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	UFUNCTION()
-	void Switch();
-
+	
 protected:
 	virtual void BeginPlay() override;
+
+public:
+	UFUNCTION()
+	void Switch();
 	
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Flashlight", meta=(AllowPrivateAccess="true"))
-	float MinIntensity = 200.f;
+	float MinIntensity = 2000.f;
+
+	float MaxIntensity = 0.f;
+	
+	FHitResult TraceHit;
+	FCollisionQueryParams CollisionQueryParams;
+
+	bool bIsEnabled = false;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Flashlight", meta=(AllowPrivateAccess="true"))
 	USoundCue* SwitchOnSound = nullptr;
@@ -38,8 +47,4 @@ private:
 	void Enable();
 
 	void Disable();
-
-	FHitResult TraceHit;
-	
-	float MaxIntensity = 0.f;
 };

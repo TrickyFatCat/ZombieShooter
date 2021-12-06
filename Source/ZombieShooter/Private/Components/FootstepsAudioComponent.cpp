@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
-namespace
+namespace Footsteps
 {
 	constexpr float TickDuration = 0.15f;
 	constexpr float TraceDistance = 35.f;
@@ -16,7 +16,7 @@ namespace
 UFootstepsAudioComponent::UFootstepsAudioComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	SetComponentTickInterval(TickDuration);
+	SetComponentTickInterval(Footsteps::TickDuration);
 }
 
 void UFootstepsAudioComponent::TickComponent(float DeltaTime,
@@ -62,7 +62,7 @@ void UFootstepsAudioComponent::UpdateSurface()
 	CollisionQueryParams.AddIgnoredActor(GetOwner());
 
 	const FVector StartPoint = GetComponentLocation();
-	const FVector EndPoint = StartPoint - FVector::UpVector * TraceDistance;
+	const FVector EndPoint = StartPoint - FVector::UpVector * Footsteps::TraceDistance;
 
 	GetWorld()->LineTraceSingleByObjectType(TraceHit,
 	                                        StartPoint,

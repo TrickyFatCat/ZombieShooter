@@ -384,7 +384,7 @@ void UWeaponComponent::OnRecoilFinished()
 {
 	if (RecoilProgress <= 0.f)
 	{
-		if (CurrentWeapon->IsClipEmpty())
+		if (CurrentWeapon->IsClipEmpty() && !CurrentWeapon->IsStorageEmpty())
 		{
 			Reload();
 		}
@@ -439,13 +439,20 @@ void UWeaponComponent::OnPullFinished()
 			PullAnimationTimeline->ReverseFromEnd();
 			return;
 		}
-
+		
 		bIsEquipping = false;
+		
+		if (CurrentWeapon->IsClipEmpty() && !CurrentWeapon->IsStorageEmpty())
+		{
+			Reload();
+			return;
+		}
 
 		if (bIsShooting)
 		{
 			StartShooting();
 		}
+		
 		break;
 	}
 }

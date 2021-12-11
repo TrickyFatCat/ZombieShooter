@@ -171,16 +171,12 @@ void UWeaponComponent::StartShooting()
 {
 	if (!CurrentWeapon) return;
 
-	if (!CanShoot()) return;
-
 	CurrentWeapon->StartShooting();
 	bIsShooting = true;
 }
 
 void UWeaponComponent::StopShooting()
 {
-	if (!CurrentWeapon) return;
-
 	if (!CurrentWeapon) return;
 
 	CurrentWeapon->StopShooting();

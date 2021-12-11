@@ -109,6 +109,8 @@ public:
 		return AmmoData.StorageAmmoCurrent > 0 && AmmoData.ClipAmmoCurrent < AmmoData.ClipAmmoMax;
 	}
 
+	bool IsEmpty() const { return AmmoData.StorageAmmoCurrent == 0 && AmmoData.ClipAmmoCurrent == 0; }
+	
 	bool StorageIsFull() const { return AmmoData.StorageAmmoCurrent >= AmmoData.StorageAmmoMax; }
 
 	bool IsClipEmpty() const { return AmmoData.ClipAmmoCurrent <= 0 && AmmoData.StorageAmmoCurrent > 0; }

@@ -261,7 +261,7 @@ bool UWeaponComponent::RestoreStorageAmmo(TSubclassOf<AWeaponBase> WeaponClass, 
 
 		InventoryData.Weapon->IncreaseCurrentStorageAmmo(Amount);
 
-		if (CurrentWeapon == InventoryData.Weapon && CurrentWeapon->IsEmpty())
+		if (CurrentWeapon == InventoryData.Weapon && CurrentWeapon->IsClipEmpty())
 		{
 			Reload();
 		}

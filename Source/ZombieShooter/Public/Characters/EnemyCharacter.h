@@ -106,13 +106,13 @@ public:
 protected:
 	EEnemyAttackType CurrentAttackType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UDamageCapsuleComponent* DamageTriggerRight = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UDamageCapsuleComponent* DamageTriggerLeft = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UDamageCapsuleComponent* DamageTriggerMouth = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy|Attack|Melee")

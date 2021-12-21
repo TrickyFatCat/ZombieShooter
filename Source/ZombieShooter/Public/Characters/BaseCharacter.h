@@ -27,13 +27,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UShooterDamageControllerComponent* DamageControllerComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UWeaponComponent* WeaponComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UFootstepsAudioComponent* FootstepsAudioComponent = nullptr;
 
 	UFUNCTION()

@@ -46,19 +46,19 @@ public:
 	bool IsShooting() const { return WeaponComponent->GetIsShooting(); }
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UCameraComponent* PlayerCamera = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UPlayerArmsComponent* PlayerArms = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UFlashlightComponent* Flashlight = nullptr;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UInteractionQueueComponent* InteractionQueue = nullptr;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components")
 	UKeyRingComponent* KeyRing = nullptr;	
 
 	virtual void OnDeath(AController* DeathInstigator, AActor* DeathCauser, const UDamageType* DamageType) override;

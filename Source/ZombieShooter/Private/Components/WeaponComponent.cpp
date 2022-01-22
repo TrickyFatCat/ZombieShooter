@@ -171,16 +171,12 @@ void UWeaponComponent::StartShooting()
 {
 	if (!CurrentWeapon) return;
 
-	if (!CanShoot()) return;
-
 	CurrentWeapon->StartShooting();
 	bIsShooting = true;
 }
 
 void UWeaponComponent::StopShooting()
 {
-	if (!CurrentWeapon) return;
-
 	if (!CurrentWeapon) return;
 
 	CurrentWeapon->StopShooting();
@@ -264,6 +260,12 @@ bool UWeaponComponent::RestoreStorageAmmo(TSubclassOf<AWeaponBase> WeaponClass, 
 		}
 
 		InventoryData.Weapon->IncreaseCurrentStorageAmmo(Amount);
+
+		if (CurrentWeapon == InventoryData.Weapon && CurrentWeapon->IsClipEmpty())
+		{
+			Reload();
+		}
+		
 		Result = true;
 		break;
 	}
@@ -382,7 +384,7 @@ void UWeaponComponent::OnRecoilFinished()
 {
 	if (RecoilProgress <= 0.f)
 	{
-		if (CurrentWeapon->IsClipEmpty())
+		if (CurrentWeapon->IsClipEmpty() && !CurrentWeapon->IsStorageEmpty())
 		{
 			Reload();
 		}
@@ -437,13 +439,20 @@ void UWeaponComponent::OnPullFinished()
 			PullAnimationTimeline->ReverseFromEnd();
 			return;
 		}
-
+		
 		bIsEquipping = false;
+		
+		if (CurrentWeapon->IsClipEmpty() && !CurrentWeapon->IsStorageEmpty())
+		{
+			Reload();
+			return;
+		}
 
 		if (bIsShooting)
 		{
 			StartShooting();
 		}
+		
 		break;
 	}
 }

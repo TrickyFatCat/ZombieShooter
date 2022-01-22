@@ -38,13 +38,13 @@ public:
 
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
 	USceneComponent* WeaponRoot = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
 	USkeletalMeshComponent* WeaponMesh = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
 	UWeaponFXComponent* WeaponFXComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly,
@@ -109,9 +109,13 @@ public:
 		return AmmoData.StorageAmmoCurrent > 0 && AmmoData.ClipAmmoCurrent < AmmoData.ClipAmmoMax;
 	}
 
+	bool IsEmpty() const { return AmmoData.StorageAmmoCurrent == 0 && AmmoData.ClipAmmoCurrent == 0; }
+	
 	bool StorageIsFull() const { return AmmoData.StorageAmmoCurrent >= AmmoData.StorageAmmoMax; }
 
-	bool IsClipEmpty() const { return AmmoData.ClipAmmoCurrent <= 0 && AmmoData.StorageAmmoCurrent > 0; }
+	bool IsClipEmpty() const { return AmmoData.ClipAmmoCurrent <= 0; }
+
+	bool IsStorageEmpty() const { return AmmoData.StorageAmmoCurrent <= 0; }
 
 	UFUNCTION(BlueprintGetter, Category="Weapon")
 	FWeaponAmmoData GetAmmoData() const { return AmmoData; }

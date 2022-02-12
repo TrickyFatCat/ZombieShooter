@@ -45,6 +45,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Armor")
 	void IncreaseMaxArmor(const float Amount, const bool bClampCurrentArmor = true);
 
+	UFUNCTION()
 	void BroadcastOnArmorChanged(const float NewArmor, const float DeltaArmor);
 
 	UFUNCTION(BlueprintGetter, Category="Armor")
@@ -68,6 +69,6 @@ protected:
 	UEntityResource* ArmorObject = nullptr;
 
 	// Damage
-	virtual void CalculateDamage(const float Damage, AActor* DamagedActor, AController* Instigator, AActor* Causer, const UDamageType* DamageType) override;
+	virtual void CalculateDamage_Implementation(const float Damage, AActor* DamagedActor, AController* Instigator, AActor* Causer, const UDamageType* DamageType) override;
 	void ReportDamageEvent(const float Damage, const AController* Instigator, const AActor* Causer) const;
 };

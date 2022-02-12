@@ -4,7 +4,7 @@
 #include "Pickups/PickupArmor.h"
 #include "Components/ShooterDamageControllerComponent.h"
 
-bool APickupArmor::ActivatePickup_Implementation(AActor* TargetActor)
+bool APickupArmor::ActivatePickupEffect_Implementation(AActor* TargetActor)
 {
 	if (!TargetActor) return false;
 

@@ -12,7 +12,7 @@ APickupWeapon::APickupWeapon()
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-bool APickupWeapon::ActivatePickup_Implementation(AActor* TargetActor)
+bool APickupWeapon::ActivatePickupEffect_Implementation(AActor* TargetActor)
 {
 	if (!IsValid(TargetActor)) return false;
 

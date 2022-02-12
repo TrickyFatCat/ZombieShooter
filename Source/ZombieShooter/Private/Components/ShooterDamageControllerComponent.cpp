@@ -11,7 +11,7 @@ void UShooterDamageControllerComponent::BeginPlay()
 
 	ArmorObject = NewObject<UEntityResource>(this, TEXT("ArmorObject"));
 	ArmorObject->SetResourceData(ArmorData);
-	ArmorObject->OnValueChanged.AddUObject(this, &UShooterDamageControllerComponent::BroadcastOnArmorChanged);
+	ArmorObject->OnValueChanged.AddDynamic(this, &UShooterDamageControllerComponent::BroadcastOnArmorChanged);
 }
 
 void UShooterDamageControllerComponent::DecreaseArmor(const float Amount, AController* Instigator)
@@ -59,11 +59,11 @@ void UShooterDamageControllerComponent::SetArmorModifier(const float Value)
 	ArmorModifier = Value;
 }
 
-void UShooterDamageControllerComponent::CalculateDamage(const float Damage,
-                                                        AActor* DamagedActor,
-                                                        AController* Instigator,
-                                                        AActor* Causer,
-                                                        const UDamageType* DamageType)
+void UShooterDamageControllerComponent::CalculateDamage_Implementation(const float Damage,
+                                                                       AActor* DamagedActor,
+                                                                       AController* Instigator,
+                                                                       AActor* Causer,
+                                                                       const UDamageType* DamageType)
 {
 	if (Damage <= 0.f) return;
 
@@ -92,10 +92,14 @@ void UShooterDamageControllerComponent::CalculateDamage(const float Damage,
 	ReportDamageEvent(CurrentDamage, Instigator, Causer);
 }
 
-void UShooterDamageControllerComponent::ReportDamageEvent(const float Damage, const AController* Instigator, const AActor* Causer) const
+void UShooterDamageControllerComponent::ReportDamageEvent(const float Damage,
+                                                          const AController* Instigator,
+                                                          const AActor* Causer) const
 {
 	AActor* InstigatorPawn = Instigator == nullptr ? nullptr : Instigator->GetPawn();
-	const FVector EventLocation = Instigator == nullptr ? Causer->GetActorLocation() : InstigatorPawn->GetActorLocation();
+	const FVector EventLocation = Instigator == nullptr
+		                              ? Causer->GetActorLocation()
+		                              : InstigatorPawn->GetActorLocation();
 	UAISense_Damage::ReportDamageEvent(GetWorld(),
 	                                   GetOwner(),
 	                                   InstigatorPawn,

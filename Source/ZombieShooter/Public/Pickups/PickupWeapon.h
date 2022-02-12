@@ -24,5 +24,5 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Pickup", meta=(AllowPrivateAccess="true"))
 	TSubclassOf<AWeaponBase> WeaponClass;
 	
-	virtual bool ActivatePickup_Implementation(AActor* TargetActor) override;
+	virtual bool ActivatePickupEffect_Implementation(AActor* TargetActor) override;
 };

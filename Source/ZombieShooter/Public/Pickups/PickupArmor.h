@@ -15,7 +15,7 @@ class ZOMBIESHOOTER_API APickupArmor : public APickupBase
 	GENERATED_BODY()
 
 protected:
-	virtual bool ActivatePickup_Implementation(AActor* TargetActor) override;
+	virtual bool ActivatePickupEffect_Implementation(AActor* TargetActor) override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Pickup", meta=(AllowPrivateAccess="true"))

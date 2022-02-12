@@ -11,7 +11,7 @@ APickupAmmo::APickupAmmo()
 	AmmoCrateMesh->SetupAttachment(MeshScene);
 }
 
-bool APickupAmmo::ActivatePickup_Implementation(AActor* TargetActor)
+bool APickupAmmo::ActivatePickupEffect_Implementation(AActor* TargetActor)
 {
 	if (!IsValid(TargetActor)) return false;
 
